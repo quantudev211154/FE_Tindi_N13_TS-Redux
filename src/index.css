@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  scroll-behavior: smooth;
+}
+
+/** To hide extended icon of input type in others browser */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/** To hide extended icon of input type in Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+:root {
+  scrollbar-width: none; /** To hide scrollbar in firefox */
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+body::-webkit-scrollbar {
+  display: none; /** To hide scrollbar in others browser */
+}
