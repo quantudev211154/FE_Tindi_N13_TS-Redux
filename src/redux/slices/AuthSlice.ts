@@ -15,7 +15,7 @@ interface IAuthSlice {
 
 const initialState: IAuthSlice = {
   isAuthLoading: false,
-  isAuth: false,
+  isAuth: true,
   currentUser: null,
 }
 

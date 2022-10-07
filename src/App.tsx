@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
 import ProtectedRoute from './components/protected_route/ProtectedRoute'
 import Register from './pages/Register'
 import ForgetPwd from './pages/ForgetPwd'
 import NotFound from './pages/NotFound'
+import Main from './pages/Main'
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
             path=''
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <Main />
               </ProtectedRoute>
             }
           />
