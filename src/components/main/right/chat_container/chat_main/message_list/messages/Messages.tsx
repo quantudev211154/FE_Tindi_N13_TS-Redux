@@ -14,7 +14,7 @@ const Messages = ({ fromSelf }: Props) => {
   }, [])
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className='transition-all'>
       {fromSelf ? (
         <div className='relative flex flex-row justify-end mt-[.5rem]'>
           <ClipPathMsg fromSelf={fromSelf} />

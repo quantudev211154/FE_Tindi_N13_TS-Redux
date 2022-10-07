@@ -1,5 +1,5 @@
 import { AttachFile, Mood, Send } from '@mui/icons-material'
-import { Button, InputAdornment, InputBase } from '@mui/material'
+import { Button, InputAdornment, InputBase, Tooltip } from '@mui/material'
 
 type Props = {}
 
@@ -8,63 +8,73 @@ const ChatFooter = (props: Props) => {
     <div className='w-2/3 py-2 mx-auto flex-initial'>
       <form className='w-full flex flex-row justify-between items-center'>
         <InputBase
-          endAdornment={
-            <InputAdornment position='start'>
-              <Button
-                variant='contained'
-                sx={{
-                  maxWidth: '2.5rem',
-                  maxHeight: '2.5rem',
-                  minWidth: '2.5rem',
-                  minHeight: '2.5rem',
-                  borderRadius: '50%',
-                  bgcolor: 'transparent',
-                  '&:hover': {
-                    bgcolor: '#eeeee4',
-                  },
-                }}
-                disableElevation
-              >
-                <AttachFile
-                  sx={{
-                    fill: 'gray',
-                    cursor: 'pointer',
-                  }}
-                />
-              </Button>
-            </InputAdornment>
-          }
           startAdornment={
             <InputAdornment position='start'>
-              <Button
-                variant='contained'
-                sx={{
-                  maxWidth: '2.5rem',
-                  maxHeight: '2.5rem',
-                  minWidth: '2.5rem',
-                  minHeight: '2.5rem',
-                  borderRadius: '50%',
-                  bgcolor: 'transparent',
-                  '&:hover': {
-                    bgcolor: '#eeeee4',
-                  },
-                }}
-                disableElevation
-              >
-                <Mood
+              <Tooltip title='Thêm biểu tượng'>
+                <Button
+                  variant='contained'
                   sx={{
-                    fill: 'gray',
-                    cursor: 'pointer',
+                    maxWidth: '2.5rem',
+                    maxHeight: '2.5rem',
+                    minWidth: '2.5rem',
+                    minHeight: '2.5rem',
+                    borderRadius: '50%',
+                    bgcolor: 'transparent',
+                    '&:hover': {
+                      bgcolor: '#eeeee4',
+                    },
                   }}
-                />
-              </Button>
+                  disableElevation
+                >
+                  <Mood
+                    sx={{
+                      fill: 'gray',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </Button>
+              </Tooltip>
+            </InputAdornment>
+          }
+          endAdornment={
+            <InputAdornment position='start'>
+              <Tooltip title='Đính kèm'>
+                <Button
+                  variant='contained'
+                  sx={{
+                    maxWidth: '2.5rem',
+                    maxHeight: '2.5rem',
+                    minWidth: '2.5rem',
+                    minHeight: '2.5rem',
+                    borderRadius: '50%',
+                    bgcolor: 'transparent',
+                    '&:hover': {
+                      bgcolor: '#eeeee4',
+                    },
+                  }}
+                  disableElevation
+                >
+                  <AttachFile
+                    sx={{
+                      fill: 'gray',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </Button>
+              </Tooltip>
             </InputAdornment>
           }
           sx={{
+            border: '2px solid transparent',
             width: '100%',
             borderRadius: '1rem',
             bgcolor: 'white',
             padding: '.8rem 1rem',
+            transition: '.2s ease',
+            '&.Mui-focused': {
+              border: '2px solid #5894f5',
+              bgcolor: 'white',
+            },
           }}
           placeholder='Viết tin nhắn nào...'
           type='text'

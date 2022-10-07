@@ -1,12 +1,21 @@
 import { Search } from '@mui/icons-material'
 import { Button, Tooltip } from '@mui/material'
+import { toggleExpandedPanel } from '../../../../../../../redux/slices/CurrentChatNavigationSlice'
+import { useAppDispatch } from '../../../../../../../redux_hooks'
 
 type Props = {}
 
 const SearchMsg = (props: Props) => {
+  const dispatch = useAppDispatch()
+
+  const onOpenExpandedPanel = () => {
+    dispatch(toggleExpandedPanel())
+  }
+
   return (
     <Tooltip title='Tìm kiếm tin nhắn' sx={{ mr: 2 }}>
       <Button
+        onClick={onOpenExpandedPanel}
         variant='contained'
         sx={{
           maxWidth: '2.5rem',
