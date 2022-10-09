@@ -28,6 +28,7 @@ const AddContactBar = (props: Props) => {
           },
         }}
         disableElevation
+        onClick={closeAddContactBar}
       >
         <span>Thêm liên hệ mới</span>
       </Button>

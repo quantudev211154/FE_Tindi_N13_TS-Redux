@@ -1,7 +1,7 @@
 import { Menu } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import Dropdown from './Dropdown'
 import { useState } from 'react'
+import Dropdown from './dropdown/Dropdown'
 
 const DropdownMenu = () => {
   const [openDropdown, setOpenDropdown] = useState(false)

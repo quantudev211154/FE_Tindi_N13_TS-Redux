@@ -11,8 +11,9 @@ const SearchExpanded = (props: Props) => {
   const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
 
   useEffect(() => {
-    if (openExpandedPanel) ref.current!.style.width = 'calc(100%/2)'
-    else ref.current!.style.width = '0'
+    openExpandedPanel
+      ? (ref.current!.style.width = 'calc(100%/2)')
+      : (ref.current!.style.width = '0')
   }, [openExpandedPanel])
 
   return (
