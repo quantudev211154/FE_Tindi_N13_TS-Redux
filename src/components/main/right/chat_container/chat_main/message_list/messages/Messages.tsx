@@ -1,8 +1,7 @@
 import { DoneAll } from '@mui/icons-material'
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import UserAvatar from '../../../../../../../utilities/user_avatar/UserAvatar'
 import ClipPathMsg from './ClipPathMsg'
-import { AVATAR_SMALL } from './../../../../../../../constants/UserAvatarConstant'
 
 type Props = {
   fromSelf: boolean
@@ -32,19 +31,15 @@ const Messages = ({ fromSelf }: Props) => {
         </div>
       ) : (
         <div className='relative justify-start mt-[.5rem] flex flex-row'>
-          <div className='mr-3 flex flex-col justify-end'>
-            <figure>
-              <UserAvatar
-                size='AVATAR_SMALL'
-                name='Do Quynh Trinh'
-                avatar={''}
-              />
-            </figure>
+          <div className='mr-2 flex flex-col justify-end'>
+            <UserAvatar size='AVATAR_SMALL' name='Do Quynh Trinh' avatar={''} />
           </div>
-          <div className='relative'>
+          <div className='relative max-w-[60%]'>
             <ClipPathMsg fromSelf={fromSelf} />
-            <div className='relative bg-white max-w-[60%] break-words p-2 pr-12 justify-end rounded-lg rounded-bl-none'>
-              <p className='text-[.95rem]'>Anh nho em vai lua </p>
+            <div className='bg-white break-words p-2 pr-12 justify-end rounded-lg rounded-bl-none'>
+              <p className='text-[.95rem]'>
+                Anh nho em vai lua Anh nho em vai lua Anh
+              </p>
               <div className='absolute right-1 bottom-[.1rem] text-slate-500'>
                 <p className='text-[0.7rem]'>10:36</p>
               </div>
