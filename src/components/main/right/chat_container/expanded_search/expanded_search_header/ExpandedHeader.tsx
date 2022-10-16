@@ -27,7 +27,7 @@ const ExpandedHeader = (props: Props) => {
           minWidth: '2.5rem',
           minHeight: '2.5rem',
           borderRadius: '50%',
-          ml: 1,
+          mr: 1,
           bgcolor: 'white',
           '&:hover': {
             bgcolor: '#eeeee4',

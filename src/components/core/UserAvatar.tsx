@@ -1,9 +1,9 @@
 import { Avatar, Tooltip } from '@mui/material'
-import calculatingUserAvatar from './calculatingUserAvatar'
+import calculatingUserAvatar from '../../utilities/user_avatar/calculatingUserAvatar'
 import {
   creatingAvatarName,
   randomBgrColorForAvatar,
-} from './creatingAvatarProps'
+} from '../../utilities/user_avatar/creatingAvatarProps'
 
 type Props = {
   name: string

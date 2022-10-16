@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import AuthSlice from './redux/slices/AuthSlice'
 import ChatsControlSlice from './redux/slices/ChatsControlSlice'
+import ControlOverlaysSlice from './redux/slices/ControlOverlaysSlice'
 import CurrentChatNavigationSlice from './redux/slices/CurrentChatNavigationSlice'
 
 export const store = configureStore({
@@ -8,6 +9,7 @@ export const store = configureStore({
     auth: AuthSlice,
     chatsControl: ChatsControlSlice,
     currentChatNavigation: CurrentChatNavigationSlice,
+    controlOverlays: ControlOverlaysSlice,
   },
 })
 

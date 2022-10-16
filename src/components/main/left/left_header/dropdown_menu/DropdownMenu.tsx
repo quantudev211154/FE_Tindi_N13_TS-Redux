@@ -7,7 +7,7 @@ const DropdownMenu = () => {
   const [openDropdown, setOpenDropdown] = useState(false)
 
   const toggleDropdown = () => {
-    setOpenDropdown(!openDropdown)
+    setOpenDropdown(true)
   }
 
   const hideDropdown = () => {
@@ -31,11 +31,26 @@ const DropdownMenu = () => {
         }}
         disableElevation
         onClick={toggleDropdown}
-        onBlur={hideDropdown}
       >
         <Menu sx={{ fill: 'black' }} />
       </Button>
-      <Dropdown open={openDropdown} />
+      <div
+        onClick={hideDropdown}
+        style={
+          openDropdown
+            ? {
+                opacity: 1,
+                visibility: 'visible',
+              }
+            : {
+                opacity: 0,
+                visibility: 'hidden',
+              }
+        }
+        className='backdrop fixed top-0 left-0 z-[100] w-full h-full transition-all'
+      >
+        <Dropdown open={openDropdown} />
+      </div>
     </div>
   )
 }

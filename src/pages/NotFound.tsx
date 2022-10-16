@@ -14,8 +14,8 @@ const NotFound = () => {
         />
       </figure>
       <div className='absolute bottom-[12%] left-1/2 transform -translate-x-1/2 text-center'>
-        <p className='text-lg'>Thôi hỏng rồi. Mong bạn thông cảm.</p>
-        <p className='text-lg mt-1'>Đã có chút sự cố xảy ra với trang này.</p>
+        <p className='text-3xl font-semibold'>Ôi bạn ơi! Bạn đi lạc rồi.</p>
+        <p className='text-lg mt-1'>Tindi không tìm thấy trang này.</p>
         <Link to='/'>
           <Button
             startIcon={<DirectionsRun />}

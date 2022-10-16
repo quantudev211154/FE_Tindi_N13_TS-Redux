@@ -1,5 +1,5 @@
 import { AVATAR_BASE } from '../../../../../../../constants/UserAvatarConstant'
-import UserAvatar from '../../../../../../../utilities/user_avatar/UserAvatar'
+import UserAvatar from '../../../../../../core/UserAvatar'
 import ChatBrief from './chat_brief/ChatBrief'
 
 type Props = {}

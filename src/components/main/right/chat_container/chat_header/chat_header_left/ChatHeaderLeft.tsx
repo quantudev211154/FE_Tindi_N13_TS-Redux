@@ -1,4 +1,4 @@
-import UserAvatar from '../../../../../../utilities/user_avatar/UserAvatar'
+import UserAvatar from '../../../../../core/UserAvatar'
 import { AVATAR_SMALL } from './../../../../../../constants/UserAvatarConstant'
 
 type Props = {}
