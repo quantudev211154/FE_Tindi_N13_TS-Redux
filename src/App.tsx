@@ -11,20 +11,20 @@ import { CircularProgress } from '@mui/material'
 import { checkAuth } from './redux/thunks/AuthThunks'
 
 function App() {
-  const [loading, setLoading] = useState(true)
-  const dispatch = useAppDispatch()
+  // const [loading, setLoading] = useState(true)
+  // const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    const authenticate = async () => {
-      await dispatch(checkAuth())
+  // useEffect(() => {
+  //   const authenticate = async () => {
+  //     await dispatch(checkAuth())
 
-      setLoading(false)
-    }
+  //     setLoading(false)
+  //   }
 
-    authenticate()
-  }, [])
+  //   authenticate()
+  // }, [])
 
-  if (loading) return <CircularProgress color='secondary' />
+  // if (loading) return <CircularProgress color='secondary' />
 
   return (
     <div className='App'>
