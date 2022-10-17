@@ -20,3 +20,9 @@ export type LoginThunkReturnType = {
   avatar: string
   accessToken: string
 }
+
+export type RegisterPayloadType = {
+  phone: string
+  fullName: string
+  password: string
+}

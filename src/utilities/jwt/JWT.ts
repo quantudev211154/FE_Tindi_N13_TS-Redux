@@ -55,6 +55,7 @@ class JWTManager {
       console.log(error)
 
       this.deleteToken()
+      console.log('Killed timout')
 
       return false
     }
@@ -76,10 +77,13 @@ class JWTManager {
   }
 
   setRefreshTokenTimeout = (delay: number) => {
+    console.log(delay * 10)
     this.refreshTokenTimeoutId = window.setTimeout(
       this.getRefreshToken,
-      delay * 1000 - 5000
+      delay * 10
     )
+
+    console.log('Timeout in on firing')
   }
 
   private pinBearerTokenToCommonHeader = (accessToken: string) => {

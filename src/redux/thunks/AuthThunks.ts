@@ -1,12 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { data } from 'autoprefixer'
 import axios, { AxiosError } from 'axios'
-import { API_LOGIN } from '../../constants/APIConstant'
-import { AUTH_LOGIN_THUNK } from '../../constants/ReduxConstant'
+import { API_LOGIN, API_REGISTER } from '../../constants/APIConstant'
+import {
+  AUTH_LOGIN_THUNK,
+  AUTH_REGISTER_THUNK,
+} from '../../constants/ReduxConstant'
 import {
   LoginErrorType,
   LoginPayloadType,
   LoginThunkReturnType,
+  RegisterPayloadType,
 } from '../types/AuthTypes'
 import { AUTH_CHECK_AUTH_THUNK } from './../../constants/ReduxConstant'
 import { JWT } from './../../utilities/jwt/JWT'
@@ -34,6 +38,17 @@ export const login = createAsyncThunk<
     } else return thunkApi.rejectWithValue({ message: 'Lỗi máy chủ' })
   }
 })
+
+export const register = createAsyncThunk(
+  AUTH_REGISTER_THUNK,
+  async (payload: RegisterPayloadType) => {
+    try {
+      await axios.post(API_REGISTER, payload)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+)
 
 export const checkAuth = createAsyncThunk(AUTH_CHECK_AUTH_THUNK, async () => {
   const token = JWT.getToken()

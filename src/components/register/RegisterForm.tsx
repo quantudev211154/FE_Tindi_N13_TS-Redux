@@ -5,6 +5,10 @@ import { TouchApp } from '@mui/icons-material'
 import { Formik } from 'formik'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 import { RegisterFormValidateShape } from './RegisterFormValidateShape'
+import { useAppDispatch } from '../../redux_hooks'
+import { register } from '../../redux/thunks/AuthThunks'
+import { RegisterPayloadType } from '../../redux/types/AuthTypes'
+import { useNavigate } from 'react-router-dom'
 
 interface IRegisterForm {
   name: string
@@ -22,10 +26,19 @@ const initialValues: IRegisterForm = {
 
 const RegisterForm = () => {
   const [isProcessing, setIsProcessing] = useState(false)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-  const onFormSubmit = (values: IRegisterForm) => {
-    console.log(values)
-    setIsProcessing(true)
+  const onFormSubmit = async (values: IRegisterForm) => {
+    const convertedRegisterPayload: RegisterPayloadType = {
+      phone: values.phone,
+      password: values.password,
+      fullName: values.name,
+    }
+
+    dispatch(register(convertedRegisterPayload))
+
+    navigate('/login')
   }
 
   return (
