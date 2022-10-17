@@ -1,8 +1,9 @@
 import { Backdrop, CircularProgress } from '@mui/material'
-import { authState } from '../../redux/slices/AuthSlice'
-import { useAppSelector } from '../../redux_hooks'
+import { authActions, authState } from '../../redux/slices/AuthSlice'
+import { useAppDispatch, useAppSelector } from '../../redux_hooks'
 import { Navigate } from 'react-router-dom'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
+import { checkAuth } from '../../redux/thunks/AuthThunks'
 
 type Props = {
   children: ReactNode
@@ -10,6 +11,11 @@ type Props = {
 
 const ProtectedRoute = ({ children }: Props) => {
   const { isAuthLoading, isAuth } = useAppSelector(authState)
+  const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    dispatch(checkAuth())
+  }, [])
 
   if (isAuthLoading)
     return (

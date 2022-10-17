@@ -55,7 +55,7 @@ export const checkAuth = createAsyncThunk(AUTH_CHECK_AUTH_THUNK, async () => {
 
   if (token) return true
   else {
-    const success = await JWT.getRefreshToken()
+    const success = await JWT.getRefreshToken() //Server is crash here.
 
     if (success) return true
   }

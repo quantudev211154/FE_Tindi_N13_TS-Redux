@@ -1,3 +1,4 @@
+import { ErrorOutlined } from '@mui/icons-material'
 import axios from 'axios'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 import { API_GET_REFRESH_TOKEN } from '../../constants/APIConstant'
@@ -25,7 +26,9 @@ class JWTManager {
   setToken = (accessToken: string) => {
     this.inMemoryToken = accessToken
 
-    const decoded = jwtDecode<JwtPayload & { userId: string }>(accessToken)
+    const decoded = jwtDecode<
+      JwtPayload & { userId: string; phone: string; name: string }
+    >(accessToken)
     this.userId = decoded.userId
 
     this.setRefreshTokenTimeout(
@@ -43,19 +46,17 @@ class JWTManager {
         withCredentials: true,
       })
 
-      const data = response.data as {
-        success: boolean
-        accessToken: string
+      const data = (await response.data) as {
+        access_token: string
+        refresh_token: string
       }
 
-      this.setToken(data.accessToken)
+      this.setToken(data.access_token)
 
       return true
     } catch (error) {
       console.log(error)
-
       this.deleteToken()
-      console.log('Killed timout')
 
       return false
     }
@@ -77,13 +78,10 @@ class JWTManager {
   }
 
   setRefreshTokenTimeout = (delay: number) => {
-    console.log(delay * 10)
     this.refreshTokenTimeoutId = window.setTimeout(
       this.getRefreshToken,
       delay * 10
     )
-
-    console.log('Timeout in on firing')
   }
 
   private pinBearerTokenToCommonHeader = (accessToken: string) => {

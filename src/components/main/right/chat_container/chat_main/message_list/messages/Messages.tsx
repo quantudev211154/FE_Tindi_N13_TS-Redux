@@ -19,9 +19,9 @@ const Messages = ({ fromSelf }: Props) => {
       {fromSelf ? (
         <div className='relative flex flex-row justify-end mt-[.5rem]'>
           <ClipPathMsg fromSelf={fromSelf} />
-          <div className='relative bg-[#eeffde] max-w-[60%] break-words p-2 pr-14 justify-end rounded-lg rounded-br-none'>
+          <div className='relative bg-[#eeffde] max-w-[60%] break-words px-2 py-3 pr-14 justify-end rounded-lg rounded-br-none'>
             <p className='text-[.95rem]'>Mot con vit xoe ra hai cai canh</p>
-            <div className='absolute right-1 bottom-[.1rem] text-green-500 flex flex-row items-center'>
+            <div className='absolute right-1 bottom-[.05rem] text-green-500 flex flex-row items-center'>
               <p className='text-[0.7rem] mr-1'>10:36</p>
               <DoneAll sx={{ width: '1.2rem', height: '1.2rem' }} />
             </div>
@@ -39,7 +39,7 @@ const Messages = ({ fromSelf }: Props) => {
                 Mot con vit xoe ra hai cai canh Mot con vit xoe ra hai cai canh
                 Mot con vit xoe ra hai cai canh Mot con vit xoe ra hai cai canh
               </p>
-              <div className='absolute right-1 bottom-[.1rem] text-slate-500'>
+              <div className='absolute right-1 bottom-[.05rem] text-slate-500'>
                 <p className='text-[0.7rem]'>10:36</p>
               </div>
             </div>
