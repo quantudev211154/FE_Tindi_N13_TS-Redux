@@ -34,6 +34,23 @@ const AddContactBar = (props: Props) => {
       </Button>
       <Button
         variant='contained'
+        fullWidth={true}
+        sx={{
+          bgcolor: 'white',
+          color: '#e82344',
+          fontWeight: 'bold',
+          '&:hover': {
+            bgcolor: '#e82a49',
+            color: 'white',
+          },
+        }}
+        disableElevation
+        onClick={closeAddContactBar}
+      >
+        <span>Chặn</span>
+      </Button>
+      <Button
+        variant='contained'
         sx={{
           maxWidth: '2.5rem',
           maxHeight: '2.5rem',

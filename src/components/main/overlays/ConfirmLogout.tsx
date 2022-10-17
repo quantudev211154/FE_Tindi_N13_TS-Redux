@@ -1,9 +1,11 @@
 import { Button } from '@mui/material'
+import { authActions } from '../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
 import { useAppDispatch } from './../../../redux_hooks'
 
 const ConfirmLogout = () => {
   const { toggleConfirmLogoutOverlay } = controlOverlaysActions
+  const { logout } = authActions
   const dispatch = useAppDispatch()
 
   return (
@@ -25,6 +27,7 @@ const ConfirmLogout = () => {
           }}
           onClick={() => {
             console.log('Logged out')
+            dispatch(logout())
             dispatch(toggleConfirmLogoutOverlay())
           }}
         >

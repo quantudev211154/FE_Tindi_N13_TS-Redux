@@ -7,7 +7,7 @@ import NotFound from './pages/NotFound'
 import Main from './pages/Main'
 import { useEffect, useState } from 'react'
 import { useAppDispatch } from './redux_hooks'
-import { CircularProgress } from '@mui/material'
+import { Backdrop, CircularProgress } from '@mui/material'
 import { checkAuth } from './redux/thunks/AuthThunks'
 
 function App() {
@@ -24,7 +24,26 @@ function App() {
   //   authenticate()
   // }, [])
 
-  // if (loading) return <CircularProgress color='secondary' />
+  // if (loading)
+  //   return (
+  //     <Backdrop
+  //       sx={{
+  //         color: '#fff',
+  //         bgcolor: '#0e6f9c',
+  //         display: 'flex',
+  //         flexDirection: 'column',
+  //         zIndex: (theme) => theme.zIndex.drawer + 1,
+  //       }}
+  //       open={loading}
+  //     >
+  //       <CircularProgress color='secondary' />
+  //       <p className='text-lg mt-5 text-gray-200'>
+  //         <span>Chờ</span>
+  //         <span className='font-bold'> TINDI </span>
+  //         <span>một tí nhé...</span>
+  //       </p>
+  //     </Backdrop>
+  //   )
 
   return (
     <div className='App'>

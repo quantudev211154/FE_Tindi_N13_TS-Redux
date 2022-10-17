@@ -2,8 +2,12 @@ import { LoginOutlined } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
 import { Formik } from 'formik'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { authState } from '../../redux/slices/AuthSlice'
+import { login } from '../../redux/thunks/AuthThunks'
+import { LoginPayloadType } from '../../redux/types/AuthTypes'
+import { useAppDispatch, useAppSelector } from '../../redux_hooks'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 import { LoginFormValidateShape } from './LoginFormValidateShape'
 
@@ -19,12 +23,23 @@ const initialValues: ILoginForm = {
 
 const LoginForm = () => {
   const [isProcessing, setIsProcessing] = useState(false)
+  const dispatch = useAppDispatch()
+  const { loginErrorMsg } = useAppSelector(authState)
 
-  const onFormSubmit = (values: ILoginForm) => {
-    console.log(values)
-
+  const onFormSubmit = async (values: ILoginForm) => {
     setIsProcessing(true)
+
+    const data: LoginPayloadType = {
+      phone: values.phone,
+      password: values.password,
+    }
+
+    await dispatch(login(data))
   }
+
+  useEffect(() => {
+    if (loginErrorMsg) setIsProcessing(false)
+  }, [loginErrorMsg])
 
   return (
     <Formik

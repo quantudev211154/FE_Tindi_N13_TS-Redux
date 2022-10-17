@@ -4,21 +4,23 @@ import { RootState } from '../../redux_store'
 import { JWT } from '../../utilities/jwt/JWT'
 import { checkAuth, login } from '../thunks/AuthThunks'
 interface ICurrentUser {
-  id: string | null
   name: string | null
   phone: string | null
+  avatar: string | null
 }
 
 interface IAuthSlice {
   isAuthLoading: boolean
   isAuth: boolean
   currentUser: ICurrentUser | null
+  loginErrorMsg: string | null
 }
 
 const initialState: IAuthSlice = {
-  isAuthLoading: false,
-  isAuth: true,
+  isAuthLoading: true,
+  isAuth: false,
   currentUser: null,
+  loginErrorMsg: null,
 }
 
 const authSlice = createSlice({
@@ -34,13 +36,22 @@ const authSlice = createSlice({
     builder.addCase(login.fulfilled, (state, action) => {
       state.isAuth = true
       state.isAuthLoading = false
-      state.currentUser = action.payload
+      state.currentUser = {
+        phone: action.payload?.phone as string,
+        name: action.payload?.name as string,
+        avatar: action.payload?.avatar as string,
+      }
+      state.loginErrorMsg = null
+
+      JWT.setToken(action.payload?.accessToken as string)
     })
 
     builder.addCase(login.rejected, (state, action) => {
       state.isAuth = false
-      state.isAuthLoading = false
       state.currentUser = null
+      state.isAuthLoading = false
+
+      state.loginErrorMsg = action.payload?.message as string
     })
 
     builder.addCase(checkAuth.fulfilled, (state, action) => {
@@ -50,4 +61,5 @@ const authSlice = createSlice({
 })
 
 export const authState = (state: RootState) => state.auth
+export const authActions = authSlice.actions
 export default authSlice.reducer

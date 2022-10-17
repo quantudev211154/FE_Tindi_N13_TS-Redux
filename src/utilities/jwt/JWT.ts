@@ -32,6 +32,8 @@ class JWTManager {
       (decoded.exp as number) - (decoded.iat as number)
     )
 
+    this.pinBearerTokenToCommonHeader(accessToken)
+
     return true
   }
 
@@ -78,6 +80,14 @@ class JWTManager {
       this.getRefreshToken,
       delay * 1000 - 5000
     )
+  }
+
+  private pinBearerTokenToCommonHeader = (accessToken: string) => {
+    accessToken
+      ? (axios.defaults.headers.common[
+          'Authorization'
+        ] = `Bearer ${accessToken}`)
+      : delete axios.defaults.headers.common['Authorization']
   }
 }
 
