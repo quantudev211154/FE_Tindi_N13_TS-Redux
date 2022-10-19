@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { LOCAL_REFRESH_TOKEN_NAME } from '../../constants/AuthConstant'
 import { AUTH_SLICE_NAME } from '../../constants/ReduxConstant'
 import { RootState } from '../../redux_store'
 import { JWT } from '../../utilities/jwt/JWT'
@@ -30,6 +31,7 @@ const authSlice = createSlice({
     logout: (state) => {
       JWT.deleteToken()
       state.isAuth = false
+      state.isAuthLoading = true
     },
   },
   extraReducers: (builder) => {
@@ -44,6 +46,11 @@ const authSlice = createSlice({
       state.loginErrorMsg = null
 
       JWT.setToken(action.payload?.accessToken as string)
+
+      localStorage.setItem(
+        LOCAL_REFRESH_TOKEN_NAME,
+        action.payload.refreshToken
+      )
     })
 
     builder.addCase(login.rejected, (state, action) => {

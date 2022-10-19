@@ -12,6 +12,7 @@ export type LoginResponseType = {
   loginDate: number
   id: string
   accessToken: string
+  refreshToken: string
 }
 
 export type LoginThunkReturnType = {
@@ -19,6 +20,7 @@ export type LoginThunkReturnType = {
   name: string
   avatar: string
   accessToken: string
+  refreshToken: string
 }
 
 export type RegisterPayloadType = {

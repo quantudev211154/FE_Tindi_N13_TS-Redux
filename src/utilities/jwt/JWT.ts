@@ -2,9 +2,12 @@ import { ErrorOutlined } from '@mui/icons-material'
 import axios from 'axios'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 import { API_GET_REFRESH_TOKEN } from '../../constants/APIConstant'
+import {
+  LOCAL_LOGOUT_EVENT_NAME,
+  LOCAL_REFRESH_TOKEN_NAME,
+} from '../../constants/AuthConstant'
 
 class JWTManager {
-  LOGOUT_EVENT_NAME = 'Tindi-logout'
   inMemoryToken: string | null
   refreshTokenTimeoutId: number | null
   userId: string | null
@@ -15,8 +18,10 @@ class JWTManager {
     this.userId = null
 
     window.addEventListener('storage', (event) => {
-      if (event.key === this.LOGOUT_EVENT_NAME) this.inMemoryToken = null
+      if (event.key === LOCAL_LOGOUT_EVENT_NAME) this.inMemoryToken = null
     })
+
+    axios.defaults.withCredentials = true
   }
 
   getToken = () => this.inMemoryToken
@@ -42,16 +47,26 @@ class JWTManager {
 
   getRefreshToken = async () => {
     try {
-      const response = await axios.get(API_GET_REFRESH_TOKEN, {
-        withCredentials: true,
-      })
+      const inLocalStorageRefreshToken = localStorage.getItem(
+        LOCAL_REFRESH_TOKEN_NAME
+      )
 
-      const data = (await response.data) as {
-        access_token: string
-        refresh_token: string
+      if (!inLocalStorageRefreshToken) {
+        this.deleteToken()
+        return false
       }
 
-      this.setToken(data.access_token)
+      const response = await axios.post(API_GET_REFRESH_TOKEN, {
+        refreshToken: inLocalStorageRefreshToken,
+      })
+
+      console.log(response.data)
+
+      const data = (await response.data) as {
+        accessToken: string
+      }
+
+      this.setToken(data.accessToken)
 
       return true
     } catch (error) {
@@ -72,7 +87,8 @@ class JWTManager {
 
     this.abortRefreshToken()
 
-    window.localStorage.setItem(this.LOGOUT_EVENT_NAME, Date.now().toString())
+    window.localStorage.setItem(LOCAL_LOGOUT_EVENT_NAME, Date.now().toString())
+    window.localStorage.removeItem(LOCAL_REFRESH_TOKEN_NAME)
 
     return true
   }
