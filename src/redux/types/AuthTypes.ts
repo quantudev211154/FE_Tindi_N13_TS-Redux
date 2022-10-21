@@ -16,6 +16,7 @@ export type LoginResponseType = {
 }
 
 export type LoginThunkReturnType = {
+  userId: string
   phone: string
   name: string
   avatar: string

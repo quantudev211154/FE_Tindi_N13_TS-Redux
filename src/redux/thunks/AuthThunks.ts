@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { data } from 'autoprefixer'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { API_LOGIN, API_REGISTER } from '../../constants/APIConstant'
 import {
   AUTH_LOGIN_THUNK,
@@ -55,7 +54,7 @@ export const checkAuth = createAsyncThunk(AUTH_CHECK_AUTH_THUNK, async () => {
 
   if (token) return true
   else {
-    const success = await JWT.getRefreshToken() //Server is crash here.
+    const success = await JWT.getRefreshToken()
 
     if (success) return true
   }

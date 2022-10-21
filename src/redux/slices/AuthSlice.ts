@@ -5,6 +5,7 @@ import { RootState } from '../../redux_store'
 import { JWT } from '../../utilities/jwt/JWT'
 import { checkAuth, login } from '../thunks/AuthThunks'
 interface ICurrentUser {
+  id: number | null
   name: string | null
   phone: string | null
   avatar: string | null
@@ -39,6 +40,8 @@ const authSlice = createSlice({
       state.isAuth = true
       state.isAuthLoading = false
       state.currentUser = {
+        ...state,
+        id: parseInt(action.payload?.userId as string),
         phone: action.payload?.phone as string,
         name: action.payload?.name as string,
         avatar: action.payload?.avatar as string,

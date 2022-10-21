@@ -1,5 +1,5 @@
 import { Backdrop, CircularProgress } from '@mui/material'
-import { authActions, authState } from '../../redux/slices/AuthSlice'
+import { authState } from '../../redux/slices/AuthSlice'
 import { useAppDispatch, useAppSelector } from '../../redux_hooks'
 import { Navigate } from 'react-router-dom'
 import { ReactNode, useEffect } from 'react'
@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }: Props) => {
     dispatch(checkAuth())
   }, [])
 
-  if (isAuthLoading)
+  if (isAuthLoading) {
     return (
       <Backdrop
         sx={{
@@ -29,7 +29,7 @@ const ProtectedRoute = ({ children }: Props) => {
         }}
         open={isAuthLoading}
       >
-        <CircularProgress color='secondary' />
+        <CircularProgress color='warning' />
         <p className='text-lg mt-5 text-gray-200'>
           <span>Chờ</span>
           <span className='font-bold'> TINDI </span>
@@ -37,6 +37,7 @@ const ProtectedRoute = ({ children }: Props) => {
         </p>
       </Backdrop>
     )
+  }
 
   if (!isAuth) return <Navigate to='/login' />
 

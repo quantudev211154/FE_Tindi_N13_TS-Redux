@@ -60,7 +60,7 @@ class JWTManager {
         refreshToken: inLocalStorageRefreshToken,
       })
 
-      console.log(response.data)
+      console.log('Refreshed' + ' ' + this.refreshTokenTimeoutId)
 
       const data = (await response.data) as {
         accessToken: string

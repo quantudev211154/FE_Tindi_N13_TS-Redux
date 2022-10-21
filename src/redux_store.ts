@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import AuthSlice from './redux/slices/AuthSlice'
-import ChatsControlSlice from './redux/slices/ChatsControlSlice'
+import ConversationControlSlice from './redux/slices/ConversationsControlSlice'
 import ControlOverlaysSlice from './redux/slices/ControlOverlaysSlice'
 import CurrentChatNavigationSlice from './redux/slices/CurrentChatNavigationSlice'
 
 export const store = configureStore({
   reducer: {
     auth: AuthSlice,
-    chatsControl: ChatsControlSlice,
+    conversationsControl: ConversationControlSlice,
     currentChatNavigation: CurrentChatNavigationSlice,
     controlOverlays: ControlOverlaysSlice,
   },

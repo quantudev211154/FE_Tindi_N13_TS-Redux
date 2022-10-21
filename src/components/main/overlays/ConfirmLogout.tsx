@@ -26,7 +26,6 @@ const ConfirmLogout = () => {
             },
           }}
           onClick={() => {
-            console.log('Logged out')
             dispatch(logout())
             dispatch(toggleConfirmLogoutOverlay())
           }}
