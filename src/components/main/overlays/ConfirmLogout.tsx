@@ -26,8 +26,8 @@ const ConfirmLogout = () => {
             },
           }}
           onClick={() => {
-            dispatch(logout())
             dispatch(toggleConfirmLogoutOverlay())
+            dispatch(logout())
           }}
         >
           Đăng xuất

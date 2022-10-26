@@ -1,13 +1,10 @@
 import { Avatar, Tooltip } from '@mui/material'
 import calculatingUserAvatar from '../../utilities/user_avatar/calculatingUserAvatar'
-import {
-  creatingAvatarName,
-  randomBgrColorForAvatar,
-} from '../../utilities/user_avatar/creatingAvatarProps'
+import { creatingAvatarName } from '../../utilities/user_avatar/creatingAvatarProps'
 
 type Props = {
   name: string
-  avatar: string | null
+  avatar: string
   size: string
 }
 
@@ -16,7 +13,7 @@ const UserAvatar = ({ name, avatar, size }: Props) => {
 
   return (
     <Tooltip title={name} placement='bottom'>
-      {avatar ? (
+      {!avatar?.startsWith('#') ? (
         <Avatar
           src={avatar}
           sx={{
@@ -35,7 +32,7 @@ const UserAvatar = ({ name, avatar, size }: Props) => {
             width,
             height,
             fontSize,
-            bgcolor: randomBgrColorForAvatar(),
+            bgcolor: `${avatar}`,
             cursor: 'pointer',
             flexShrink: 0,
             zIndex: 20,

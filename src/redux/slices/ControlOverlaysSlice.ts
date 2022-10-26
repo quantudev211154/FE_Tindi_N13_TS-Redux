@@ -1,12 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../redux_store'
+import { OverlaysType } from '../types/OverlaysType'
 
-interface IControlOverlays {
-  openConfirmLogoutOverlay: boolean
-}
-
-const initialState: IControlOverlays = {
+const initialState: OverlaysType = {
   openConfirmLogoutOverlay: false,
+  openContactOverlay: false,
 }
 
 const controlOverlaysSlice = createSlice({
@@ -15,6 +13,9 @@ const controlOverlaysSlice = createSlice({
   reducers: {
     toggleConfirmLogoutOverlay: (state) => {
       state.openConfirmLogoutOverlay = !state.openConfirmLogoutOverlay
+    },
+    toggleContactOverlay: (state) => {
+      state.openContactOverlay = !state.openContactOverlay
     },
   },
 })

@@ -31,3 +31,8 @@ input[type='number'] {
 body::-webkit-scrollbar {
   display: none; /** To hide scrollbar in others browser */
 }
+
+.grecaptcha-badge {
+  visibility: hidden;
+  opacity: 0;
+}

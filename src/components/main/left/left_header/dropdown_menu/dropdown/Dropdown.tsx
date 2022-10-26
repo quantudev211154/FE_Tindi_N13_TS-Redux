@@ -13,23 +13,25 @@ import DropdownItem, {
 } from '../../../../../core/DropdownItem'
 import ConfirmLogout from '../../../../overlays/ConfirmLogout'
 import { useAppSelector } from '../../../../../../redux_hooks'
+import Contact from '../../../../overlays/Contact'
 
 interface Props {
   open: boolean
 }
 
 const Dropdown = ({ open }: Props) => {
-  const { openConfirmLogoutOverlay } = useAppSelector(controlOverlaysState)
+  const { openConfirmLogoutOverlay, openContactOverlay } =
+    useAppSelector(controlOverlaysState)
 
   const dropdownItemList: IDropdownItemProps[] = [
-    // {
-    //   key: 1,
-    //   icon: <PersonOutlineOutlined />,
-    //   label: 'Danh bạ',
-    //   handleClick: controlOverlaysActions.toggleConfirmLogoutOverlay,
-    //   followState: openConfirmLogoutOverlay,
-    //   backdropContent: <ConfirmLogout />,
-    // },
+    {
+      key: 1,
+      icon: <PersonOutlineOutlined />,
+      label: 'Danh bạ',
+      handleClick: controlOverlaysActions.toggleContactOverlay,
+      followState: openContactOverlay,
+      backdropContent: <Contact />,
+    },
     // {
     //   key: 2,
     //   icon: <GroupOutlined />,

@@ -4,3 +4,5 @@ export const API_REGISTER = HOST + 'auth/register'
 export const API_GET_REFRESH_TOKEN = HOST + 'auth/refresh_token'
 
 export const API_LOAD_CONVERS = HOST + 'conversations'
+
+export const API_LOAD_CONTACTS = HOST + 'users/contacts?userId='

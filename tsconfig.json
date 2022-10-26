@@ -21,7 +21,11 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "paths": {
+      "*": ["./node_modules/*", "./src/global/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./src/global/global.d.ts"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

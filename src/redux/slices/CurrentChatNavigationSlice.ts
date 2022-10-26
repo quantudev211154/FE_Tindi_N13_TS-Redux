@@ -1,11 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../redux_store'
+import { ChatNavigationType } from '../types/CurrentChatNavigation'
 
-interface IChatNavigation {
-  openExpandedPanel: boolean
-}
-
-const initialState: IChatNavigation = {
+const initialState: ChatNavigationType = {
   openExpandedPanel: false,
 }
 

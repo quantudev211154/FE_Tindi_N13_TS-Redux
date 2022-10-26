@@ -1,4 +1,3 @@
-import { ErrorOutlined } from '@mui/icons-material'
 import axios from 'axios'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 import { API_GET_REFRESH_TOKEN } from '../../constants/APIConstant'
@@ -6,11 +5,12 @@ import {
   LOCAL_LOGOUT_EVENT_NAME,
   LOCAL_REFRESH_TOKEN_NAME,
 } from '../../constants/AuthConstant'
+import { UserType } from '../../redux/types/UserType'
 
 class JWTManager {
   inMemoryToken: string | null
   refreshTokenTimeoutId: number | null
-  userId: string | null
+  userId: number | null
 
   constructor() {
     this.inMemoryToken = null
@@ -32,7 +32,7 @@ class JWTManager {
     this.inMemoryToken = accessToken
 
     const decoded = jwtDecode<
-      JwtPayload & { userId: string; phone: string; name: string }
+      JwtPayload & { userId: number; phone: string; name: string }
     >(accessToken)
     this.userId = decoded.userId
 
@@ -60,15 +60,14 @@ class JWTManager {
         refreshToken: inLocalStorageRefreshToken,
       })
 
-      console.log('Refreshed' + ' ' + this.refreshTokenTimeoutId)
-
       const data = (await response.data) as {
         accessToken: string
+        user: UserType //Error here
       }
 
       this.setToken(data.accessToken)
 
-      return true
+      return data.user
     } catch (error) {
       console.log(error)
       this.deleteToken()

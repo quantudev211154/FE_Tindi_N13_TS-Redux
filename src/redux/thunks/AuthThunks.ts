@@ -6,18 +6,19 @@ import {
   AUTH_REGISTER_THUNK,
 } from '../../constants/ReduxConstant'
 import {
-  LoginErrorType,
+  CheckAuthPayload,
   LoginPayloadType,
   LoginThunkReturnType,
   RegisterPayloadType,
 } from '../types/AuthTypes'
+import { ErrorType } from '../types/ErrorType'
 import { AUTH_CHECK_AUTH_THUNK } from './../../constants/ReduxConstant'
 import { JWT } from './../../utilities/jwt/JWT'
 
 export const login = createAsyncThunk<
   LoginThunkReturnType, //return type
   LoginPayloadType, //payload type
-  { rejectValue: LoginErrorType }
+  { rejectValue: ErrorType }
 >(AUTH_LOGIN_THUNK, async (payload, thunkApi) => {
   try {
     const formData = new FormData()
@@ -29,7 +30,7 @@ export const login = createAsyncThunk<
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const err: LoginErrorType = {
+      const err: ErrorType = {
         message: error.message,
       }
 
@@ -49,15 +50,22 @@ export const register = createAsyncThunk(
   }
 )
 
-export const checkAuth = createAsyncThunk(AUTH_CHECK_AUTH_THUNK, async () => {
-  const token = JWT.getToken()
+export const checkAuth = createAsyncThunk(
+  AUTH_CHECK_AUTH_THUNK,
+  async (payload: CheckAuthPayload) => {
+    const { dispatch, reloadUser } = payload
 
-  if (token) return true
-  else {
-    const success = await JWT.getRefreshToken()
+    const token = JWT.getToken()
 
-    if (success) return true
+    if (token) return true
+    else {
+      const user = await JWT.getRefreshToken()
+
+      dispatch(reloadUser(user))
+
+      if (user) return true
+    }
+
+    return false
   }
-
-  return false
-})
+)
