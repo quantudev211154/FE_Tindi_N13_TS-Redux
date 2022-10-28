@@ -1,18 +1,39 @@
 import { AVATAR_BASE } from '../../../../../../../constants/UserAvatarConstant'
+import { authState } from '../../../../../../../redux/slices/AuthSlice'
+import { ConversationType } from '../../../../../../../redux/types/ConversationTypes'
+import { UserType } from '../../../../../../../redux/types/UserTypes'
+import { useAppSelector } from '../../../../../../../redux_hooks'
 import UserAvatar from '../../../../../../core/UserAvatar'
 import ChatBrief from './chat_brief/ChatBrief'
 
 type Props = {
-  id: number
-  avatar: string
-  title: string
+  chat: ConversationType
 }
 
-const LeftChat = ({ avatar, title, id }: Props) => {
+const LeftChat = ({ chat }: Props) => {
+  const { currentUser } = useAppSelector(authState)
+
+  if (chat.participantRespones.length <= 2) {
+    const targetUser = chat.participantRespones.find(
+      (user) => user.user.id !== currentUser?.id
+    )
+
+    return (
+      <div className=' left-chat py-1 min-w-0 flex-1 h-full flex flex-row justify-start items-center'>
+        <UserAvatar
+          name={targetUser?.user.fullName as string}
+          avatar={targetUser?.user.avatar as string}
+          size={AVATAR_BASE}
+        />
+        <ChatBrief chat={chat} />
+      </div>
+    )
+  }
+
   return (
     <div className=' left-chat py-1 min-w-0 flex-1 h-full flex flex-row justify-start items-center'>
-      <UserAvatar name={title} avatar={avatar} size={AVATAR_BASE} />
-      <ChatBrief id={id} title={title} />
+      <UserAvatar name={chat.title} avatar={chat.avatar} size={AVATAR_BASE} />
+      <ChatBrief chat={chat} />
     </div>
   )
 }

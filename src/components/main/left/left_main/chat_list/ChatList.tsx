@@ -8,13 +8,18 @@ const ChatList = () => {
 
   return (
     <Stack direction='column' maxWidth='true' gap={1}>
+      {conversationList.length == 0 ? (
+        <p className='text-center text-lg mt-10'>
+          Bạn chưa có cuộc trò chuyện trò nào!
+          <br />
+          Hãy thêm những liên hệ mới và bắt đầu những cuộc trò chuyện bất tận
+          thôi nào!
+        </p>
+      ) : (
+        <></>
+      )}
       {conversationList.map((conversation) => (
-        <Chat
-          key={conversation.id}
-          id={conversation.id}
-          title={conversation.title}
-          avatar={conversation.avatar}
-        />
+        <Chat key={conversation.id} chat={conversation} />
       ))}
     </Stack>
   )

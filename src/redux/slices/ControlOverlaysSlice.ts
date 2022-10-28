@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../redux_store'
-import { OverlaysType } from '../types/OverlaysType'
+import { OverlaysType } from '../types/OverlaysTypes'
 
 const initialState: OverlaysType = {
   openConfirmLogoutOverlay: false,

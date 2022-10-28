@@ -11,13 +11,13 @@ export enum UserRoleEnum {
 export type UserType = {
   id: number
   phone: string
-  email: string
-  password: string
-  createdAt: Date
-  updateAt: Date
-  fullName: String
-  status: UserStatusEnum
-  tokenVersion: number
+  email?: string
+  password?: string
+  createdAt?: string
+  updateAt?: string
+  fullName: string
+  status?: UserStatusEnum
+  tokenVersion?: number
   avatar: string
-  role: UserRoleEnum
+  role?: UserRoleEnum
 }

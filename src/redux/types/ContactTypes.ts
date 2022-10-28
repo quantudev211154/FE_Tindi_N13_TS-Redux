@@ -1,9 +1,11 @@
+import { UserType } from './UserTypes'
+
 export type ContactType = {
   id: number
   fullName: string
   phone: string
   email: string
-  createdAt: Date
+  createdAt: string
   blocked: boolean
   avatar: string | null
 }
@@ -17,7 +19,16 @@ export type LoadContactsReturnType = {
   fullName: string
   phone: string
   email: string
-  createdAt: Date
+  createdAt: string
   blocked: boolean
   avatar: string | null
+}
+
+export type AddNewContactPayloadType = {
+  fullName: string
+  phone: string
+  email?: string
+  createdAt?: string
+  isBlocked: boolean
+  user: UserType
 }

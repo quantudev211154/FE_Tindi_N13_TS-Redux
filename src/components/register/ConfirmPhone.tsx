@@ -1,24 +1,26 @@
 import { Formik } from 'formik'
-import { Link, NavigateFunction } from 'react-router-dom'
-import ConfirmPhoneBgr from '../assets/confirm-phone-bgr.webp'
+import { NavigateFunction } from 'react-router-dom'
+import ConfirmPhoneBgr from '../../assets/confirm-phone-bgr.webp'
 import * as yup from 'yup'
-import {
-  Alert,
-  AlertTitle,
-  Button,
-  Collapse,
-  Stack,
-  TextField,
-} from '@mui/material'
-import FormErrorDisplay from '../components/core/FormErrorDisplay'
+import { Alert, AlertTitle, Collapse, Stack, TextField } from '@mui/material'
+import FormErrorDisplay from '../core/FormErrorDisplay'
 import { ArrowBack, Security } from '@mui/icons-material'
-import { FirebaseAuthService } from '../services/FirebaseAuth'
+import { FirebaseAuthService } from '../../services/FirebaseAuth'
 import { useState } from 'react'
 import { LoadingButton } from '@mui/lab'
+import { useAppDispatch } from '../../redux_hooks'
+import { login, register } from '../../redux/thunks/AuthThunks'
+import {
+  LoginPayloadType,
+  RegisterPayloadType,
+} from '../../redux/types/AuthTypes'
+import {
+  RegistrationPendingAccount,
+  RegistrationPendingType,
+} from '../../utilities/registration/RegistrationPending'
 
-type Props = {
+interface Props {
   navigate: NavigateFunction
-  goBack: Function
 }
 
 interface IConfirmPhone {
@@ -29,7 +31,8 @@ const initialValues: IConfirmPhone = {
   code: '',
 }
 
-const ConfirmPhone = ({ navigate, goBack }: Props) => {
+const ConfirmPhone = ({ navigate }: Props) => {
+  const dispatch = useAppDispatch()
   const [isProcessing, setIsProcessing] = useState(false)
   const [collapseProps, setCollapseProps] = useState({
     in: false,
@@ -42,6 +45,8 @@ const ConfirmPhone = ({ navigate, goBack }: Props) => {
   let timeoutToRedirect = -1
 
   const onFormSubmit = async (values: IConfirmPhone) => {
+    setIsProcessing(true)
+
     FirebaseAuthService.getConfirmationResult()
       .confirm(values.code)
       .then((result: any) => {
@@ -50,7 +55,7 @@ const ConfirmPhone = ({ navigate, goBack }: Props) => {
           in: true,
           status: true,
           title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
-          msg: 'Bạn sẽ được chuyển sang trang đăng nhập sau 3s nữa.',
+          msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3s nữa.',
         })
 
         intervalToDetermineRemainingTime = window.setInterval(() => {
@@ -59,7 +64,7 @@ const ConfirmPhone = ({ navigate, goBack }: Props) => {
             in: true,
             status: true,
             title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
-            msg: `Bạn sẽ được chuyển sang trang đăng nhập sau ${
+            msg: `Bạn sẽ được chuyển sang màn hình chính sau ${
               dfTimeToRedirect - 1
             }s nữa.`,
           })
@@ -67,10 +72,26 @@ const ConfirmPhone = ({ navigate, goBack }: Props) => {
           --dfTimeToRedirect
         }, 1000)
 
+        dispatch(
+          register(
+            RegistrationPendingAccount.getPendingRegisterAccount() as RegisterPayloadType
+          )
+        )
+
         timeoutToRedirect = window.setTimeout(() => {
+          const preLoginAccount =
+            RegistrationPendingAccount.getPendingRegisterAccount() as RegistrationPendingType
+
+          const data: LoginPayloadType = {
+            phone: preLoginAccount.phone,
+            password: preLoginAccount.password,
+          }
+          dispatch(login(data))
+
           window.clearTimeout(timeoutToRedirect)
           window.clearInterval(intervalToDetermineRemainingTime)
-          navigate('/login')
+
+          navigate('/')
         }, 4000)
       })
       .catch((err: any) => {
@@ -145,9 +166,6 @@ const ConfirmPhone = ({ navigate, goBack }: Props) => {
                     loadingPosition='start'
                     startIcon={<Security />}
                     variant='contained'
-                    onClick={() => {
-                      setIsProcessing(true)
-                    }}
                     sx={{
                       textTransform: 'none',
                       padding: '13px',
@@ -171,7 +189,8 @@ const ConfirmPhone = ({ navigate, goBack }: Props) => {
           </Formik>
           <div
             onClick={() => {
-              goBack()
+              // goBack()
+              window.location.reload()
             }}
             className='cursor-pointer mt-10 transition-all flex items-center justify-center border border-dashed border-white px-3 py-2 hover:border-blue-700'
           >

@@ -1,14 +1,35 @@
 import { AttachFile, Mood, Send } from '@mui/icons-material'
-import { Button, InputAdornment, InputBase, Tooltip } from '@mui/material'
-import { useEffect, useRef } from 'react'
+import { Button, TextareaAutosize } from '@mui/material'
+import { nanoid } from '@reduxjs/toolkit'
+import { useEffect, useRef, useState } from 'react'
+import { SendMessageWithSocketPayload } from '../../../../../constants/SocketConstant'
+import { authState } from '../../../../../redux/slices/AuthSlice'
+import { conversationDetailActions } from '../../../../../redux/slices/ConversationDetailSlice'
+import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
 import { currentChatNavigationState } from '../../../../../redux/slices/CurrentChatNavigationSlice'
-import { useAppSelector } from '../../../../../redux_hooks'
+import { saveMessage } from '../../../../../redux/thunks/MessageThunks'
+import { ConversationType } from '../../../../../redux/types/ConversationTypes'
+import {
+  MessageStatusEnum,
+  MessageType,
+  MessageTypeEnum,
+  SaveMessagePayload,
+} from '../../../../../redux/types/MessageTypes'
+import { ParticipantType } from '../../../../../redux/types/ParticipantTypes'
+import { UserType } from '../../../../../redux/types/UserTypes'
+import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
+import { MySocket } from '../../../../../services/TindiSocket'
 
-type Props = {}
-
-const ChatFooter = (props: Props) => {
+const ChatFooter = () => {
   const ref = useRef<HTMLDivElement>(null)
+  const { currentUser } = useAppSelector(authState)
+  const { currentChat } = useAppSelector(conversationsControlState)
   const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
+  const { addNewMessageToCurrentChat: addNewMessage } =
+    conversationDetailActions
+  const dispatch = useAppDispatch()
+  const [msg, setMsg] = useState('')
+  const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
     openExpandedPanel
@@ -16,80 +37,80 @@ const ChatFooter = (props: Props) => {
       : (ref.current!.style.width = '66.666667%')
   }, [openExpandedPanel])
 
+  const sendMsg = () => {
+    if (msg !== '') {
+      const message: MessageType = {
+        id: nanoid(),
+        conversation: currentChat as ConversationType,
+        createdAt: new Date().toISOString(),
+        delete: false,
+        message: msg,
+        sender: currentUser as UserType,
+        status: MessageStatusEnum.SENT,
+        type: MessageTypeEnum.TEXT,
+      }
+
+      dispatch(addNewMessage(message))
+
+      const targetUser: ParticipantType = currentChat?.participantRespones.find(
+        (item) => item.user.id !== (currentUser?.id as number)
+      ) as ParticipantType
+
+      const payload: SendMessageWithSocketPayload = {
+        message,
+        to: targetUser.user,
+      }
+      MySocket.sendMessage(payload)
+
+      const willSaveMessage: SaveMessagePayload = {
+        conversation: message.conversation,
+        sender: message.sender,
+        messageType: message.type,
+        message: message.message,
+      }
+      dispatch(saveMessage(willSaveMessage))
+
+      setMsg('')
+    }
+  }
+
+  const onSendMsg = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    sendMsg()
+  }
+
+  const onInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const message = event.target.value
+
+    setMsg(message)
+  }
+
+  const onInputKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const pressedKeyCode = event.key
+
+    if (pressedKeyCode === 'Enter') {
+      sendMsg()
+      event.preventDefault()
+    }
+  }
+
   return (
     <div ref={ref} className='w-2/3 py-2 mx-auto flex-initial transition-all'>
-      <form className='w-full flex flex-row justify-between items-center'>
-        <InputBase
-          startAdornment={
-            <InputAdornment position='start'>
-              <Tooltip title='Thêm biểu tượng'>
-                <Button
-                  variant='contained'
-                  sx={{
-                    maxWidth: '2.5rem',
-                    maxHeight: '2.5rem',
-                    minWidth: '2.5rem',
-                    minHeight: '2.5rem',
-                    borderRadius: '50%',
-                    bgcolor: 'transparent',
-                    '&:hover': {
-                      bgcolor: '#eeeee4',
-                    },
-                  }}
-                  disableElevation
-                >
-                  <Mood
-                    sx={{
-                      fill: 'gray',
-                      cursor: 'pointer',
-                    }}
-                  />
-                </Button>
-              </Tooltip>
-            </InputAdornment>
-          }
-          endAdornment={
-            <InputAdornment position='start'>
-              <Tooltip title='Đính kèm'>
-                <Button
-                  variant='contained'
-                  sx={{
-                    maxWidth: '2.5rem',
-                    maxHeight: '2.5rem',
-                    minWidth: '2.5rem',
-                    minHeight: '2.5rem',
-                    borderRadius: '50%',
-                    bgcolor: 'transparent',
-                    '&:hover': {
-                      bgcolor: '#eeeee4',
-                    },
-                  }}
-                  disableElevation
-                >
-                  <AttachFile
-                    sx={{
-                      fill: 'gray',
-                      cursor: 'pointer',
-                    }}
-                  />
-                </Button>
-              </Tooltip>
-            </InputAdornment>
-          }
-          sx={{
-            border: '2px solid transparent',
-            width: '100%',
-            borderRadius: '1rem',
-            bgcolor: 'white',
-            padding: '.8rem 1rem',
-            transition: '.2s ease',
-            '&.Mui-focused': {
-              border: '2px solid #5894f5',
-              bgcolor: 'white',
-            },
-          }}
+      <form
+        ref={formRef}
+        onSubmit={onSendMsg}
+        className='w-full flex flex-row justify-between items-center'
+      >
+        <TextareaAutosize
+          maxRows={4}
+          value={msg}
+          onKeyDown={onInputKeyPress}
           placeholder='Viết tin nhắn nào...'
-          type='text'
+          onChange={onInputChange}
+          className='w-full rounded-2xl bg-white p-3 transition-all border-2 border-transparent outline-none'
         />
         <Button
           type='submit'

@@ -1,31 +1,30 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import {
-  API_ADD_NEW_CONTACT,
-  API_LOAD_CONTACTS,
+  API_LOAD_MSG_OF_CONVER,
+  API_SAVE_MSG,
 } from '../../constants/APIConstant'
 import {
-  CONTACT_ADD_NEW_CONTACT,
-  CONTACT_LOAD_CONTACTS,
+  CONVERSATION_DETAIL_LOAD_MESSAGES,
+  CONVERSATION_DETAIL_SAVE_MESSAGE,
 } from '../../constants/ReduxConstant'
-import {
-  AddNewContactPayloadType,
-  LoadContactsReturnType,
-} from '../types/ContactTypes'
 import { ErrorType } from '../types/ErrorType'
+import { MessageType, SaveMessagePayload } from '../types/MessageTypes'
 
-export const loadContacts = createAsyncThunk<
-  LoadContactsReturnType[],
+export const loadMessageOfConversation = createAsyncThunk<
+  MessageType[],
   number,
   { rejectValue: ErrorType }
->(CONTACT_LOAD_CONTACTS, async (payload, thunkApi) => {
+>(CONVERSATION_DETAIL_LOAD_MESSAGES, async (payload, thunkApi) => {
   try {
-    const response = await axios.get(API_LOAD_CONTACTS + payload)
+    console.log(payload)
+    const response = await axios.get(API_LOAD_MSG_OF_CONVER + payload)
 
+    // console.log(response.data)
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const err: ErrorType = {
+      const err = {
         message: error.message,
       }
 
@@ -34,19 +33,18 @@ export const loadContacts = createAsyncThunk<
   }
 })
 
-export const addNewContact = createAsyncThunk<
-  AddNewContactPayloadType,
-  any,
+export const saveMessage = createAsyncThunk<
+  MessageType,
+  SaveMessagePayload,
   { rejectValue: ErrorType }
->(CONTACT_ADD_NEW_CONTACT, async (payload, thunkApi) => {
+>(CONVERSATION_DETAIL_SAVE_MESSAGE, async (payload, thunkApi) => {
   try {
-    const response = await axios.post(API_ADD_NEW_CONTACT, payload)
+    const response = await axios.post(API_SAVE_MSG, payload)
 
-    console.log(response.data)
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const err: ErrorType = {
+      const err = {
         message: error.message,
       }
 

@@ -1,20 +1,22 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { LoadingButton } from '@mui/lab'
 import { Modal, Stack, TextField } from '@mui/material'
 import { TouchApp } from '@mui/icons-material'
 import { Formik } from 'formik'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 import { RegisterFormValidateShape } from './RegisterFormValidateShape'
-import { useAppDispatch } from '../../redux_hooks'
 import { useNavigate } from 'react-router-dom'
 import { FirebaseAuthService } from '../../services/FirebaseAuth'
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
+import ConfirmPhone from './ConfirmPhone'
 import {
   RegistrationPendingAccount,
   RegistrationPendingType,
 } from '../../utilities/registration/RegistrationPending'
 import { DEFAULT_PREFIX_PHONE_NUMBER } from '../../config/FirebaseConfig'
-import ConfirmPhone from '../../pages/ConfirmPhone'
+import axios from 'axios'
+import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
+import { randomBgrColorForAvatar } from '../../utilities/user_avatar/creatingAvatarProps'
 
 interface IRegisterForm {
   name: string
@@ -33,42 +35,64 @@ const initialValues: IRegisterForm = {
 const RegisterForm = () => {
   const [isShowModal, setShowModal] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const firebaseAuth = FirebaseAuthService.getFirebaseAuth()
+  const [phoneErr, setPhoneErr] = useState('')
 
   const hideModal = () => {
     setShowModal(false)
     setIsProcessing(false)
   }
 
-  const onFormSubmit = async (values: IRegisterForm) => {
-    setIsProcessing(true)
+  const onPhoneFieldBlur = async (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>,
+    values: IRegisterForm
+  ) => {
+    if (event.target.value.length === 10) {
+      try {
+        await axios.get(API_CHECK_EXISTING_PHONE + values.phone)
 
-    const convertedRegisterPayload: RegistrationPendingType = {
-      phone: values.phone,
-      password: values.password,
-      fullName: values.name,
+        setPhoneErr('')
+      } catch (error) {
+        setPhoneErr(
+          'Đã có người đăng ký Tindi bằng số điện thoại này. Bạn hãy dùng một số khác nhé!'
+        )
+      }
+    } else {
+      setPhoneErr('')
     }
+  }
 
-    RegistrationPendingAccount.setPendingRegisterAccount(
-      convertedRegisterPayload
-    )
+  const onFormSubmit = async (values: IRegisterForm) => {
+    if (!phoneErr) {
+      setIsProcessing(true)
 
-    setShowModal(true)
+      const convertedRegisterPayload: RegistrationPendingType = {
+        phone: values.phone,
+        password: values.password,
+        fullName: values.name,
+        avatar: randomBgrColorForAvatar(),
+      }
 
-    signInWithPhoneNumber(
-      firebaseAuth,
-      DEFAULT_PREFIX_PHONE_NUMBER +
-        RegistrationPendingAccount.getPendingRegisterAccount()?.phone,
-      FirebaseAuthService.getRecaptchaVerifier()
-    )
-      .then((confirmationResult) => {
-        FirebaseAuthService.setConfirmationResult(confirmationResult)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+      RegistrationPendingAccount.setPendingRegisterAccount(
+        convertedRegisterPayload
+      )
+
+      setShowModal(true)
+
+      signInWithPhoneNumber(
+        firebaseAuth,
+        DEFAULT_PREFIX_PHONE_NUMBER +
+          RegistrationPendingAccount.getPendingRegisterAccount()?.phone,
+        FirebaseAuthService.getRecaptchaVerifier()
+      )
+        .then((confirmationResult) => {
+          FirebaseAuthService.setConfirmationResult(confirmationResult)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   }
 
   return (
@@ -78,7 +102,7 @@ const RegisterForm = () => {
         onSubmit={onFormSubmit}
         validationSchema={RegisterFormValidateShape}
       >
-        {({ handleSubmit, values, handleChange, errors }) => {
+        {({ handleSubmit, values, handleChange, handleBlur, errors }) => {
           return (
             <form onSubmit={handleSubmit}>
               <div className='flex flex-col justify-start items-center'>
@@ -102,8 +126,16 @@ const RegisterForm = () => {
                     placeholder='VD: 0387546271'
                     onChange={handleChange}
                     value={values.phone}
+                    onBlur={(e) => {
+                      handleBlur(e)
+                      onPhoneFieldBlur(e, values)
+                    }}
                   />
                   <FormErrorDisplay msg={errors.phone} />
+                  <FormErrorDisplay
+                    msg={phoneErr}
+                    sx={{ transform: 'translate(0, -1rem)' }}
+                  />
                   <TextField
                     name='password'
                     type={'password'}
@@ -167,7 +199,9 @@ const RegisterForm = () => {
         }}
       </Formik>
       <Modal open={isShowModal} onClose={hideModal}>
-        <ConfirmPhone navigate={navigate} goBack={hideModal} />
+        <div>
+          <ConfirmPhone navigate={navigate} />
+        </div>
       </Modal>
     </div>
   )

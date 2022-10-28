@@ -3,8 +3,8 @@ import AuthSlice from './redux/slices/AuthSlice'
 import ConversationControlSlice from './redux/slices/ConversationsControlSlice'
 import ControlOverlaysSlice from './redux/slices/ControlOverlaysSlice'
 import CurrentChatNavigationSlice from './redux/slices/CurrentChatNavigationSlice'
-import ContactSlice from './redux/slices/ContactSlice'
 import ConversationDetailSlice from './redux/slices/ConversationDetailSlice'
+import ContactSlice from './redux/slices/ContactSlice'
 
 export const store = configureStore({
   reducer: {

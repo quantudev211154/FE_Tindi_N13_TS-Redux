@@ -5,7 +5,7 @@ import {
   LOCAL_LOGOUT_EVENT_NAME,
   LOCAL_REFRESH_TOKEN_NAME,
 } from '../../constants/AuthConstant'
-import { UserType } from '../../redux/types/UserType'
+import { UserType } from '../../redux/types/UserTypes'
 
 class JWTManager {
   inMemoryToken: string | null

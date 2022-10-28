@@ -8,21 +8,21 @@ import { useAppSelector } from '../../../../../../redux_hooks'
 import LeftChat from './left_chat/LeftChat'
 import RightChat from './right_chat/RightChat'
 import { useAppDispatch } from './../../../../../../redux_hooks'
+import { loadMessageOfConversation } from '../../../../../../redux/thunks/MessageThunks'
+import { ConversationType } from '../../../../../../redux/types/ConversationTypes'
 
 type Props = {
-  id: number
-  title: string
-  avatar: string
+  chat: ConversationType
 }
 
-const Chat = ({ id, title, avatar }: Props) => {
+const Chat = ({ chat }: Props) => {
   const [chatId, setChatId] = useState<number>(-1)
   const dispatch = useAppDispatch()
   const { currentChat } = useAppSelector(conversationsControlState)
   const { changeCurrentChat } = conversationActions
 
   useEffect(() => {
-    setChatId(id)
+    setChatId(chat.id)
   }, [])
 
   return (
@@ -43,10 +43,9 @@ const Chat = ({ id, title, avatar }: Props) => {
       className='bg-slate-200'
       onClick={() => {
         dispatch(changeCurrentChat(chatId))
-        console.log(chatId)
       }}
     >
-      <LeftChat avatar={avatar} title={title} id={chatId} />
+      <LeftChat chat={chat} />
       <RightChat />
     </Button>
   )

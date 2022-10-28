@@ -4,7 +4,8 @@ import { AUTH_SLICE_NAME } from '../../constants/ReduxConstant'
 import { RootState } from '../../redux_store'
 import { JWT } from '../../utilities/jwt/JWT'
 import { checkAuth, login } from '../thunks/AuthThunks'
-import { AuthSliceType, CurrentUserType } from '../types/AuthTypes'
+import { AuthSliceType } from '../types/AuthTypes'
+import { UserType } from '../types/UserTypes'
 
 const initialState: AuthSliceType = {
   isAuthLoading: true,
@@ -18,7 +19,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     reloadCurrentUser: (state, action) => {
-      state.currentUser = action.payload as CurrentUserType
+      state.currentUser = action.payload as UserType
     },
     logout: (state) => {
       JWT.deleteToken()
@@ -31,11 +32,11 @@ const authSlice = createSlice({
       state.isAuth = true
       state.isAuthLoading = false
       state.currentUser = {
-        ...state,
+        ...state.currentUser,
         id: action.payload?.userId,
-        phone: action.payload?.phone as string,
-        fullName: action.payload?.name as string,
-        avatar: action.payload?.avatar as string,
+        phone: action.payload?.phone,
+        fullName: action.payload?.name,
+        avatar: action.payload?.avatar,
       }
       state.loginErrorMsg = null
 
@@ -48,6 +49,7 @@ const authSlice = createSlice({
     })
 
     builder.addCase(login.rejected, (state, action) => {
+      console.log(action.payload?.message)
       state.isAuth = false
       state.currentUser = null
       state.isAuthLoading = false

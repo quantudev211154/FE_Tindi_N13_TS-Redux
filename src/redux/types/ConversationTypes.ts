@@ -1,14 +1,16 @@
-import { UserType } from './UserType'
+import { ParticipantType } from './ParticipantTypes'
+import { UserType } from './UserTypes'
 
 export type ConversationType = {
   id: number
   title: string
   avatar: string
   creator: UserType
-  createdAt: Date
-  updateAt: Date
+  createdAt: string
+  updateAt: string
   status: ConversationStatusEnum
   type: ConversationTypeEnum
+  participantRespones: ParticipantType[]
 }
 
 export type ConversationControlType = {
@@ -31,8 +33,8 @@ export type LoadConversationThunkReturnType = {
   title: string
   avatar: string
   creator: UserType
-  createdAt: Date
-  updateAt: Date
+  createdAt: string
+  updateAt: string
   status: ConversationStatusEnum
   type: ConversationTypeEnum
 }

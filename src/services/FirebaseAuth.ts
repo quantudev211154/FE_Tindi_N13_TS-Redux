@@ -1,6 +1,6 @@
 import { FirebaseApp, initializeApp } from 'firebase/app'
 import { firebaseConfig } from '../config/FirebaseConfig'
-import { Auth, getAuth, RecaptchaVerifier } from 'firebase/auth'
+import { Auth, getAuth } from 'firebase/auth'
 
 class FirebaseAuth {
   firebaseApp: FirebaseApp

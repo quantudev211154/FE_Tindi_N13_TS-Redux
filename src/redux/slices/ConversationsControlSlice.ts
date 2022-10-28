@@ -17,7 +17,7 @@ const conversationsControlSlice = createSlice({
   reducers: {
     changeCurrentChat: (state, action) => {
       const selectedChat = state.conversationList.find(
-        (conversation) => conversation.id === action.payload
+        (conversation) => conversation.id === (action.payload as number)
       )
 
       state.currentChat = selectedChat as ConversationType

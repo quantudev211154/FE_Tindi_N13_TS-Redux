@@ -7,4 +7,4 @@ export const firebaseConfig = {
   appId: '1:348741896931:web:18fcba82eb60222c0393d6',
 }
 
-export const DEFAULT_PREFIX_PHONE_NUMBER = '+555'
+export const DEFAULT_PREFIX_PHONE_NUMBER = '+84'

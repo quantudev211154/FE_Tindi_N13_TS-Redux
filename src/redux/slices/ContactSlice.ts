@@ -11,7 +11,11 @@ const initialState: ContactsSliceType = {
 const contactSlice = createSlice({
   name: CONTACT_SLICE_NAME,
   initialState,
-  reducers: {},
+  reducers: {
+    addNewContactInLocal: (state, action) => {
+      state.contacts?.push(action.payload)
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(loadContacts.fulfilled, (state, action) => {
       state.contacts = action.payload

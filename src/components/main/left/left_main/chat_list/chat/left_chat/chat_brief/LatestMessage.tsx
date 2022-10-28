@@ -1,20 +1,19 @@
 import { useEffect, useState } from 'react'
+import { ConversationType } from '../../../../../../../../redux/types/ConversationTypes'
 import { useAppSelector } from '../../../../../../../../redux_hooks'
 import { conversationsControlState } from './../../../../../../../../redux/slices/ConversationsControlSlice'
 
 type Props = {
-  senderName: string
-  message: string
-  id: number
+  chat: ConversationType
 }
 
-const LatestMessage = ({ senderName, message, id }: Props) => {
+const LatestMessage = ({ chat }: Props) => {
   const [chatId, setChatId] = useState(-1)
   const { currentChat } = useAppSelector(conversationsControlState)
 
   useEffect(() => {
-    setChatId(id)
-  }, [id])
+    setChatId(chat.id)
+  }, [chat])
 
   return (
     <div className='w-full whitespace-nowrap overflow-hidden text-ellipsis break-all'>
@@ -24,9 +23,10 @@ const LatestMessage = ({ senderName, message, id }: Props) => {
         }
         className='mr-1'
       >
-        {senderName + ':'}
+        {/* {senderName + ':'} */}
+        In testing
       </span>
-      <span className='text-slate-600'>{message}</span>
+      <span className='text-slate-600'>In testing</span>
     </div>
   )
 }

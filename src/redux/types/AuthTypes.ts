@@ -1,16 +1,10 @@
 import { AppDispatch } from '../../redux_store'
-
-export type CurrentUserType = {
-  id: number | null
-  fullName: string | null
-  phone: string | null
-  avatar: string | null
-}
+import { UserType } from './UserTypes'
 
 export type AuthSliceType = {
   isAuthLoading: boolean
   isAuth: boolean
-  currentUser: CurrentUserType | null
+  currentUser: UserType | null
   loginErrorMsg: string | null
 }
 
@@ -40,6 +34,7 @@ export type RegisterPayloadType = {
   phone: string
   fullName: string
   password: string
+  avatar: string
 }
 
 export type CheckAuthPayload = {
