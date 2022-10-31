@@ -3,6 +3,10 @@ import { UserType } from './UserTypes'
 
 export enum MessageTypeEnum {
   TEXT = 'TEXT',
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+  AUDIO = 'VIDEO',
+  FILE = 'FILE',
 }
 
 export enum MessageStatusEnum {

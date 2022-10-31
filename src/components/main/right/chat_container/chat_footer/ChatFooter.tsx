@@ -52,7 +52,7 @@ const ChatFooter = () => {
 
       dispatch(addNewMessage(message))
 
-      const targetUser: ParticipantType = currentChat?.participantRespones.find(
+      const targetUser: ParticipantType = currentChat?.participantResponse.find(
         (item) => item.user.id !== (currentUser?.id as number)
       ) as ParticipantType
 

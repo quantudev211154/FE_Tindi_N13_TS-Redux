@@ -3,10 +3,13 @@ import UnderlayerBgr from '../assets/login_illutration_background.jpg'
 import ForgetPwdFooter from '../components/forget_pwd/ForgetPwdFooter'
 import ForgetPwdForm from '../components/forget_pwd/ForgetPwdForm'
 import ForgetPwdHeader from '../components/forget_pwd/ForgetPwdHeader'
+import { FirebaseAuthService } from '../services/FirebaseAuth'
 
 const ForgetPwd = () => {
   useEffect(() => {
     document.title = 'Quên mật khẩu'
+
+    FirebaseAuthService.generateRecaptchatVerifier('recaptchaPopup')
   }, [])
 
   return (
@@ -19,6 +22,7 @@ const ForgetPwd = () => {
         <ForgetPwdForm />
         <ForgetPwdFooter />
       </div>
+      <div id='recaptchaPopup'></div>
     </div>
   )
 }

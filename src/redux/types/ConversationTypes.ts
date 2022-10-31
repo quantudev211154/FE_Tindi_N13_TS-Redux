@@ -10,12 +10,13 @@ export type ConversationType = {
   updateAt: string
   status: ConversationStatusEnum
   type: ConversationTypeEnum
-  participantRespones: ParticipantType[]
+  participantResponse: ParticipantType[]
 }
 
 export type ConversationControlType = {
   currentChat: ConversationType | null
   conversationList: ConversationType[]
+  isLoadingChatList: boolean
 }
 
 export enum ConversationStatusEnum {
@@ -37,4 +38,11 @@ export type LoadConversationThunkReturnType = {
   updateAt: string
   status: ConversationStatusEnum
   type: ConversationTypeEnum
+}
+
+export type AddNewConversationPayloadType = {
+  title: string
+  avatar: string
+  user: UserType
+  usersId: [number, number]
 }

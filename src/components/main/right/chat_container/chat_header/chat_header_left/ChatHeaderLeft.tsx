@@ -11,8 +11,8 @@ const ChatHeaderLeft = (props: Props) => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
 
-  if ((currentChat?.participantRespones as ParticipantType[]).length <= 2) {
-    const targetItem = currentChat?.participantRespones.find(
+  if ((currentChat?.participantResponse as ParticipantType[]).length <= 2) {
+    const targetItem = currentChat?.participantResponse.find(
       (item) => item.user.id !== currentUser?.id
     )
 

@@ -8,11 +8,16 @@ import { loadConversations } from '../redux/thunks/ConversationThunks'
 import { MySocket } from '../services/TindiSocket'
 import { SocketEventEnum } from '../constants/SocketConstant'
 import { conversationDetailActions } from '../redux/slices/ConversationDetailSlice'
+import MessageContextMenu from '../components/main/right/chat_container/chat_main/message_list/message_context_menu/MessageContextMenu'
+import { messageContextmenuActions } from '../redux/slices/MessageContextmenuSlice'
+import MessageContextmenuHandlerResultSnackbar from './../components/snackbar/MessageContextmenuHandlerResultSnackbar'
 
 const Main = () => {
   const { currentUser } = useAppSelector(authState)
   const { addNewMessageToCurrentChat } = conversationDetailActions
   const dispatch = useAppDispatch()
+  const { setCurrentCoordinate } = messageContextmenuActions
+  const safeHeight = (window.innerHeight / 5) * 3
 
   useEffect(() => {
     document.title = `Xin chào - ${
@@ -32,10 +37,26 @@ const Main = () => {
     })
   }, [currentUser])
 
+  const onContextMenu = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    const pageX = event.pageX
+    const pageY = event.pageY
+
+    if (pageY > safeHeight)
+      dispatch(setCurrentCoordinate([event.pageX, event.pageY, true]))
+    else dispatch(setCurrentCoordinate([event.pageX, event.pageY, false]))
+  }
+
   return (
-    <div className='w-full h-[100vh] relative flex flex-row justify-between items-center'>
+    <div
+      className='w-full h-[100vh] relative flex flex-row justify-between items-center'
+      onContextMenu={onContextMenu}
+    >
       <LeftCol />
       <RightCol />
+      <MessageContextMenu />
+      <MessageContextmenuHandlerResultSnackbar />
     </div>
   )
 }

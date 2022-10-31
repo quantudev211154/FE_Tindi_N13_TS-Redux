@@ -8,7 +8,6 @@ import { useAppSelector } from '../../../../../../redux_hooks'
 import LeftChat from './left_chat/LeftChat'
 import RightChat from './right_chat/RightChat'
 import { useAppDispatch } from './../../../../../../redux_hooks'
-import { loadMessageOfConversation } from '../../../../../../redux/thunks/MessageThunks'
 import { ConversationType } from '../../../../../../redux/types/ConversationTypes'
 
 type Props = {
@@ -23,7 +22,7 @@ const Chat = ({ chat }: Props) => {
 
   useEffect(() => {
     setChatId(chat.id)
-  }, [])
+  }, [chat])
 
   return (
     <Button

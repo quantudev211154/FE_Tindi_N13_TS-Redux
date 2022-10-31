@@ -6,6 +6,8 @@ export const AUTH_CHECK_AUTH_THUNK = AUTH_SLICE_NAME + '/checkAuth'
 export const CONVERSATION_SLICE_NAME = 'conversation'
 export const CONVERSATION_LOAD_CONVERS_THUNK =
   CONVERSATION_SLICE_NAME + '/loadConvers'
+export const CONVERSATION_ADD_NEW_CONVER =
+  CONVERSATION_SLICE_NAME + '/addConver'
 
 export const CONTACT_SLICE_NAME = 'contact'
 export const CONTACT_LOAD_CONTACTS = CONTACT_SLICE_NAME + '/loadContacts'
@@ -20,3 +22,5 @@ export const CONVERSATION_DETAIL_SAVE_MESSAGE =
 export const FIREBASE_AUTH_NAME = 'firebaseAuth'
 
 export const SOCKET_SLICE_NAME = 'socket'
+
+export const MESSAGE_CONTEXT_MENU_NAME = 'msgContextMenu'

@@ -11,6 +11,7 @@ export type ContactType = {
 }
 
 export type ContactsSliceType = {
+  isLoadingContacts: boolean
   contacts: ContactType[] | null
 }
 

@@ -1,19 +1,16 @@
-import { useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LoadingButton } from '@mui/lab'
-import { Modal, Stack, TextField } from '@mui/material'
+import { Stack, TextField } from '@mui/material'
 import { TouchApp } from '@mui/icons-material'
 import { Formik } from 'formik'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 import { RegisterFormValidateShape } from './RegisterFormValidateShape'
 import { useNavigate } from 'react-router-dom'
 import { FirebaseAuthService } from '../../services/FirebaseAuth'
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth'
-import ConfirmPhone from './ConfirmPhone'
 import {
   RegistrationPendingAccount,
   RegistrationPendingType,
 } from '../../utilities/registration/RegistrationPending'
-import { DEFAULT_PREFIX_PHONE_NUMBER } from '../../config/FirebaseConfig'
 import axios from 'axios'
 import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
 import { randomBgrColorForAvatar } from '../../utilities/user_avatar/creatingAvatarProps'
@@ -33,16 +30,13 @@ const initialValues: IRegisterForm = {
 }
 
 const RegisterForm = () => {
-  const [isShowModal, setShowModal] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const navigate = useNavigate()
-  const firebaseAuth = FirebaseAuthService.getFirebaseAuth()
   const [phoneErr, setPhoneErr] = useState('')
 
-  const hideModal = () => {
-    setShowModal(false)
-    setIsProcessing(false)
-  }
+  useEffect(() => {
+    FirebaseAuthService.generateRecaptchatVerifier('reptcapchaPopup')
+  }, [])
 
   const onPhoneFieldBlur = async (
     event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement, Element>,
@@ -63,6 +57,10 @@ const RegisterForm = () => {
     }
   }
 
+  const onSuccessSignInWithPhone = () => {
+    navigate('/confirm-phone')
+  }
+
   const onFormSubmit = async (values: IRegisterForm) => {
     if (!phoneErr) {
       setIsProcessing(true)
@@ -78,20 +76,7 @@ const RegisterForm = () => {
         convertedRegisterPayload
       )
 
-      setShowModal(true)
-
-      signInWithPhoneNumber(
-        firebaseAuth,
-        DEFAULT_PREFIX_PHONE_NUMBER +
-          RegistrationPendingAccount.getPendingRegisterAccount()?.phone,
-        FirebaseAuthService.getRecaptchaVerifier()
-      )
-        .then((confirmationResult) => {
-          FirebaseAuthService.setConfirmationResult(confirmationResult)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      FirebaseAuthService.sendFirebaseAuthOTP(onSuccessSignInWithPhone)
     }
   }
 
@@ -171,20 +156,6 @@ const RegisterForm = () => {
                         bgcolor: 'rgb(190,18,60)',
                       },
                     }}
-                    onClick={() => {
-                      FirebaseAuthService.setRecaptchaVerifier(
-                        new RecaptchaVerifier(
-                          'register-button',
-                          {
-                            size: 'invisible',
-                            callback: (response: any) => {
-                              handleSubmit()
-                            },
-                          },
-                          firebaseAuth
-                        )
-                      )
-                    }}
                   >
                     {!isProcessing ? (
                       <span className='ml-2 text-lg'>Đăng kí ngay</span>
@@ -194,15 +165,11 @@ const RegisterForm = () => {
                   </LoadingButton>
                 </Stack>
               </div>
+              <div id='reptcapchaPopup'></div>
             </form>
           )
         }}
       </Formik>
-      <Modal open={isShowModal} onClose={hideModal}>
-        <div>
-          <ConfirmPhone navigate={navigate} />
-        </div>
-      </Modal>
     </div>
   )
 }

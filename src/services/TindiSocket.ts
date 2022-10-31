@@ -6,7 +6,7 @@ import {
 } from '../constants/SocketConstant'
 
 class TindiSocket {
-  socket: Socket | null
+  private socket: Socket | null
 
   constructor() {
     this.socket = null

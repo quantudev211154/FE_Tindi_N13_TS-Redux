@@ -25,11 +25,23 @@ input[type='number'] {
 }
 
 ::-webkit-scrollbar {
-  display: none;
+  width: 5px;
 }
 
-body::-webkit-scrollbar {
-  display: none; /** To hide scrollbar in others browser */
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 20px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .grecaptcha-badge {

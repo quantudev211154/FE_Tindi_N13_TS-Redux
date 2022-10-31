@@ -5,6 +5,7 @@ import Register from './pages/Register'
 import ForgetPwd from './pages/ForgetPwd'
 import NotFound from './pages/NotFound'
 import Main from './pages/Main'
+import ConfirmPhone from './pages/ConfirmPhone'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/confirm-phone' element={<ConfirmPhone />} />
           <Route path='/forget-pwd' element={<ForgetPwd />} />
           <Route
             path=''
@@ -21,7 +23,7 @@ function App() {
                 <Main />
               </ProtectedRoute>
             }
-          />
+          ></Route>
           <Route path='*' element={<NotFound />} />
         </Routes>
       </BrowserRouter>

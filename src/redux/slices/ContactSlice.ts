@@ -5,6 +5,7 @@ import { loadContacts } from '../thunks/ContactThunk'
 import { ContactsSliceType } from '../types/ContactTypes'
 
 const initialState: ContactsSliceType = {
+  isLoadingContacts: false,
   contacts: null,
 }
 
@@ -17,8 +18,12 @@ const contactSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(loadContacts.pending, (state) => {
+      state.isLoadingContacts = true
+    })
     builder.addCase(loadContacts.fulfilled, (state, action) => {
       state.contacts = action.payload
+      state.isLoadingContacts = false
     })
   },
 })

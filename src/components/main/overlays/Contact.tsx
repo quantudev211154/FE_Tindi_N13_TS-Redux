@@ -1,23 +1,32 @@
-import { PersonRemoveAlt1Outlined, Search } from '@mui/icons-material'
-import { Button, InputAdornment, TextField, Tooltip } from '@mui/material'
+import {
+  PersonRemoveAlt1Outlined,
+  Search,
+  SettingsOutlined,
+} from '@mui/icons-material'
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  InputAdornment,
+  TextField,
+  Tooltip,
+} from '@mui/material'
 import { useEffect, useRef } from 'react'
 import { AVATAR_SMALL } from '../../../constants/UserAvatarConstant'
 import { authState } from '../../../redux/slices/AuthSlice'
-import ContactSlice, {
-  contactActions,
-  contactState,
-} from '../../../redux/slices/ContactSlice'
+import { contactState } from '../../../redux/slices/ContactSlice'
 import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
 import { loadContacts } from '../../../redux/thunks/ContactThunk'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
 import UserAvatar from '../../core/UserAvatar'
 import AddContact from './AddContact'
+import ContactMain from './overlay_components/contacts/ContactMain'
 
 const Contact = () => {
   const contactRef = useRef<HTMLDivElement>(null)
   const addContactRef = useRef<HTMLDivElement>(null)
   const { currentUser } = useAppSelector(authState)
-  const { contacts } = useAppSelector(contactState)
+  const { contacts, isLoadingContacts } = useAppSelector(contactState)
   const { toggleContactOverlay } = controlOverlaysActions
   const dispatch = useAppDispatch()
 
@@ -61,7 +70,28 @@ const Contact = () => {
           </div>
         </div>
         <div className='flex-1 px-5 overflow-y-scroll flex flex-col'>
-          {contacts?.length === 0 ? (
+          {isLoadingContacts ? (
+            <Backdrop
+              open={true}
+              sx={{
+                bgcolor: 'transparent',
+                width: '80%',
+                display: 'flex',
+                flexDirection: 'column',
+                margin: 'auto',
+                textAlign: 'center',
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+              }}
+            >
+              <CircularProgress color='info' />
+              <span className='font-medium text-slate-600 mt-5'>
+                Đợi Tindi xíu. <br /> Đang tải danh sách liên hệ...
+              </span>
+            </Backdrop>
+          ) : (
+            <></>
+          )}
+          {!isLoadingContacts && contacts?.length === 0 ? (
             <span className='mt-8 text-lg text-slate-800 font-medium text-center'>
               Bạn chưa có liên hệ nào.
               <br />
@@ -70,47 +100,10 @@ const Contact = () => {
           ) : (
             <></>
           )}
-          {contacts?.map((contact) => (
-            <div
-              key={contact.id}
-              className='p-3 flex justify-between items-center rounded-xl transition-all hover:bg-[#bcd1e3]'
-            >
-              <div className='flex-auto flex justify-start items-center'>
-                <UserAvatar
-                  name={contact.fullName}
-                  avatar={contact.avatar as string}
-                  size={AVATAR_SMALL}
-                />
-                <span className='ml-2 pointer-events-none'>
-                  {contact.fullName}
-                </span>
-              </div>
-              <div className='flex-initial'>
-                <Tooltip title='Huỷ liên hệ'>
-                  <Button
-                    disableElevation
-                    onClick={() => {}}
-                    variant='contained'
-                    sx={{
-                      maxWidth: '2.5rem',
-                      maxHeight: '2.5rem',
-                      minWidth: '2.5rem',
-                      minHeight: '2.5rem',
-                      borderRadius: '50%',
-                      textTransform: 'none',
-                      bgcolor: 'transparent',
-                      mr: 2,
-                      color: '#cc2f54',
-                      fontSize: '0.875rem',
-                      '&:hover': { bgcolor: '#cc2f54', color: 'white' },
-                    }}
-                  >
-                    <PersonRemoveAlt1Outlined />
-                  </Button>
-                </Tooltip>
-              </div>
-            </div>
-          ))}
+          {!isLoadingContacts &&
+            contacts?.map((contact) => (
+              <ContactMain key={contact.id} contact={contact} />
+            ))}
         </div>
         <div className='flex-initial px-5 py-3 flex justify-between items-center'>
           <Button

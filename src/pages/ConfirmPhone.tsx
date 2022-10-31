@@ -1,27 +1,20 @@
 import { Formik } from 'formik'
-import { NavigateFunction } from 'react-router-dom'
-import ConfirmPhoneBgr from '../../assets/confirm-phone-bgr.webp'
+import { useNavigate } from 'react-router-dom'
+import ConfirmPhoneBgr from '../assets/confirm-phone-bgr.webp'
 import * as yup from 'yup'
 import { Alert, AlertTitle, Collapse, Stack, TextField } from '@mui/material'
-import FormErrorDisplay from '../core/FormErrorDisplay'
-import { ArrowBack, Security } from '@mui/icons-material'
-import { FirebaseAuthService } from '../../services/FirebaseAuth'
-import { useState } from 'react'
+import { ArrowBack, RepeatOutlined } from '@mui/icons-material'
+import { useEffect, useState } from 'react'
 import { LoadingButton } from '@mui/lab'
-import { useAppDispatch } from '../../redux_hooks'
-import { login, register } from '../../redux/thunks/AuthThunks'
-import {
-  LoginPayloadType,
-  RegisterPayloadType,
-} from '../../redux/types/AuthTypes'
+import { useAppDispatch } from '../redux_hooks'
+import { FirebaseAuthService } from '../services/FirebaseAuth'
+import { login, register } from '../redux/thunks/AuthThunks'
 import {
   RegistrationPendingAccount,
   RegistrationPendingType,
-} from '../../utilities/registration/RegistrationPending'
-
-interface Props {
-  navigate: NavigateFunction
-}
+} from '../utilities/registration/RegistrationPending'
+import { LoginPayloadType, RegisterPayloadType } from '../redux/types/AuthTypes'
+import FormErrorDisplay from '../components/core/FormErrorDisplay'
 
 interface IConfirmPhone {
   code: string
@@ -31,7 +24,8 @@ const initialValues: IConfirmPhone = {
   code: '',
 }
 
-const ConfirmPhone = ({ navigate }: Props) => {
+const ConfirmPhone = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [isProcessing, setIsProcessing] = useState(false)
   const [collapseProps, setCollapseProps] = useState({
@@ -40,71 +34,99 @@ const ConfirmPhone = ({ navigate }: Props) => {
     title: 'Lỗi rỗi',
     msg: 'Mã code bạn cung cấp không đúng',
   })
+  let [isOTPFieldDisabled, setOTPFieldDisabled] = useState(false)
   let dfTimeToRedirect = 4
   let intervalToDetermineRemainingTime = -1
   let timeoutToRedirect = -1
 
+  useEffect(() => {
+    document.title = 'Xác nhận số điện thoại'
+
+    FirebaseAuthService.generateRecaptchatVerifier('recaptchatPopup')
+  }, [])
+
+  const onConfirmPhoneSuccess = () => {
+    setOTPFieldDisabled(true)
+    setCollapseProps({
+      ...collapseProps,
+      in: true,
+      status: true,
+      title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
+      msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3s nữa.',
+    })
+
+    intervalToDetermineRemainingTime = window.setInterval(() => {
+      setCollapseProps({
+        ...collapseProps,
+        in: true,
+        status: true,
+        title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
+        msg: `Bạn sẽ được chuyển sang màn hình chính sau ${
+          dfTimeToRedirect - 1
+        }s nữa.`,
+      })
+
+      --dfTimeToRedirect
+    }, 1000)
+
+    dispatch(
+      register(
+        RegistrationPendingAccount.getPendingRegisterAccount() as RegisterPayloadType
+      )
+    )
+
+    timeoutToRedirect = window.setTimeout(() => {
+      const preLoginAccount =
+        RegistrationPendingAccount.getPendingRegisterAccount() as RegistrationPendingType
+
+      const data: LoginPayloadType = {
+        phone: preLoginAccount.phone,
+        password: preLoginAccount.password,
+      }
+      dispatch(login(data))
+
+      window.clearTimeout(timeoutToRedirect)
+      window.clearInterval(intervalToDetermineRemainingTime)
+
+      navigate('/')
+    }, 4000)
+  }
+
+  const onConfirmPhoneFailure = () => {
+    setOTPFieldDisabled(false)
+    setCollapseProps({
+      ...collapseProps,
+      in: true,
+      status: false,
+      title: 'Không ổn rồi',
+      msg: 'Mã xác thực mà bạn cung cấp không đúng. Hãy nhập lại.',
+    })
+  }
+
   const onFormSubmit = async (values: IConfirmPhone) => {
-    setIsProcessing(true)
+    FirebaseAuthService.confirmFirebaseAuthOTP(
+      values.code,
+      onConfirmPhoneSuccess,
+      onConfirmPhoneFailure
+    )
+  }
 
-    FirebaseAuthService.getConfirmationResult()
-      .confirm(values.code)
-      .then((result: any) => {
-        setCollapseProps({
-          ...collapseProps,
-          in: true,
-          status: true,
-          title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
-          msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3s nữa.',
-        })
+  const onOTPFieldChange = async (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    values: IConfirmPhone
+  ) => {
+    setCollapseProps({
+      ...collapseProps,
+      in: false,
+    })
 
-        intervalToDetermineRemainingTime = window.setInterval(() => {
-          setCollapseProps({
-            ...collapseProps,
-            in: true,
-            status: true,
-            title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
-            msg: `Bạn sẽ được chuyển sang màn hình chính sau ${
-              dfTimeToRedirect - 1
-            }s nữa.`,
-          })
-
-          --dfTimeToRedirect
-        }, 1000)
-
-        dispatch(
-          register(
-            RegistrationPendingAccount.getPendingRegisterAccount() as RegisterPayloadType
-          )
-        )
-
-        timeoutToRedirect = window.setTimeout(() => {
-          const preLoginAccount =
-            RegistrationPendingAccount.getPendingRegisterAccount() as RegistrationPendingType
-
-          const data: LoginPayloadType = {
-            phone: preLoginAccount.phone,
-            password: preLoginAccount.password,
-          }
-          dispatch(login(data))
-
-          window.clearTimeout(timeoutToRedirect)
-          window.clearInterval(intervalToDetermineRemainingTime)
-
-          navigate('/')
-        }, 4000)
-      })
-      .catch((err: any) => {
-        console.log(err)
-        setIsProcessing(false)
-        setCollapseProps({
-          ...collapseProps,
-          in: true,
-          status: false,
-          title: 'Không ổn rồi',
-          msg: 'Mã xác thực mà bạn cung cấp không đúng. Hãy nhập lại.',
-        })
-      })
+    const customCode: IConfirmPhone = {
+      code: event.target.value,
+    }
+    if (event.target.value.length === 6) {
+      setOTPFieldDisabled(true)
+      onFormSubmit(customCode)
+    }
   }
 
   return (
@@ -137,6 +159,11 @@ const ConfirmPhone = ({ navigate }: Props) => {
                 .string()
                 .required(
                   'Đừng bỏ trống trường này bạn nhé. Không điền là không đăng ký tài khoản được đâu.'
+                )
+                .min(6, 'Mã OTP cần phải có đủ 6 kí tự mới được cơ!')
+                .max(
+                  6,
+                  'Mã OTP chỉ có 6 kí tự thôi. Đừng cố nhập thêm nữa bạn ơi!'
                 ),
             })}
           >
@@ -144,6 +171,7 @@ const ConfirmPhone = ({ navigate }: Props) => {
               <form onSubmit={handleSubmit}>
                 <Stack direction='column' sx={{ width: '100%' }}>
                   <TextField
+                    disabled={isOTPFieldDisabled}
                     name='code'
                     type='text'
                     autoComplete='off'
@@ -151,21 +179,26 @@ const ConfirmPhone = ({ navigate }: Props) => {
                     placeholder='Điền mã xác thực của bạn tại đây'
                     autoFocus
                     onChange={(e) => {
-                      setCollapseProps({
-                        ...collapseProps,
-                        in: false,
-                      })
+                      onOTPFieldChange(e, values)
                       handleChange(e)
                     }}
                     value={values.code}
                   />
                   <FormErrorDisplay msg={errors.code} />
                   <LoadingButton
-                    type='submit'
                     loading={isProcessing}
                     loadingPosition='start'
-                    startIcon={<Security />}
+                    startIcon={<RepeatOutlined />}
                     variant='contained'
+                    onClick={() => {
+                      setIsProcessing(true)
+                      FirebaseAuthService.sendFirebaseAuthOTP()
+
+                      const t = window.setTimeout(() => {
+                        setIsProcessing(false)
+                        window.clearTimeout(t)
+                      }, 3000)
+                    }}
                     sx={{
                       textTransform: 'none',
                       padding: '13px',
@@ -176,11 +209,9 @@ const ConfirmPhone = ({ navigate }: Props) => {
                     }}
                   >
                     {!isProcessing ? (
-                      <span className='ml-2 text-lg'>Xác thực</span>
+                      <span className='ml-2 text-lg'>Gửi lại mã OTP</span>
                     ) : (
-                      <span className='ml-2 text-lg'>
-                        Đang xác thực mã OTP của bạn
-                      </span>
+                      <span className='ml-2 text-lg'>Đang gửi lại mã OTP</span>
                     )}
                   </LoadingButton>
                 </Stack>
@@ -189,8 +220,7 @@ const ConfirmPhone = ({ navigate }: Props) => {
           </Formik>
           <div
             onClick={() => {
-              // goBack()
-              window.location.reload()
+              navigate('/register')
             }}
             className='cursor-pointer mt-10 transition-all flex items-center justify-center border border-dashed border-white px-3 py-2 hover:border-blue-700'
           >
@@ -201,6 +231,7 @@ const ConfirmPhone = ({ navigate }: Props) => {
           </div>
         </div>
       </div>
+      <div id='recaptchatPopup'></div>
       <figure className='w-1/2 h-full'>
         <img
           src={ConfirmPhoneBgr}

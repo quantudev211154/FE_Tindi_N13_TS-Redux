@@ -6,6 +6,7 @@ export const API_GET_REFRESH_TOKEN = HOST + 'auth/refresh_token'
 export const API_CHECK_EXISTING_PHONE = HOST + 'auth/exist?phone='
 
 export const API_LOAD_CONVERS = HOST + 'conversations'
+export const API_ADD_CONVER = HOST + 'conversations'
 
 export const API_LOAD_CONTACTS = HOST + 'users/contacts?userId='
 export const API_ADD_NEW_CONTACT = HOST + 'users/contacts'

@@ -5,6 +5,7 @@ import { ConversationDetailTypes } from '../types/ConversationDetailTypes'
 import { CONVERSATION_DETAIL_NAME } from './../../constants/ReduxConstant'
 
 const initialState: ConversationDetailTypes = {
+  isLoadingMessageList: false,
   messageList: [],
 }
 
@@ -17,8 +18,13 @@ const conversationDetailSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(loadMessageOfConversation.pending, (state) => {
+      state.isLoadingMessageList = true
+    })
+
     builder.addCase(loadMessageOfConversation.fulfilled, (state, action) => {
       state.messageList = action.payload
+      state.isLoadingMessageList = false
     })
   },
 })

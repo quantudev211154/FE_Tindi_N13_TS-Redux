@@ -17,10 +17,8 @@ export const loadMessageOfConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DETAIL_LOAD_MESSAGES, async (payload, thunkApi) => {
   try {
-    console.log(payload)
     const response = await axios.get(API_LOAD_MSG_OF_CONVER + payload)
 
-    // console.log(response.data)
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {

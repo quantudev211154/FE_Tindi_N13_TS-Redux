@@ -1,10 +1,27 @@
 import { Stack } from '@mui/material'
 import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
 import { useAppSelector } from '../../../../../redux_hooks'
+import ChatListSkeleton from '../ChatListSkeleton'
 import Chat from './chat/Chat'
 
 const ChatList = () => {
-  const { conversationList } = useAppSelector(conversationsControlState)
+  const { conversationList, isLoadingChatList } = useAppSelector(
+    conversationsControlState
+  )
+
+  if (isLoadingChatList)
+    return (
+      <div className='w-full flex flex-col'>
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+        <ChatListSkeleton />
+      </div>
+    )
 
   return (
     <Stack direction='column' maxWidth='true' gap={1}>

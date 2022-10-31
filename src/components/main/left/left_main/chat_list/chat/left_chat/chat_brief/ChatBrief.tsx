@@ -18,8 +18,8 @@ const ChatBrief = ({ chat }: Props) => {
     setChatId(chat.id)
   }, [chat])
 
-  if (chat.participantRespones.length <= 2) {
-    const targetUser = chat.participantRespones.find(
+  if (chat.participantResponse.length <= 2) {
+    const targetUser = chat.participantResponse.find(
       (item) => item.user.id !== currentUser?.id
     )
 

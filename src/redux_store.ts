@@ -5,6 +5,7 @@ import ControlOverlaysSlice from './redux/slices/ControlOverlaysSlice'
 import CurrentChatNavigationSlice from './redux/slices/CurrentChatNavigationSlice'
 import ConversationDetailSlice from './redux/slices/ConversationDetailSlice'
 import ContactSlice from './redux/slices/ContactSlice'
+import MessageContextmenuSlice from './redux/slices/MessageContextmenuSlice'
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     controlOverlays: ControlOverlaysSlice,
     contacts: ContactSlice,
     converDetail: ConversationDetailSlice,
+    messageContextMenu: MessageContextmenuSlice,
   },
 })
 
