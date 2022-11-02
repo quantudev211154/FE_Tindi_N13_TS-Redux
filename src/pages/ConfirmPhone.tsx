@@ -55,6 +55,15 @@ const ConfirmPhone = () => {
       msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3s nữa.',
     })
 
+    const preLoginAccount =
+      RegistrationPendingAccount.getPendingRegisterAccount() as RegistrationPendingType
+
+    const data: LoginPayloadType = {
+      phone: preLoginAccount.phone,
+      password: preLoginAccount.password,
+    }
+    dispatch(login(data))
+
     intervalToDetermineRemainingTime = window.setInterval(() => {
       setCollapseProps({
         ...collapseProps,
@@ -76,15 +85,6 @@ const ConfirmPhone = () => {
     )
 
     timeoutToRedirect = window.setTimeout(() => {
-      const preLoginAccount =
-        RegistrationPendingAccount.getPendingRegisterAccount() as RegistrationPendingType
-
-      const data: LoginPayloadType = {
-        phone: preLoginAccount.phone,
-        password: preLoginAccount.password,
-      }
-      dispatch(login(data))
-
       window.clearTimeout(timeoutToRedirect)
       window.clearInterval(intervalToDetermineRemainingTime)
 
@@ -112,8 +112,7 @@ const ConfirmPhone = () => {
   }
 
   const onOTPFieldChange = async (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    values: IConfirmPhone
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setCollapseProps({
       ...collapseProps,
@@ -179,7 +178,7 @@ const ConfirmPhone = () => {
                     placeholder='Điền mã xác thực của bạn tại đây'
                     autoFocus
                     onChange={(e) => {
-                      onOTPFieldChange(e, values)
+                      onOTPFieldChange(e)
                       handleChange(e)
                     }}
                     value={values.code}
@@ -192,7 +191,10 @@ const ConfirmPhone = () => {
                     variant='contained'
                     onClick={() => {
                       setIsProcessing(true)
-                      FirebaseAuthService.sendFirebaseAuthOTP()
+                      FirebaseAuthService.sendFirebaseAuthOTP(
+                        RegistrationPendingAccount.getPendingRegisterAccount()
+                          ?.phone as string
+                      )
 
                       const t = window.setTimeout(() => {
                         setIsProcessing(false)

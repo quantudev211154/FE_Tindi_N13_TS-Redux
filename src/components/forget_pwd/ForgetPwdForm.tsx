@@ -1,70 +1,135 @@
-import { RestartAlt } from '@mui/icons-material'
-import { Alert, Button, Collapse, Stack, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import { RestartAltOutlined } from '@mui/icons-material'
+import { LoadingButton } from '@mui/lab'
+import { Stack, TextField } from '@mui/material'
+import { Formik } from 'formik'
+import * as yup from 'yup'
+import FormErrorDisplay from '../core/FormErrorDisplay'
+import { useEffect, useState } from 'react'
+import { FirebaseAuthService } from '../../services/FirebaseAuth'
+import axios from 'axios'
+import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
+interface IForgetPwd {
+  phone: string
+}
 
-const ForgetPwdForm = () => {
-  const [isError, setIsError] = useState<boolean>(false)
-  const [errorMessage, setErrorMessage] = useState<string>('')
-  const [phone, setPhone] = useState<string>('')
+const initialValuesOfForgetPwd: IForgetPwd = {
+  phone: '',
+}
 
-  const onTextFieldChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+type Props = {
+  openOTPField: Function
+  setCurrentPhone: Function
+}
+
+const ForgetPwdForm = ({ openOTPField, setCurrentPhone }: Props) => {
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [phoneErr, setPhoneErr] = useState('')
+
+  useEffect(() => {
+    FirebaseAuthService.generateRecaptchatVerifier('reptcapchaPopup')
+  }, [])
+
+  const onPhoneFieldEnough10Characters = async (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    values: IForgetPwd
   ) => {
-    let eventTarget = event.target
-    const prevPhone = phone
+    if (event.target.value.length === 10) {
+      try {
+        await axios.get(API_CHECK_EXISTING_PHONE + event.target.value)
 
-    if (
-      Number(eventTarget.value) ||
-      eventTarget.value === '0' ||
-      eventTarget.value === ''
-    ) {
-      if (!eventTarget.value.match('^[0-9]{10}$')) {
-        setErrorMessage('Số điện thoại phải bao gồm 10 kí tự số!')
-        setIsError(true)
-      } else {
-        setErrorMessage('')
-        setIsError(false)
+        setPhoneErr(
+          'Chúng tôi chưa ghi nhận tài khoản Tindi dùng số điện thoại này. Có thể bạn đã nhầm rồi!'
+        )
+      } catch (error) {
+        setPhoneErr('')
       }
-
-      setPhone(eventTarget.value)
     } else {
-      setPhone(prevPhone)
+      setPhoneErr('')
     }
   }
 
-  const onSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const onSubmitForm = (values: IForgetPwd) => {
+    if (!phoneErr) {
+      setIsProcessing(true)
+
+      FirebaseAuthService.sendFirebaseAuthOTP(values.phone)
+
+      setCurrentPhone(values.phone)
+      openOTPField(true)
+
+      const tmpTimeout = window.setTimeout(() => {
+        setIsProcessing(false)
+        window.clearTimeout(tmpTimeout)
+      }, 3000)
+    }
   }
 
   return (
-    <form onSubmit={onSubmitForm}>
-      <Stack direction='column' sx={{ width: '100%' }}>
-        <TextField
-          error={isError}
-          name='phone'
-          type='text'
-          required
-          label='Nhập số điện thoại của bạn'
-          placeholder='Số điện thoại bạn dùng để đăng kí tài khoản'
-          autoFocus
-          onChange={onTextFieldChange}
-          value={phone}
-        />
-        <Collapse in={isError && errorMessage !== ''} sx={{ mb: 3 }}>
-          <Alert severity='error'>{errorMessage}</Alert>
-        </Collapse>
-        <Button
-          type='submit'
-          color='info'
-          variant='contained'
-          startIcon={<RestartAlt />}
-          disabled={isError}
-          sx={{ textTransform: 'none', padding: '13px' }}
-        >
-          <span className='text-lg'>Lấy lại tài khoản</span>
-        </Button>
-      </Stack>
-    </form>
+    <Formik
+      initialValues={initialValuesOfForgetPwd}
+      onSubmit={onSubmitForm}
+      validationSchema={yup.object({
+        phone: yup
+          .string()
+          .required(
+            'Không nhập số điện thoại là không lấy lại tài khoản được đâu'
+          )
+          .matches(
+            /^(0[3|5|7|8|9])+([0-9]{8})$/,
+            'Số điện thoại phải dài đủ 10 kí tự và bắt đầu bằng các đầu số của Việt Nam (03|05|07|08|09)'
+          ),
+      })}
+    >
+      {({ handleSubmit, values, handleChange, errors }) => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <Stack direction='column' sx={{ width: '100%' }}>
+              <TextField
+                name='phone'
+                type='text'
+                required
+                label='Nhập số điện thoại của bạn'
+                placeholder='Số điện thoại bạn đã dùng để đăng kí tài khoản'
+                autoFocus
+                onChange={(e) => {
+                  handleChange(e)
+                  onPhoneFieldEnough10Characters(e, values)
+                }}
+                value={values.phone}
+              />
+              <FormErrorDisplay msg={errors.phone} />
+              <FormErrorDisplay
+                msg={phoneErr}
+                sx={{ transform: 'translate(0, -1rem)' }}
+              />
+              <LoadingButton
+                id='register-button'
+                type='submit'
+                loading={isProcessing}
+                loadingPosition='start'
+                startIcon={<RestartAltOutlined />}
+                variant='contained'
+                sx={{
+                  textTransform: 'none',
+                  padding: '13px',
+                  bgcolor: 'rgb(190,18,90)',
+                  '&:hover': {
+                    bgcolor: 'rgb(190,18,60)',
+                  },
+                }}
+              >
+                {!isProcessing ? (
+                  <span className='ml-2 text-lg'>Nhận mã xác thực</span>
+                ) : (
+                  <span className='ml-2 text-lg'>Đang gửi mã xác thực</span>
+                )}
+              </LoadingButton>
+              <div id='reptcapchaPopup'></div>
+            </Stack>
+          </form>
+        )
+      }}
+    </Formik>
   )
 }
 

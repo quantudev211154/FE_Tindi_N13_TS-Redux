@@ -52,11 +52,14 @@ class FirebaseAuth {
     )
   }
 
-  sendFirebaseAuthOTP = (resolve?: Function, reject?: Function) => {
+  sendFirebaseAuthOTP = (
+    phone: string,
+    resolve?: Function,
+    reject?: Function
+  ) => {
     signInWithPhoneNumber(
       this.firebaseAuth,
-      DEFAULT_PREFIX_PHONE_NUMBER +
-        RegistrationPendingAccount.getPendingRegisterAccount()?.phone,
+      DEFAULT_PREFIX_PHONE_NUMBER + phone,
       this.recaptchaVerifier as RecaptchaVerifier
     )
       .then((confirmationResult: ConfirmationResult) => {

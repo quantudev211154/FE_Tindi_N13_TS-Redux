@@ -76,7 +76,10 @@ const RegisterForm = () => {
         convertedRegisterPayload
       )
 
-      FirebaseAuthService.sendFirebaseAuthOTP(onSuccessSignInWithPhone)
+      FirebaseAuthService.sendFirebaseAuthOTP(
+        RegistrationPendingAccount.getPendingRegisterAccount()?.phone as string,
+        onSuccessSignInWithPhone
+      )
     }
   }
 
