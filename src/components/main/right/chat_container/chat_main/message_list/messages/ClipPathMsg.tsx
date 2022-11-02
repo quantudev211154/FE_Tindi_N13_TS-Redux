@@ -5,7 +5,7 @@ type Props = {
 const ClipPathMsg = ({ fromSelf }: Props) => {
   if (fromSelf)
     return (
-      <div className='absolute height-[1.125rem] -bottom-[0.2rem] -right-[0.562rem]'>
+      <div className='absolute height-[1.125rem] -bottom-[0.195rem] -right-[0.562rem]'>
         <svg width='9' height='20' xmlns='http://www.w3.org/2000/svg'>
           <defs>
             <filter
@@ -48,7 +48,7 @@ const ClipPathMsg = ({ fromSelf }: Props) => {
     )
 
   return (
-    <div className='absolute height-[1.125rem] -bottom-[0.185rem] -left-[0.562rem]'>
+    <div className='absolute height-[1.125rem] -bottom-[0.195rem] -left-[0.562rem]'>
       <svg width='9' height='20' xmlns='http://www.w3.org/2000/svg'>
         <defs>
           <filter

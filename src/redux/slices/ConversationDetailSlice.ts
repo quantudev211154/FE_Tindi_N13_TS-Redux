@@ -16,6 +16,11 @@ const conversationDetailSlice = createSlice({
     addNewMessageToCurrentChat: (state, action) => {
       state.messageList = [...state.messageList, action.payload]
     },
+    revokeMessage: (state, action) => {
+      for (const message of state.messageList) {
+        if (message.id === action.payload) message.delete = true
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadMessageOfConversation.pending, (state) => {

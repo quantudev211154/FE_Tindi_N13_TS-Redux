@@ -35,9 +35,9 @@ const ChatList = () => {
       ) : (
         <></>
       )}
-      {conversationList.map((conversation) => (
-        <Chat key={conversation.id} chat={conversation} />
-      ))}
+      {conversationList.map((conversation) => {
+        return <Chat key={conversation.id} chat={conversation} />
+      })}
     </Stack>
   )
 }

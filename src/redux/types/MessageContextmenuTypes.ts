@@ -9,6 +9,7 @@ export type MessageContextMenuType = {
   currentMessage: MessageType | undefined
   currentPageX: number
   currentPageY: number
-  isOverflowScreentHeight: boolean
+  isOverflowScreenHeight: boolean
+  isOverflowScreenWidth: boolean
   handlerResult: MessageContextItemHandlerResult | undefined
 }

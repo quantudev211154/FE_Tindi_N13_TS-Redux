@@ -9,16 +9,13 @@ import {
   CircularProgress,
   InputAdornment,
   TextField,
-  Tooltip,
 } from '@mui/material'
 import { useEffect, useRef } from 'react'
-import { AVATAR_SMALL } from '../../../constants/UserAvatarConstant'
 import { authState } from '../../../redux/slices/AuthSlice'
 import { contactState } from '../../../redux/slices/ContactSlice'
 import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
 import { loadContacts } from '../../../redux/thunks/ContactThunk'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
-import UserAvatar from '../../core/UserAvatar'
 import AddContact from './AddContact'
 import ContactMain from './overlay_components/contacts/ContactMain'
 
@@ -32,7 +29,7 @@ const Contact = () => {
 
   useEffect(() => {
     dispatch(loadContacts(currentUser?.id as number))
-  }, [currentUser?.id])
+  }, [currentUser])
 
   const showAddContactModal = () => {
     contactRef.current?.classList.add('hidden')

@@ -19,14 +19,13 @@ const MessageContextmenuHandlerResultSnackbar = () => {
           window.clearTimeout(t)
         }, 5000)
       }}
-      autoHideDuration={5000}
+      autoHideDuration={3000}
     >
       <Collapse in={handlerResult !== undefined ? true : false}>
         <Alert
           severity={handlerResult?.status ? 'success' : 'error'}
           sx={{
             width: '100%',
-            // bgcolor: handlerResult?.status ? '#4e9a51' : '#d84646',
           }}
         >
           {handlerResult?.msg}

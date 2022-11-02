@@ -1,23 +1,22 @@
-import {
-  CalendarToday,
-  CalendarTodayOutlined,
-  Close,
-} from '@mui/icons-material'
+import { CalendarTodayOutlined, Close } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import { toggleExpandedPanel } from '../../../../../../redux/slices/CurrentChatNavigationSlice'
-import { useAppDispatch } from '../../../../../../redux_hooks'
-import SearchInput from '../../../../left/left_header/search_input/SearchInput'
+import {
+  currentChatNavigationState,
+  toggleExpandedPanel,
+} from '../../../../../../redux/slices/CurrentChatNavigationSlice'
+import { useAppDispatch, useAppSelector } from '../../../../../../redux_hooks'
 
 type Props = {}
 
 const ExpandedHeader = (props: Props) => {
+  const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
   const dispatch = useAppDispatch()
 
   return (
-    <div className='w-full px-1 py-1 flex-initial flex flex-row justify-between items-center'>
+    <div className='w-[90%] mx-auto flex flex-row justify-between items-center'>
       <Button
         onClick={() => {
-          dispatch(toggleExpandedPanel())
+          dispatch(toggleExpandedPanel(openExpandedPanel ? false : true))
         }}
         type='submit'
         variant='contained'
@@ -45,7 +44,6 @@ const ExpandedHeader = (props: Props) => {
           }}
         />
       </Button>
-      <SearchInput />
       <Button
         type='submit'
         variant='contained'

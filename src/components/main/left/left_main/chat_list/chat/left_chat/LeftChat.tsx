@@ -1,7 +1,12 @@
 import { AVATAR_BASE } from '../../../../../../../constants/UserAvatarConstant'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
-import { ConversationType } from '../../../../../../../redux/types/ConversationTypes'
+import {
+  ConversationType,
+  ConversationTypeEnum,
+} from '../../../../../../../redux/types/ConversationTypes'
+import { UserType } from '../../../../../../../redux/types/UserTypes'
 import { useAppSelector } from '../../../../../../../redux_hooks'
+import { getTeammateInSingleConversation } from '../../../../../../../utilities/conversation/ConversationUtils'
 import UserAvatar from '../../../../../../core/UserAvatar'
 import ChatBrief from './chat_brief/ChatBrief'
 
@@ -12,9 +17,10 @@ type Props = {
 const LeftChat = ({ chat }: Props) => {
   const { currentUser } = useAppSelector(authState)
 
-  if (chat.participantResponse.length <= 2) {
-    const targetUser = chat.participantResponse.find(
-      (user) => user.user.id !== currentUser?.id
+  if (chat.type === ConversationTypeEnum.SINGLE) {
+    const targetUser = getTeammateInSingleConversation(
+      currentUser as UserType,
+      chat as ConversationType
     )
 
     return (

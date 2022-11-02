@@ -1,11 +1,55 @@
 import { Close } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import { useRef } from 'react'
+import axios from 'axios'
+import { useEffect, useRef, useState } from 'react'
+import { API_CHECK_EXISTING_CONTACT } from '../../../../../constants/APIConstant'
+import { authState } from '../../../../../redux/slices/AuthSlice'
+import {
+  contactActions,
+  contactState,
+} from '../../../../../redux/slices/ContactSlice'
+import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
+import { ConversationType } from '../../../../../redux/types/ConversationTypes'
+import { UserType } from '../../../../../redux/types/UserTypes'
+import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
+import { createNewContact } from '../../../../../utilities/contacts/ContactUtils'
+import { getTeammateInSingleConversation } from '../../../../../utilities/conversation/ConversationUtils'
+import { ParticipantType } from '../../../../../redux/types/ParticipantTypes'
 
-type Props = {}
-
-const AddContactBar = (props: Props) => {
+const AddContactBar = () => {
+  const { currentUser } = useAppSelector(authState)
+  const { currentChat } = useAppSelector(conversationsControlState)
+  const { contacts } = useAppSelector(contactState)
+  const { addNewContactInLocal } = contactActions
+  const dispatch = useAppDispatch()
   const ref = useRef<HTMLDivElement>(null)
+  const [targetPaticipant, setTargetPaticipant] =
+    useState<ParticipantType | null>(null)
+
+  useEffect(() => {
+    const findContactPair = async () => {
+      const targetPaticipant = getTeammateInSingleConversation(
+        currentUser as UserType,
+        currentChat as ConversationType
+      )
+
+      setTargetPaticipant(targetPaticipant)
+
+      const formData = new FormData()
+      formData.append('phone', targetPaticipant.user.phone)
+      formData.append('userId', (currentUser as UserType).id.toString())
+
+      try {
+        await axios.post(API_CHECK_EXISTING_CONTACT, formData)
+
+        ref.current!.style.display = 'flex'
+      } catch (error) {
+        ref.current!.style.display = 'none'
+      }
+    }
+
+    findContactPair()
+  }, [currentChat, contacts])
 
   const closeAddContactBar = () => {
     ref.current!.style.display = 'none'
@@ -28,7 +72,15 @@ const AddContactBar = (props: Props) => {
           },
         }}
         disableElevation
-        onClick={closeAddContactBar}
+        onClick={() => {
+          createNewContact(
+            currentUser as UserType,
+            (targetPaticipant as ParticipantType).user as UserType,
+            addNewContactInLocal,
+            dispatch
+          )
+          closeAddContactBar()
+        }}
       >
         <span>Thêm liên hệ mới</span>
       </Button>

@@ -10,13 +10,8 @@ type Props = {
 }
 
 const ChatBrief = ({ chat }: Props) => {
-  const [chatId, setChatId] = useState(-1)
   const { currentChat } = useAppSelector(conversationsControlState)
   const { currentUser } = useAppSelector(authState)
-
-  useEffect(() => {
-    setChatId(chat.id)
-  }, [chat])
 
   if (chat.participantResponse.length <= 2) {
     const targetUser = chat.participantResponse.find(
@@ -27,7 +22,9 @@ const ChatBrief = ({ chat }: Props) => {
       <div className='ml-3 h-full flex flex-col justify-between overflow-hidden text-black text-left'>
         <p
           style={
-            currentChat?.id === chatId ? { color: 'white' } : { color: 'black' }
+            currentChat?.id === chat.id
+              ? { color: 'white' }
+              : { color: 'black' }
           }
           className='text-[15px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
         >
@@ -42,7 +39,7 @@ const ChatBrief = ({ chat }: Props) => {
     <div className='ml-3 h-full flex flex-col justify-between overflow-hidden text-black text-left'>
       <p
         style={
-          currentChat?.id === chatId ? { color: 'white' } : { color: 'black' }
+          currentChat?.id === chat.id ? { color: 'white' } : { color: 'black' }
         }
         className='text-[15px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
       >

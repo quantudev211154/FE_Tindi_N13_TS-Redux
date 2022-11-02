@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { authState } from '../../../../../../../../redux/slices/AuthSlice'
 import { ConversationType } from '../../../../../../../../redux/types/ConversationTypes'
 import { useAppSelector } from '../../../../../../../../redux_hooks'
 import { conversationsControlState } from './../../../../../../../../redux/slices/ConversationsControlSlice'
@@ -8,25 +9,32 @@ type Props = {
 }
 
 const LatestMessage = ({ chat }: Props) => {
-  const [chatId, setChatId] = useState(-1)
+  const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
+  const [senderName, setSenderName] = useState('')
 
   useEffect(() => {
-    setChatId(chat.id)
-  }, [chat])
+    if (chat.messageLatest?.sender) {
+      const latestMsg = chat.messageLatest
+
+      if (latestMsg.sender.id !== currentUser?.id)
+        setSenderName(latestMsg.sender.fullName)
+    }
+  }, [])
 
   return (
     <div className='w-full whitespace-nowrap overflow-hidden text-ellipsis break-all'>
       <span
         style={
-          currentChat?.id === chatId ? { color: 'white' } : { color: 'black' }
+          currentChat?.id === chat.id ? { color: 'white' } : { color: 'black' }
         }
         className='mr-1'
       >
-        {/* {senderName + ':'} */}
-        In testing
+        {senderName}
       </span>
-      <span className='text-slate-600'>In testing</span>
+      <span className='text-slate-600'>
+        {chat.messageLatest ? chat.messageLatest.message : ''}
+      </span>
     </div>
   )
 }

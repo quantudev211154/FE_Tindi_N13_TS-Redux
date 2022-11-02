@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../redux_store'
 import { ChatNavigationType } from '../types/CurrentChatNavigationTypes'
 
@@ -10,8 +10,8 @@ const currentChatNavigationSlice = createSlice({
   name: 'currentChatNavigation',
   initialState,
   reducers: {
-    toggleExpandedPanel: (state) => {
-      state.openExpandedPanel = !state.openExpandedPanel
+    toggleExpandedPanel: (state, action: PayloadAction<boolean>) => {
+      state.openExpandedPanel = action.payload
     },
   },
 })

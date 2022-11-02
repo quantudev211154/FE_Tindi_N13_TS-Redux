@@ -6,6 +6,7 @@ interface Props {
 
 const ResizeHandle = ({ handleResize }: Props) => {
   const onDrag = (event: React.DragEvent<HTMLDivElement>) => {
+    event.dataTransfer.setData('Text', event.currentTarget.id)
     const selfXCor = event.pageX
 
     handleResize(selfXCor)
@@ -13,6 +14,7 @@ const ResizeHandle = ({ handleResize }: Props) => {
 
   return (
     <div
+      id='resizer'
       onDrag={onDrag}
       draggable={true}
       className='absolute divider top-0 -right-[2px] h-full w-[2px] opacity-0 flex-initial cursor-e-resize transition-all'

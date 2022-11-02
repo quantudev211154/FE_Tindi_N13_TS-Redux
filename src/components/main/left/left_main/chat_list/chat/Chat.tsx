@@ -1,5 +1,4 @@
 import { Button } from '@mui/material'
-import { useEffect, useState } from 'react'
 import {
   conversationActions,
   conversationsControlState,
@@ -15,14 +14,9 @@ type Props = {
 }
 
 const Chat = ({ chat }: Props) => {
-  const [chatId, setChatId] = useState<number>(-1)
   const dispatch = useAppDispatch()
   const { currentChat } = useAppSelector(conversationsControlState)
   const { changeCurrentChat } = conversationActions
-
-  useEffect(() => {
-    setChatId(chat.id)
-  }, [chat])
 
   return (
     <Button
@@ -31,17 +25,17 @@ const Chat = ({ chat }: Props) => {
         textTransform: 'none',
         padding: '0.2rem 0.5rem',
         borderRadius: '1rem',
-        backgroundColor: currentChat?.id !== chatId ? 'white' : '#3390ec',
+        backgroundColor: currentChat?.id !== chat.id ? 'white' : '#3390ec',
         textAlign: 'none',
-        transition: '0.2s ease',
+        transition: 'none',
         '&:hover': {
-          backgroundColor: currentChat?.id !== chatId ? '#f2f0f0' : '#3390ec',
+          backgroundColor: currentChat?.id !== chat.id ? '#f2f0f0' : '#3390ec',
         },
       }}
       disableElevation
       className='bg-slate-200'
       onClick={() => {
-        dispatch(changeCurrentChat(chatId))
+        dispatch(changeCurrentChat(chat))
       }}
     >
       <LeftChat chat={chat} />

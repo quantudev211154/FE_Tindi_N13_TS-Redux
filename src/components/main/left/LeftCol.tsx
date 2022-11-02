@@ -16,7 +16,7 @@ const LeftCol = () => {
   return (
     <div
       ref={ref}
-      className='relative border-r-[1px] border-slate-300 w-1/3 left-col flex flex-col justify-start h-full'
+      className='relative border-r-[1px] border-slate-300 w-1/3 left-col flex-initial flex flex-col justify-start h-full'
     >
       <LeftHeader />
       <LeftMain />

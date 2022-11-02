@@ -11,13 +11,13 @@ import { conversationDetailActions } from '../redux/slices/ConversationDetailSli
 import MessageContextMenu from '../components/main/right/chat_container/chat_main/message_list/message_context_menu/MessageContextMenu'
 import { messageContextmenuActions } from '../redux/slices/MessageContextmenuSlice'
 import MessageContextmenuHandlerResultSnackbar from './../components/snackbar/MessageContextmenuHandlerResultSnackbar'
+import { calContextMenuPos } from '../utilities/context_menu/ContextMenu'
 
 const Main = () => {
   const { currentUser } = useAppSelector(authState)
   const { addNewMessageToCurrentChat } = conversationDetailActions
   const dispatch = useAppDispatch()
   const { setCurrentCoordinate } = messageContextmenuActions
-  const safeHeight = (window.innerHeight / 5) * 3
 
   useEffect(() => {
     document.title = `Xin chào - ${
@@ -43,9 +43,7 @@ const Main = () => {
     const pageX = event.pageX
     const pageY = event.pageY
 
-    if (pageY > safeHeight)
-      dispatch(setCurrentCoordinate([event.pageX, event.pageY, true]))
-    else dispatch(setCurrentCoordinate([event.pageX, event.pageY, false]))
+    calContextMenuPos(pageX, pageY, setCurrentCoordinate, dispatch)
   }
 
   return (

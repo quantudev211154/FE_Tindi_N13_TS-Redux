@@ -1,9 +1,7 @@
 import AdvancedAction from './advanced_action/AdvancedAction'
 import SearchMsg from './search_message/SearchMsg'
 
-type Props = {}
-
-const ChatHeaderRight = (props: Props) => {
+const ChatHeaderRight = () => {
   return (
     <div className='flex flex-row justify-end items-center'>
       <SearchMsg />

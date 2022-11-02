@@ -19,33 +19,30 @@ const conversationsControlSlice = createSlice({
   name: 'chatsControl',
   initialState,
   reducers: {
-    changeCurrentChat: (
-      state,
-      action: PayloadAction<number | ConversationType>
-    ) => {
-      if (typeof action.payload === 'number') {
-        const selectedChat = state.conversationList.find(
-          (conversation) => conversation.id === (action.payload as number)
-        )
-
-        state.currentChat = selectedChat as ConversationType
-      } else {
-        state.currentChat = action.payload
-      }
+    changeCurrentChat: (state, action: PayloadAction<ConversationType>) => {
+      state.currentChat = action.payload
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loadConversations.pending, (state, action) => {
+    builder.addCase(loadConversations.pending, (state) => {
       state.isLoadingChatList = true
     })
-    builder.addCase(loadConversations.fulfilled, (state, action) => {
-      state.conversationList = action.payload
-      state.isLoadingChatList = false
+    builder.addCase(
+      loadConversations.fulfilled,
+      (state, action: PayloadAction<ConversationType[]>) => {
+        state.conversationList = action.payload
+        state.isLoadingChatList = false
+      }
+    )
+    builder.addCase(addNewConversation.pending, (state) => {
+      state.isLoadingChatList = true
     })
     builder.addCase(addNewConversation.fulfilled, (state, action) => {
       state.conversationList.unshift(action.payload)
 
       state.currentChat = state.conversationList[0]
+
+      state.isLoadingChatList = false
     })
   },
 })

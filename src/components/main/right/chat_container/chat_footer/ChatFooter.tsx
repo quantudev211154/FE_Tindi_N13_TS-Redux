@@ -21,7 +21,6 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
 import { MySocket } from '../../../../../services/TindiSocket'
 
 const ChatFooter = () => {
-  const ref = useRef<HTMLDivElement>(null)
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
@@ -30,12 +29,6 @@ const ChatFooter = () => {
   const dispatch = useAppDispatch()
   const [msg, setMsg] = useState('')
   const formRef = useRef<HTMLFormElement>(null)
-
-  useEffect(() => {
-    openExpandedPanel
-      ? (ref.current!.style.width = '80%')
-      : (ref.current!.style.width = '66.666667%')
-  }, [openExpandedPanel])
 
   const sendMsg = () => {
     if (msg !== '') {
@@ -98,48 +91,50 @@ const ChatFooter = () => {
   }
 
   return (
-    <div ref={ref} className='w-2/3 py-2 mx-auto flex-initial transition-all'>
-      <form
-        ref={formRef}
-        onSubmit={onSendMsg}
-        className='w-full flex flex-row justify-between items-center'
-      >
-        <TextareaAutosize
-          maxRows={4}
-          value={msg}
-          onKeyDown={onInputKeyPress}
-          placeholder='Viết tin nhắn nào...'
-          onChange={onInputChange}
-          className='w-full rounded-2xl bg-white p-3 transition-all border-2 border-transparent outline-none'
-        />
-        <Button
-          type='submit'
-          variant='contained'
-          sx={{
-            maxWidth: '3.5rem',
-            maxHeight: '3.5rem',
-            minWidth: '3.5rem',
-            minHeight: '3.5rem',
-            borderRadius: '50%',
-            ml: 1,
-            bgcolor: 'white',
-            '&:hover': {
-              bgcolor: '#318eeb',
-              '& svg': {
-                fill: 'white',
-              },
-            },
-          }}
-          disableElevation
+    <div className='w-full py-2 mx-auto flex-initial transition-all'>
+      <div className='w-2/3 mx-auto'>
+        <form
+          ref={formRef}
+          onSubmit={onSendMsg}
+          className='w-full flex flex-row justify-between items-center'
         >
-          <Send
-            sx={{
-              fill: 'gray',
-              cursor: 'pointer',
-            }}
+          <TextareaAutosize
+            maxRows={4}
+            value={msg}
+            onKeyDown={onInputKeyPress}
+            placeholder='Viết tin nhắn nào...'
+            onChange={onInputChange}
+            className='w-full rounded-2xl bg-white p-3 transition-all border-2 border-transparent outline-none'
           />
-        </Button>
-      </form>
+          <Button
+            type='submit'
+            variant='contained'
+            sx={{
+              maxWidth: '3.5rem',
+              maxHeight: '3.5rem',
+              minWidth: '3.5rem',
+              minHeight: '3.5rem',
+              borderRadius: '50%',
+              ml: 1,
+              bgcolor: 'white',
+              '&:hover': {
+                bgcolor: '#318eeb',
+                '& svg': {
+                  fill: 'white',
+                },
+              },
+            }}
+            disableElevation
+          >
+            <Send
+              sx={{
+                fill: 'gray',
+                cursor: 'pointer',
+              }}
+            />
+          </Button>
+        </form>
+      </div>
     </div>
   )
 }

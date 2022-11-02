@@ -1,7 +1,12 @@
 import { authState } from '../../../../../../redux/slices/AuthSlice'
 import { conversationsControlState } from '../../../../../../redux/slices/ConversationsControlSlice'
-import { ParticipantType } from '../../../../../../redux/types/ParticipantTypes'
+import {
+  ConversationType,
+  ConversationTypeEnum,
+} from '../../../../../../redux/types/ConversationTypes'
+import { UserType } from '../../../../../../redux/types/UserTypes'
 import { useAppSelector } from '../../../../../../redux_hooks'
+import { getTeammateInSingleConversation } from '../../../../../../utilities/conversation/ConversationUtils'
 import UserAvatar from '../../../../../core/UserAvatar'
 import { AVATAR_SMALL } from './../../../../../../constants/UserAvatarConstant'
 
@@ -11,9 +16,10 @@ const ChatHeaderLeft = (props: Props) => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
 
-  if ((currentChat?.participantResponse as ParticipantType[]).length <= 2) {
-    const targetItem = currentChat?.participantResponse.find(
-      (item) => item.user.id !== currentUser?.id
+  if (currentChat?.type === ConversationTypeEnum.SINGLE) {
+    const targetItem = getTeammateInSingleConversation(
+      currentUser as UserType,
+      currentChat as ConversationType
     )
 
     return (

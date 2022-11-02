@@ -11,24 +11,25 @@ import {
 } from '../types/ConversationTypes'
 import { ErrorType } from '../types/ErrorType'
 
-export const loadConversations = createAsyncThunk<ConversationType[], number>(
-  CONVERSATION_LOAD_CONVERS_THUNK,
-  async (payload: number, thunkApi) => {
-    try {
-      const response = await axios.get(`${API_LOAD_CONVERS}/${payload}`)
+export const loadConversations = createAsyncThunk<
+  any,
+  number,
+  { rejectValue: ErrorType }
+>(CONVERSATION_LOAD_CONVERS_THUNK, async (payload: number, thunkApi) => {
+  try {
+    const response = await axios.get(`${API_LOAD_CONVERS}/${payload}`)
 
-      return response.data
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const err = {
-          message: error.message,
-        }
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const err = {
+        message: error.message,
+      }
 
-        return thunkApi.rejectWithValue(err)
-      } else return thunkApi.rejectWithValue({ message: 'Lỗi máy chủ' })
-    }
+      return thunkApi.rejectWithValue(err)
+    } else return thunkApi.rejectWithValue({ message: 'Lỗi máy chủ' })
   }
-)
+})
 
 export const addNewConversation = createAsyncThunk<
   ConversationType,

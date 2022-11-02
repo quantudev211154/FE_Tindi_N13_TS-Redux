@@ -11,7 +11,8 @@ const initialState: MessageContextMenuType = {
   currentMessage: undefined,
   currentPageX: 0,
   currentPageY: 0,
-  isOverflowScreentHeight: false,
+  isOverflowScreenHeight: false,
+  isOverflowScreenWidth: false,
   handlerResult: undefined,
 }
 
@@ -27,11 +28,12 @@ const messageContextMenuSlice = createSlice({
     },
     setCurrentCoordinate: (
       state,
-      action: PayloadAction<[number, number, boolean]>
+      action: PayloadAction<[number, number, boolean, boolean]>
     ) => {
       state.currentPageX = action.payload[0]
       state.currentPageY = action.payload[1]
-      state.isOverflowScreentHeight = action.payload[2]
+      state.isOverflowScreenHeight = action.payload[2]
+      state.isOverflowScreenWidth = action.payload[3]
     },
     setHandlerResult: (
       state,

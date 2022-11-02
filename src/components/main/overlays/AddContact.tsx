@@ -17,13 +17,16 @@ import {
   contactActions,
   contactState,
 } from '../../../redux/slices/ContactSlice'
-import { addNewContact } from '../../../redux/thunks/ContactThunk'
+import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
 import {
-  AddNewContactPayloadType,
-  ContactType,
-} from '../../../redux/types/ContactTypes'
+  conversationActions,
+  conversationsControlState,
+} from '../../../redux/slices/ConversationsControlSlice'
+import { ContactType } from '../../../redux/types/ContactTypes'
 import { UserType } from '../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
+import { createNewContact } from '../../../utilities/contacts/ContactUtils'
+import { createNewConversation } from '../../../utilities/conversation/ConversationUtils'
 import FormErrorDisplay from '../../core/FormErrorDisplay'
 import UserAvatar from '../../core/UserAvatar'
 
@@ -41,11 +44,13 @@ const initialValues: INewContactType = {
 }
 
 const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
-  const onSubmit = async (values: INewContactType) => {}
   const { currentUser } = useAppSelector(authState)
   const { contacts } = useAppSelector(contactState)
+  const { conversationList } = useAppSelector(conversationsControlState)
   const dispatch = useAppDispatch()
+  const { toggleContactOverlay } = controlOverlaysActions
   const { addNewContactInLocal } = contactActions
+  const { changeCurrentChat } = conversationActions
   const [result, setResult] = useState<UserType | null>(null)
   const [isExistingContact, setIsExistingContact] = useState(false)
 
@@ -87,7 +92,7 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
         <div className='flex-auto overflow-y-scroll'>
           <Formik
             initialValues={initialValues}
-            onSubmit={onSubmit}
+            onSubmit={() => {}}
             validationSchema={yup.object({
               phone: yup
                 .string()
@@ -130,7 +135,19 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
                   <FormErrorDisplay msg={errors.phone} />
                 </Stack>
                 {result ? (
-                  <div className='flex justify-start items-center rounded-xl p-3 bg-gray-300'>
+                  <div
+                    className='cursor-pointer flex justify-start items-center rounded-xl p-3 bg-gray-300'
+                    onClick={() => {
+                      createNewConversation(
+                        currentUser as UserType,
+                        result as ContactType,
+                        conversationList,
+                        dispatch,
+                        changeCurrentChat,
+                        toggleContactOverlay
+                      )
+                    }}
+                  >
                     <div className='flex justify-start items-center flex-auto'>
                       <UserAvatar
                         avatar={result.avatar}
@@ -151,16 +168,12 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
                           <Button
                             disableElevation
                             onClick={() => {
-                              dispatch(addNewContactInLocal(result))
-
-                              const payload: AddNewContactPayloadType = {
-                                fullName: result.fullName,
-                                isBlocked: false,
-                                phone: result.phone,
-                                createdAt: new Date().toISOString(),
-                                user: currentUser as UserType,
-                              }
-                              dispatch(addNewContact(payload))
+                              createNewContact(
+                                currentUser as UserType,
+                                result as UserType,
+                                addNewContactInLocal,
+                                dispatch
+                              )
 
                               setResult(null)
                               values.phone = ''

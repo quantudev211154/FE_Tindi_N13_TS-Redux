@@ -1,5 +1,9 @@
 import { useEffect } from 'react'
 import { conversationsControlState } from '../../../../redux/slices/ConversationsControlSlice'
+import {
+  currentChatNavigationState,
+  toggleExpandedPanel,
+} from '../../../../redux/slices/CurrentChatNavigationSlice'
 import { loadMessageOfConversation } from '../../../../redux/thunks/MessageThunks'
 import { useAppDispatch, useAppSelector } from '../../../../redux_hooks'
 import AddContactBar from './add_contact_bar/AddContactBar'
@@ -9,22 +13,34 @@ import ChatMain from './chat_main/ChatMain'
 import SearchExpanded from './expanded_search/SearchExpanded'
 
 const ChatContainer = () => {
+  const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
+    dispatch(toggleExpandedPanel(false))
     dispatch(loadMessageOfConversation(currentChat?.id as number))
   }, [currentChat])
 
   return (
-    <div className='w-full h-full z-40 flex flex-row overflow-hidden transition-all'>
-      <div className='w-full h-full flex flex-col justify-between items-start transition-all'>
+    <div className='w-full h-full z-40 flex overflow-hidden justify-between transition-all'>
+      <div
+        style={{ width: openExpandedPanel ? '70%' : '100%' }}
+        className='h-full flex flex-col transition-all'
+      >
         <ChatHeader />
         <AddContactBar />
         <ChatMain />
         <ChatFooter />
       </div>
-      <SearchExpanded />
+      <div
+        style={{
+          width: openExpandedPanel ? '30%' : '0',
+          transition: '.2s ease',
+        }}
+      >
+        <SearchExpanded />
+      </div>
     </div>
   )
 }

@@ -1,15 +1,20 @@
 import { Search } from '@mui/icons-material'
 import { Button, Tooltip } from '@mui/material'
-import { toggleExpandedPanel } from '../../../../../../../redux/slices/CurrentChatNavigationSlice'
-import { useAppDispatch } from '../../../../../../../redux_hooks'
+import {
+  currentChatNavigationState,
+  toggleExpandedPanel,
+} from '../../../../../../../redux/slices/CurrentChatNavigationSlice'
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../redux_hooks'
 
-type Props = {}
-
-const SearchMsg = (props: Props) => {
+const SearchMsg = () => {
+  const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
   const dispatch = useAppDispatch()
 
   const onOpenExpandedPanel = () => {
-    dispatch(toggleExpandedPanel())
+    dispatch(toggleExpandedPanel(openExpandedPanel ? false : true))
   }
 
   return (

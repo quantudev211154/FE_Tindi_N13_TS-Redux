@@ -1,3 +1,4 @@
+import { MessageType } from './MessageTypes'
 import { ParticipantType } from './ParticipantTypes'
 import { UserType } from './UserTypes'
 
@@ -11,6 +12,7 @@ export type ConversationType = {
   status: ConversationStatusEnum
   type: ConversationTypeEnum
   participantResponse: ParticipantType[]
+  messageLatest: MessageType | null
 }
 
 export type ConversationControlType = {
