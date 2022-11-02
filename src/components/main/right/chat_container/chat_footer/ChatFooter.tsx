@@ -1,12 +1,12 @@
-import { AttachFile, Mood, Send } from '@mui/icons-material'
-import { Button, TextareaAutosize } from '@mui/material'
+import { AttachFile, Mood, PropaneSharp, Send } from '@mui/icons-material'
+import { Button, Fab, TextareaAutosize } from '@mui/material'
 import { nanoid } from '@reduxjs/toolkit'
-import { useEffect, useRef, useState } from 'react'
+import { EmojiClickData } from 'emoji-picker-react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { SendMessageWithSocketPayload } from '../../../../../constants/SocketConstant'
 import { authState } from '../../../../../redux/slices/AuthSlice'
 import { conversationDetailActions } from '../../../../../redux/slices/ConversationDetailSlice'
 import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
-import { currentChatNavigationState } from '../../../../../redux/slices/CurrentChatNavigationSlice'
 import { saveMessage } from '../../../../../redux/thunks/MessageThunks'
 import { ConversationType } from '../../../../../redux/types/ConversationTypes'
 import {
@@ -15,6 +15,7 @@ import {
   MessageTypeEnum,
   SaveMessagePayload,
 } from '../../../../../redux/types/MessageTypes'
+import EmojiPicker from 'emoji-picker-react'
 import { ParticipantType } from '../../../../../redux/types/ParticipantTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
@@ -23,12 +24,12 @@ import { MySocket } from '../../../../../services/TindiSocket'
 const ChatFooter = () => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
-  const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
   const { addNewMessageToCurrentChat: addNewMessage } =
     conversationDetailActions
   const dispatch = useAppDispatch()
   const [msg, setMsg] = useState('')
   const formRef = useRef<HTMLFormElement>(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const sendMsg = () => {
     if (msg !== '') {
@@ -90,14 +91,48 @@ const ChatFooter = () => {
     }
   }
 
+  const onEmojiClick = (emojiObject: EmojiClickData, event: MouseEvent) => {
+    setMsg(msg + emojiObject.emoji)
+  }
+
   return (
     <div className='w-full py-2 mx-auto flex-initial transition-all'>
-      <div className='w-2/3 mx-auto'>
+      <div className='w-2/3 mx-auto relative'>
         <form
           ref={formRef}
           onSubmit={onSendMsg}
           className='w-full flex flex-row justify-between items-center'
         >
+          <Button
+            id='showEmojiPicker'
+            variant='contained'
+            sx={{
+              maxWidth: '2.5rem',
+              maxHeight: '2.5rem',
+              minWidth: '2.5rem',
+              minHeight: '2.5rem',
+              borderRadius: '50%',
+              ml: 1,
+              '&:hover': {
+                bgcolor: '#318eeb',
+                '& svg': {
+                  fill: 'white',
+                },
+              },
+            }}
+            disableElevation
+            onClick={() => {
+              setShowEmojiPicker(!showEmojiPicker)
+            }}
+          >
+            <Mood />
+          </Button>
+          <div className='absolute ttt left-0 bottom-full'>
+            {showEmojiPicker && (
+              <EmojiPicker onEmojiClick={onEmojiClick} lazyLoadEmojis />
+            )}
+          </div>
+
           <TextareaAutosize
             maxRows={4}
             value={msg}

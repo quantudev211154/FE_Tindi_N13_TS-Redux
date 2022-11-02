@@ -1,13 +1,15 @@
-import { DoneAll } from '@mui/icons-material'
+import { DoneAll, DoneOutlined } from '@mui/icons-material'
 import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
-import { MessageType } from '../../../../../../../redux/types/MessageTypes'
+import {
+  MessageStatusEnum,
+  MessageType,
+} from '../../../../../../../redux/types/MessageTypes'
 import { ParticipantType } from '../../../../../../../redux/types/ParticipantTypes'
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
-import UserAvatar from '../../../../../../core/UserAvatar'
 import ClipPathMsg from './ClipPathMsg'
 import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
 import { parseDate } from '../../../../../../../utilities/parseJavaDateToJSDate/ParseDate'
@@ -26,7 +28,6 @@ const Messages = ({ item }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const ref = useRef<HTMLDivElement>(null)
   const [fromSelf, setFromSelf] = useState(false)
-  const [targetUser, setTargetUser] = useState<ParticipantType | undefined>()
   const dispatch = useAppDispatch()
   const { currentMessage } = useAppSelector(messageContextmenuState)
   const { setCurrentMessage } = messageContextmenuActions
@@ -34,14 +35,6 @@ const Messages = ({ item }: Props) => {
 
   useEffect(() => {
     setFromSelf(item.sender.id === currentUser?.id ? true : false)
-
-    if (currentChat?.type !== ConversationTypeEnum.SINGLE) {
-      const tmp = (currentChat?.participantResponse as ParticipantType[]).find(
-        (t) => t.user.id !== currentUser?.id
-      )
-
-      setTargetUser(tmp)
-    } else setTargetUser(undefined)
 
     window.onclick = () => {
       dispatch(setCurrentMessage(undefined))
@@ -71,52 +64,56 @@ const Messages = ({ item }: Props) => {
       className='transition-all w-full'
       onContextMenu={onContextMenu}
     >
-      {fromSelf ? (
-        <div className='relative mx-auto w-2/3 flex flex-row justify-end py-1'>
-          <div className='relative bg-[#eeffde] max-w-[90%] break-words px-2 py-3 pr-14 justify-end rounded-lg rounded-br-none'>
-            <ClipPathMsg fromSelf={fromSelf} />
-            <div className='break-words justify-end rounded-lg rounded-bl-none'>
-              {item.delete ? (
-                <p className='text-[.9rem] italic text-slate-500'>
-                  Đã thu hồi tin nhắn
-                </p>
+      <div
+        style={{
+          justifyContent: fromSelf ? 'flex-end' : 'flex-start',
+        }}
+        className='relative w-2/3 mx-auto flex flex-row py-1'
+      >
+        <ClipPathMsg fromSelf={fromSelf} />
+        <div
+          style={{
+            backgroundColor: fromSelf ? '#eeffde' : 'white',
+            borderRadius: fromSelf
+              ? '.75rem .75rem 0 .75rem'
+              : '.75rem .75rem .75rem 0',
+          }}
+          className='relative w-fit min-w-[20%] max-w-[80%] p-2'
+        >
+          <p
+            style={{
+              wordBreak: 'break-word',
+              whiteSpace: 'pre-wrap',
+              textAlign: 'initial',
+              display: 'flow-root',
+              unicodeBidi: 'plaintext',
+              lineHeight: 1.3125,
+              paddingBottom: item.delete ? 0 : '.85rem',
+              fontStyle: item.delete ? 'italic' : 'normal',
+              color: item.delete ? 'rgb(100,116,139)' : 'black',
+            }}
+            className='relative text-[.95rem]'
+          >
+            {item.delete ? 'Tin nhắn đã thu hồi' : item.message}
+          </p>
+          <span className='absolute bottom-0 right-0'>
+            <span className='text-[.7rem] mr-1 text-slate-500'>
+              {item.delete ? '' : parseDate(item.createdAt)}
+            </span>
+            <span className='text-[.7rem] mr-1 text-green-500'>
+              {!item.delete ? (
+                item.status === MessageStatusEnum.SENT ? (
+                  <DoneAll sx={{ width: '1.2rem', height: '1.2rem' }} />
+                ) : (
+                  <DoneOutlined sx={{ width: '1.2rem', height: '1.2rem' }} />
+                )
               ) : (
-                <p className='text-[.9rem]'>{item.message}</p>
+                <></>
               )}
-
-              <div className='absolute right-1 bottom-[.01rem] text-green-500 flex flex-row items-center'>
-                <p className='text-[0.7rem] mr-1'>
-                  {parseDate(item.createdAt)}
-                </p>
-                <DoneAll sx={{ width: '1.2rem', height: '1.2rem' }} />
-              </div>
-            </div>
-          </div>
+            </span>
+          </span>
         </div>
-      ) : (
-        <div className='relative w-2/3 mx-auto justify-start flex flex-row py-1'>
-          <div className='max-w-[90%] mr-2 flex flex-col justify-end'>
-            {targetUser !== undefined ? (
-              <UserAvatar
-                size='AVATAR_SMALL'
-                name={targetUser.user.fullName}
-                avatar={targetUser.user.avatar}
-              />
-            ) : (
-              <></>
-            )}
-          </div>
-          <div className='relative max-w-[80%]'>
-            <ClipPathMsg fromSelf={fromSelf} />
-            <div className='bg-white break-words p-2 pr-12 justify-end rounded-lg rounded-bl-none'>
-              <p className='text-[.95rem]'>{item.message}</p>
-              <div className='absolute right-1 bottom-[.05rem] text-slate-500'>
-                <p className='text-[0.7rem]'>{parseDate(item.createdAt)}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   )
 }

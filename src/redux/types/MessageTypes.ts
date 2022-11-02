@@ -10,7 +10,9 @@ export enum MessageTypeEnum {
 }
 
 export enum MessageStatusEnum {
+  SENDING = 'SENDING',
   SENT = 'SENT',
+  SEEN = 'SEEN',
 }
 
 export type MessageType = {
