@@ -9,6 +9,7 @@ import { MessageType } from '../types/MessageTypes'
 
 const initialState: MessageContextMenuType = {
   currentMessage: undefined,
+  inBackgroundMessage: undefined,
   currentPageX: 0,
   currentPageY: 0,
   isOverflowScreenHeight: false,
@@ -25,6 +26,9 @@ const messageContextMenuSlice = createSlice({
       action: PayloadAction<MessageType | undefined>
     ) => {
       state.currentMessage = action.payload
+
+      if (action.payload !== undefined)
+        state.inBackgroundMessage = action.payload
     },
     setCurrentCoordinate: (
       state,

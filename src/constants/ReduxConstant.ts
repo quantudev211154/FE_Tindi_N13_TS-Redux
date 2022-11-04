@@ -2,6 +2,7 @@ export const AUTH_SLICE_NAME = 'auth'
 export const AUTH_LOGIN_THUNK = AUTH_SLICE_NAME + '/login'
 export const AUTH_REGISTER_THUNK = AUTH_SLICE_NAME + '/register'
 export const AUTH_CHECK_AUTH_THUNK = AUTH_SLICE_NAME + '/checkAuth'
+export const AUTH_FORGOT_PWD_THUNK = AUTH_SLICE_NAME + '/forgot'
 
 export const CONVERSATION_SLICE_NAME = 'conversation'
 export const CONVERSATION_LOAD_CONVERS_THUNK =
@@ -18,6 +19,10 @@ export const CONVERSATION_DETAIL_LOAD_MESSAGES =
   CONVERSATION_DETAIL_NAME + '/loadMessages'
 export const CONVERSATION_DETAIL_SAVE_MESSAGE =
   CONVERSATION_DETAIL_NAME + '/saveMessage'
+export const CONVERSATION_DETAIL_FORWARD_MESSAGE =
+  CONVERSATION_DETAIL_NAME + '/saveMessage'
+export const CONVERSATION_DETAIL_REVOKE_MESSAGE =
+  CONVERSATION_DETAIL_NAME + '/revokeMessage'
 
 export const FIREBASE_AUTH_NAME = 'firebaseAuth'
 

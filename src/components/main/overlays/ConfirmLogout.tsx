@@ -1,11 +1,13 @@
 import { Button } from '@mui/material'
 import { authActions, authState } from '../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
+import { conversationActions } from '../../../redux/slices/ConversationsControlSlice'
 import { MySocket } from '../../../services/TindiSocket'
 import { useAppDispatch, useAppSelector } from './../../../redux_hooks'
 
 const ConfirmLogout = () => {
   const { currentUser } = useAppSelector(authState)
+  const { resetConversationSlice } = conversationActions
   const { toggleConfirmLogoutOverlay } = controlOverlaysActions
   const { logout } = authActions
   const dispatch = useAppDispatch()
@@ -30,6 +32,7 @@ const ConfirmLogout = () => {
           onClick={() => {
             dispatch(toggleConfirmLogoutOverlay())
             MySocket.killSocketSession(currentUser?.id as number)
+            dispatch(resetConversationSlice())
             dispatch(logout())
           }}
         >

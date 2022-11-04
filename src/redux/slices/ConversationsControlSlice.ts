@@ -22,6 +22,11 @@ const conversationsControlSlice = createSlice({
     changeCurrentChat: (state, action: PayloadAction<ConversationType>) => {
       state.currentChat = action.payload
     },
+    resetConversationSlice: (state) => {
+      state.currentChat = null
+      state.isLoadingChatList = true
+      state.conversationList = []
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadConversations.pending, (state) => {

@@ -1,7 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../redux_store'
-import { loadMessageOfConversation } from '../thunks/MessageThunks'
+import { loadMessageOfConversation, saveMessage } from '../thunks/MessageThunks'
 import { ConversationDetailTypes } from '../types/ConversationDetailTypes'
+import { MessageType, SaveMessageFullfilled } from '../types/MessageTypes'
 import { CONVERSATION_DETAIL_NAME } from './../../constants/ReduxConstant'
 
 const initialState: ConversationDetailTypes = {
@@ -16,9 +17,19 @@ const conversationDetailSlice = createSlice({
     addNewMessageToCurrentChat: (state, action) => {
       state.messageList = [...state.messageList, action.payload]
     },
-    revokeMessage: (state, action) => {
+    updateMessageBySocketFlag: (state, action: PayloadAction<MessageType>) => {
+      for (let iterator of state.messageList) {
+        if (iterator.socketFlag === action.payload.socketFlag) {
+          iterator.id = action.payload.id
+          iterator.attachmentResponseList =
+            action.payload.attachmentResponseList
+          iterator.isLoading = false
+        }
+      }
+    },
+    revokeMessage: (state, action: PayloadAction<MessageType>) => {
       for (const message of state.messageList) {
-        if (message.id === action.payload) message.delete = true
+        if (message.id === action.payload.id) message.delete = true
       }
     },
   },
@@ -30,6 +41,17 @@ const conversationDetailSlice = createSlice({
     builder.addCase(loadMessageOfConversation.fulfilled, (state, action) => {
       state.messageList = action.payload
       state.isLoadingMessageList = false
+    })
+
+    builder.addCase(saveMessage.fulfilled, (state, action) => {
+      for (let iterator of state.messageList) {
+        if (iterator.socketFlag === action.payload.message.socketFlag) {
+          const latestMsg = action.payload.message
+          iterator.id = latestMsg.id
+          iterator.attachmentResponseList = latestMsg.attachmentResponseList
+          iterator.isLoading = false
+        }
+      }
     })
   },
 })

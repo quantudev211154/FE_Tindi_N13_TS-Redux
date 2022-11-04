@@ -5,7 +5,7 @@ import { Formik } from 'formik'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
-import { login } from '../../redux/thunks/AuthThunks'
+import { forgotPassword, login } from '../../redux/thunks/AuthThunks'
 import { LoginPayloadType } from '../../redux/types/AuthTypes'
 import { useAppDispatch } from '../../redux_hooks'
 import { FirebaseAuthService } from '../../services/FirebaseAuth'
@@ -49,6 +49,8 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
         'Đã xác nhận người dùng. Mật khẩu tạm chính là số điện thoại của bạn!',
       msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3s nữa. Nhớ đổi mật khẩu thật nhanh nhé!',
     })
+
+    dispatch(forgotPassword(phone))
 
     intervalToDetermineRemainingTime = window.setInterval(() => {
       setCollapseProps({

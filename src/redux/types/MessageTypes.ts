@@ -15,6 +15,21 @@ export enum MessageStatusEnum {
   SEEN = 'SEEN',
 }
 
+export enum AttachFileTypeEnum {
+  FILE = 'FILE',
+  IMAGE = 'IMAGE',
+  AUDIO = 'AUDIO',
+}
+
+export type AttachmentType = {
+  id: number
+  thumbnail: string
+  fileUrl: string
+  createdAt: string
+  updateAt: string | null
+  fileName: string
+}
+
 export type MessageType = {
   id: number | string
   conversation: ConversationType
@@ -24,11 +39,17 @@ export type MessageType = {
   createdAt: string
   status: MessageStatusEnum
   delete: boolean
+  attachmentResponseList: AttachmentType[] | null
+  socketFlag?: string
+  isLoading?: boolean
 }
 
 export type SaveMessagePayload = {
-  conversation: ConversationType
-  sender: UserType
-  messageType: MessageTypeEnum
-  message: string
+  formData: FormData
+  socketFlag: string
+  to: UserType
+}
+
+export type SaveMessageFullfilled = {
+  message: MessageType
 }

@@ -5,6 +5,8 @@ import { OverlaysType } from '../types/OverlaysTypes'
 const initialState: OverlaysType = {
   openConfirmLogoutOverlay: false,
   openContactOverlay: false,
+  openForwardMessageOverlay: false,
+  openPreviewFilesInMessage: false,
 }
 
 const controlOverlaysSlice = createSlice({
@@ -16,6 +18,12 @@ const controlOverlaysSlice = createSlice({
     },
     toggleContactOverlay: (state) => {
       state.openContactOverlay = !state.openContactOverlay
+    },
+    toggleForwardMessageOverlay: (state) => {
+      state.openForwardMessageOverlay = !state.openForwardMessageOverlay
+    },
+    togglePreviewFilesInMessage: (state) => {
+      state.openPreviewFilesInMessage = !state.openPreviewFilesInMessage
     },
   },
 })

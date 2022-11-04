@@ -6,7 +6,10 @@ import RightCol from '../components/main/right/RightCol'
 import { useAppDispatch } from './../redux_hooks'
 import { loadConversations } from '../redux/thunks/ConversationThunks'
 import { MySocket } from '../services/TindiSocket'
-import { SocketEventEnum } from '../constants/SocketConstant'
+import {
+  SendMessageWithSocketPayload,
+  SocketEventEnum,
+} from '../constants/SocketConstant'
 import { conversationDetailActions } from '../redux/slices/ConversationDetailSlice'
 import MessageContextMenu from '../components/main/right/chat_container/chat_main/message_list/message_context_menu/MessageContextMenu'
 import { messageContextmenuActions } from '../redux/slices/MessageContextmenuSlice'
@@ -18,6 +21,7 @@ const Main = () => {
   const { addNewMessageToCurrentChat } = conversationDetailActions
   const dispatch = useAppDispatch()
   const { setCurrentCoordinate } = messageContextmenuActions
+  const { revokeMessage, updateMessageBySocketFlag } = conversationDetailActions
 
   useEffect(() => {
     document.title = `Xin chào - ${
@@ -32,9 +36,23 @@ const Main = () => {
       MySocket.killSocketSession(currentUser?.id as number)
     })
 
-    MySocket.getTindiSocket()?.on(SocketEventEnum.RECEIVE_MSG, (data: any) => {
-      dispatch(addNewMessageToCurrentChat(data.message))
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.RECEIVE_MSG,
+      (data: SendMessageWithSocketPayload) => {
+        dispatch(addNewMessageToCurrentChat(data.message))
+      }
+    )
+
+    MySocket.getTindiSocket()?.on(SocketEventEnum.REVOKE_MSG, (data: any) => {
+      dispatch(revokeMessage(data.message))
     })
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_MSG,
+      (data: SendMessageWithSocketPayload) => {
+        dispatch(updateMessageBySocketFlag(data.message))
+      }
+    )
   }, [currentUser])
 
   const onContextMenu = (

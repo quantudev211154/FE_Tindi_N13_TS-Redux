@@ -1,7 +1,12 @@
-import { DoneAll, DoneOutlined } from '@mui/icons-material'
+import {
+  DoneAll,
+  DoneOutlined,
+  InsertDriveFileOutlined,
+} from '@mui/icons-material'
 import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import {
+  AttachFileTypeEnum,
   MessageStatusEnum,
   MessageType,
 } from '../../../../../../../redux/types/MessageTypes'
@@ -17,7 +22,8 @@ import {
   messageContextmenuActions,
   messageContextmenuState,
 } from '../../../../../../../redux/slices/MessageContextmenuSlice'
-import { ConversationTypeEnum } from '../../../../../../../redux/types/ConversationTypes'
+import { getTypeOfAttachment } from '../../../../../../../utilities/message_utils/MessageUtils'
+import { Backdrop, CircularProgress } from '@mui/material'
 
 type Props = {
   item: MessageType
@@ -34,19 +40,22 @@ const Messages = ({ item }: Props) => {
   const messageId = 'msgId#' + item.id
 
   useEffect(() => {
+    dispatch(setCurrentMessage(undefined))
     setFromSelf(item.sender.id === currentUser?.id ? true : false)
+
+    ref.current!.scrollIntoView({ behavior: 'smooth' })
 
     window.onclick = () => {
       dispatch(setCurrentMessage(undefined))
     }
-
-    ref.current!.scrollIntoView({ behavior: 'smooth' })
   }, [item])
 
   useEffect(() => {
-    if (currentMessage?.id === item.id)
+    if (currentMessage?.id === item.id) {
       ref.current!.classList.add('bg-slate-400')
-    else ref.current!.classList.remove('bg-slate-400')
+    } else {
+      ref.current!.classList.remove('bg-slate-400')
+    }
   }, [currentMessage])
 
   const onContextMenu = (
@@ -80,6 +89,51 @@ const Messages = ({ item }: Props) => {
           }}
           className='relative w-fit min-w-[20%] max-w-[80%] p-2'
         >
+          {item.delete ? (
+            <></>
+          ) : (
+            <div className='flex flex-col justify-start'>
+              {item.isLoading ? (
+                <div className='w-full h-20 rounded-md bg-slate-400 flex justify-center items-center'>
+                  <CircularProgress
+                    color='info'
+                    sx={{ width: '1rem', height: '1rem' }}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
+              {item.attachmentResponseList?.map((attachment) => {
+                if (
+                  getTypeOfAttachment(attachment) === AttachFileTypeEnum.IMAGE
+                )
+                  return (
+                    <img
+                      key={attachment.id}
+                      src={attachment.fileUrl}
+                      className='mb-1 rounded-md object-contain'
+                    />
+                  )
+                else {
+                  return (
+                    <div
+                      key={attachment.id}
+                      className='flex justify-start items-center p-3 rounded-md bg-slate-500 mb-1'
+                    >
+                      <span className='text-white'>
+                        <InsertDriveFileOutlined
+                          sx={{ width: '2rem', height: '2rem' }}
+                        />
+                      </span>
+                      <span className='ml-3 text-gray-100'>
+                        {attachment.fileName}
+                      </span>
+                    </div>
+                  )
+                }
+              })}
+            </div>
+          )}
           <p
             style={{
               wordBreak: 'break-word',

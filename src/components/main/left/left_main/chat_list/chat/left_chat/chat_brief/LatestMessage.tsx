@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { authState } from '../../../../../../../../redux/slices/AuthSlice'
 import { ConversationType } from '../../../../../../../../redux/types/ConversationTypes'
+import { MessageTypeEnum } from '../../../../../../../../redux/types/MessageTypes'
 import { useAppSelector } from '../../../../../../../../redux_hooks'
 import { conversationsControlState } from './../../../../../../../../redux/slices/ConversationsControlSlice'
 
@@ -23,17 +24,33 @@ const LatestMessage = ({ chat }: Props) => {
   }, [])
 
   return (
-    <div className='w-full whitespace-nowrap overflow-hidden text-ellipsis break-all'>
+    <div
+      style={
+        currentChat?.id === chat.id ? { color: 'white' } : { color: 'gray' }
+      }
+      className='w-full whitespace-nowrap overflow-hidden text-ellipsis break-all'
+    >
       <span
         style={
-          currentChat?.id === chat.id ? { color: 'white' } : { color: 'black' }
+          currentChat?.id === chat.id ? { color: 'white' } : { color: 'gray' }
         }
         className='mr-1'
       >
         {senderName}
       </span>
-      <span className='text-slate-600'>
-        {chat.messageLatest ? chat.messageLatest.message : ''}
+      <span
+        style={
+          currentChat?.id === chat.id ? { color: 'white' } : { color: 'gray' }
+        }
+        className='text-slate-600'
+      >
+        {chat.messageLatest
+          ? chat.messageLatest.type === MessageTypeEnum.TEXT
+            ? chat.messageLatest.message
+            : chat.messageLatest.type === MessageTypeEnum.IMAGE
+            ? 'Ảnh'
+            : 'File'
+          : ''}
       </span>
     </div>
   )

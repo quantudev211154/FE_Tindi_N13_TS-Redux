@@ -1,7 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { API_LOGIN, API_REGISTER } from '../../constants/APIConstant'
 import {
+  API_FORGOT_PWD,
+  API_LOGIN,
+  API_REGISTER,
+} from '../../constants/APIConstant'
+import {
+  AUTH_FORGOT_PWD_THUNK,
   AUTH_LOGIN_THUNK,
   AUTH_REGISTER_THUNK,
 } from '../../constants/ReduxConstant'
@@ -69,3 +74,23 @@ export const checkAuth = createAsyncThunk(
     return false
   }
 )
+
+export const forgotPassword = createAsyncThunk<
+  boolean,
+  string,
+  { rejectValue: ErrorType }
+>(AUTH_FORGOT_PWD_THUNK, async (payload, thunkApi) => {
+  try {
+    await axios.post(API_FORGOT_PWD + payload)
+
+    return true
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const err: ErrorType = {
+        message: error.message,
+      }
+
+      return thunkApi.rejectWithValue(err)
+    } else return thunkApi.rejectWithValue({ message: 'Lỗi máy chủ' })
+  }
+})

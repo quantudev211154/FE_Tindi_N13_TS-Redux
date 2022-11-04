@@ -2,8 +2,13 @@ import { useAppSelector } from '../../../../../../../../redux_hooks'
 import LatestMessage from './LatestMessage'
 import { useEffect, useState } from 'react'
 import { conversationsControlState } from '../../../../../../../../redux/slices/ConversationsControlSlice'
-import { ConversationType } from '../../../../../../../../redux/types/ConversationTypes'
+import {
+  ConversationType,
+  ConversationTypeEnum,
+} from '../../../../../../../../redux/types/ConversationTypes'
 import { authState } from '../../../../../../../../redux/slices/AuthSlice'
+import { getTeammateInSingleConversation } from '../../../../../../../../utilities/conversation/ConversationUtils'
+import { UserType } from '../../../../../../../../redux/types/UserTypes'
 
 type Props = {
   chat: ConversationType
@@ -13,28 +18,6 @@ const ChatBrief = ({ chat }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const { currentUser } = useAppSelector(authState)
 
-  if (chat.participantResponse.length <= 2) {
-    const targetUser = chat.participantResponse.find(
-      (item) => item.user.id !== currentUser?.id
-    )
-
-    return (
-      <div className='ml-3 h-full flex flex-col justify-between overflow-hidden text-black text-left'>
-        <p
-          style={
-            currentChat?.id === chat.id
-              ? { color: 'white' }
-              : { color: 'black' }
-          }
-          className='text-[15px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
-        >
-          {targetUser?.user.fullName}
-        </p>
-        <LatestMessage chat={chat} />
-      </div>
-    )
-  }
-
   return (
     <div className='ml-3 h-full flex flex-col justify-between overflow-hidden text-black text-left'>
       <p
@@ -43,7 +26,10 @@ const ChatBrief = ({ chat }: Props) => {
         }
         className='text-[15px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
       >
-        {chat.title}
+        {chat.type === ConversationTypeEnum.GROUP
+          ? chat.title
+          : getTeammateInSingleConversation(currentUser as UserType, chat).user
+              .fullName}
       </p>
       <LatestMessage chat={chat} />
     </div>

@@ -18,7 +18,7 @@ const MessageList = () => {
     )
 
   return (
-    <div className='relative w-full mx-auto transition-all'>
+    <div className='msgList relative w-full mx-auto transition-all'>
       {messageList.map((item) => (
         <Messages key={item.id} item={item} />
       ))}

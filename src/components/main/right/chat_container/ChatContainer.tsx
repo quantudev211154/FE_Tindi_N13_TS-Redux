@@ -6,6 +6,7 @@ import {
 } from '../../../../redux/slices/CurrentChatNavigationSlice'
 import { loadMessageOfConversation } from '../../../../redux/thunks/MessageThunks'
 import { useAppDispatch, useAppSelector } from '../../../../redux_hooks'
+import ForwardMessage from '../../overlays/ForwardMessage'
 import AddContactBar from './add_contact_bar/AddContactBar'
 import ChatFooter from './chat_footer/ChatFooter'
 import ChatHeader from './chat_header/ChatHeader'
@@ -40,6 +41,9 @@ const ChatContainer = () => {
         }}
       >
         <SearchExpanded />
+      </div>
+      <div className='overlays'>
+        <ForwardMessage />
       </div>
     </div>
   )
