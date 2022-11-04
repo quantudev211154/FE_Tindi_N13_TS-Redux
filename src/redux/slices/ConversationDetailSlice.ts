@@ -28,8 +28,13 @@ const conversationDetailSlice = createSlice({
       }
     },
     revokeMessage: (state, action: PayloadAction<MessageType>) => {
-      for (const message of state.messageList) {
+      for (let message of state.messageList) {
         if (message.id === action.payload.id) message.delete = true
+      }
+    },
+    deleteMessage: (state, action: PayloadAction<MessageType>) => {
+      for (let iterator of state.messageList) {
+        if (iterator.id === action.payload.id) iterator.delete = true
       }
     },
   },

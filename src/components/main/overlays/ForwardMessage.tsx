@@ -28,6 +28,7 @@ import {
 import { nanoid } from '@reduxjs/toolkit'
 import { showMessageHandlerResultToSnackbar } from '../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
 import axios from 'axios'
+import { API_FORWARD_MSG } from '../../../constants/APIConstant'
 
 const ForwardMessage = () => {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -51,20 +52,33 @@ const ForwardMessage = () => {
     //   delete: false,
     //   id: nanoid(),
     //   message: (inBackgroundMessage as MessageType).message,
-    //   sender: ,
+    //   sender: currentUser as UserType,
     //   status: MessageStatusEnum.SENDING,
     //   type: (inBackgroundMessage as MessageType).type,
     //   attachmentResponseList: (inBackgroundMessage as MessageType).attachmentResponseList
     // }
 
-    const formData = new FormData()
-    formData.append('conversationId', item.id.toString())
-    formData.append('senderId', (currentUser as UserType).id.toString())
-    formData.append(
-      'messageType',
-      (inBackgroundMessage as MessageType).type.toString()
-    )
-    formData.append('message', (inBackgroundMessage as MessageType).message)
+    dispatch(toggleForwardMessageOverlay())
+
+    const payload = {
+      sender: currentUser as UserType,
+      messageType: (inBackgroundMessage as MessageType).type,
+      message: (inBackgroundMessage as MessageType).message,
+      attachments: (inBackgroundMessage as MessageType).attachmentResponseList,
+    }
+
+    console.log(payload.attachments)
+
+    await axios.post(API_FORWARD_MSG + item.id, payload)
+
+    // const formData = new FormData()
+    // formData.append('conversationId', item.id.toString())
+    // formData.append('senderId', (currentUser as UserType).id.toString())
+    // formData.append(
+    //   'messageType',
+    //   (inBackgroundMessage as MessageType).type.toString()
+    // )
+    // formData.append('message', (inBackgroundMessage as MessageType).message)
 
     // if ((inBackgroundMessage as MessageType).attachmentResponseList) {
     //   for (const iterator of (inBackgroundMessage as MessageType)
@@ -80,8 +94,6 @@ const ForwardMessage = () => {
       dispatch,
       setHandlerResult
     )
-
-    dispatch(toggleForwardMessageOverlay())
   }
 
   return (

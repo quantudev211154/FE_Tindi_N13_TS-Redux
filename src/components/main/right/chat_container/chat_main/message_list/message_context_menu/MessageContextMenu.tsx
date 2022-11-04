@@ -34,6 +34,7 @@ import { getTeammateInSingleConversation } from '../../../../../../../utilities/
 import { ConversationType } from '../../../../../../../redux/types/ConversationTypes'
 import { useEffect } from 'react'
 import { SocketEventEnum } from '../../../../../../../constants/SocketConstant'
+import { FirebaseService } from '../../../../../../../services/FirebaseAuth'
 
 const MessageContextMenu = () => {
   const { setHandlerResult } = messageContextmenuActions
@@ -47,7 +48,7 @@ const MessageContextMenu = () => {
     isOverflowScreenWidth,
   } = useAppSelector(messageContextmenuState)
   const dispatch = useAppDispatch()
-  const { revokeMessage } = conversationDetailActions
+  const { revokeMessage, deleteMessage } = conversationDetailActions
   const { toggleForwardMessageOverlay } = controlOverlaysActions
 
   if (currentMessage === undefined) return <></>
@@ -58,6 +59,17 @@ const MessageContextMenu = () => {
     showMessageHandlerResultToSnackbar(
       true,
       'Đã sao chép nội dung vào clipboard',
+      dispatch,
+      setHandlerResult
+    )
+  }
+
+  const deleteChosenMessage = () => {
+    dispatch(deleteMessage(currentMessage))
+
+    showMessageHandlerResultToSnackbar(
+      true,
+      'Đã xoá tin nhắn ở phía bạn',
       dispatch,
       setHandlerResult
     )
@@ -78,7 +90,7 @@ const MessageContextMenu = () => {
 
     showMessageHandlerResultToSnackbar(
       true,
-      'Đã thu hồi tin nhắn',
+      'Đã thu hồi tin nhắn ở cả hai phía',
       dispatch,
       setHandlerResult
     )
@@ -103,7 +115,7 @@ const MessageContextMenu = () => {
     }
 
     showMessageHandlerResultToSnackbar(
-      undefined,
+      true,
       'Đang tải xuống',
       dispatch,
       setHandlerResult
@@ -124,7 +136,7 @@ const MessageContextMenu = () => {
               isOverflowScreenWidth
             ),
           }}
-          className='transition-all absolute px-1 py-2 rounded-lg bg-[rgba(255,255,255,0.733333)] backdrop-blur-[5px] z-[80] min-w-[15rem] max-h-56 overflow-y-scroll'
+          className='transition-all absolute px-1 py-2 rounded-lg bg-[rgba(255,255,255,0.733333)] backdrop-blur-[5px] z-[80] min-w-[15rem] max-h-64 overflow-y-scroll'
         >
           <MessageContextMenuItem
             icon={<ReplyOutlined sx={{ fill: '#706f6f' }} />}
@@ -155,7 +167,7 @@ const MessageContextMenu = () => {
               <MessageContextMenuItem
                 icon={<DeleteOutline sx={{ fill: '#cf0632' }} />}
                 label='Xoá chỉ ở phía tôi'
-                handler={revokeChosenMessage}
+                handler={deleteChosenMessage}
                 warning={true}
               />
               <MessageContextMenuItem

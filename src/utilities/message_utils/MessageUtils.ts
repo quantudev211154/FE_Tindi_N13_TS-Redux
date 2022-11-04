@@ -1,4 +1,5 @@
 import axios from 'axios'
+import JSZip from 'jszip'
 import {
   AttachFileTypeEnum,
   AttachmentType,
@@ -7,40 +8,52 @@ import {
 export const getTypeOfAttachment = (
   attachment: AttachmentType
 ): AttachFileTypeEnum => {
-  const fileName = attachment.fileName
+  const fileName = attachment.thumbnail
   const imageRegex = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i
 
   if (imageRegex.test(fileName)) return AttachFileTypeEnum.IMAGE
   return AttachFileTypeEnum.FILE
 }
 
+const downloadAndCompressToZipFolder = async (
+  attachmentList: AttachmentType[]
+) => {
+  console.log(attachmentList)
+  let zip = new JSZip()
+
+  for (let iterator of attachmentList) {
+    const response = await fetch(iterator.fileUrl)
+    const blob = await response.blob()
+
+    zip.file(iterator.thumbnail, blob)
+  }
+
+  zip.generateAsync({ type: 'blob' }).then((content) => {
+    let customUrl = window.URL.createObjectURL(content)
+    let aTag = document.createElement('a')
+    aTag.style.display = 'none'
+    aTag.href = customUrl
+    aTag.download = 'Tindi-' + new Date().getTime().toString()
+    aTag.click()
+    window.URL.revokeObjectURL(customUrl)
+  })
+}
+
 export const dowloadAttachmentsListOfMessage = async (
   attachmentList: AttachmentType[]
 ) => {
-  for (const iterator of attachmentList) {
-    // let aTag = document.createElement('a')
-    // aTag.style.display = 'none'
-    // aTag.href = iterator.fileUrl
-    // aTag.setAttribute('download', iterator.fileName)
-    // document.body.appendChild(aTag)
+  if (attachmentList.length === 1) {
+    const response = await fetch(attachmentList[0].fileUrl)
+    const blob = await response.blob()
 
-    // aTag.click()
-
-    // aTag.parentNode?.removeChild(aTag)
-    await axios
-      .get(iterator.fileUrl, {
-        responseType: 'blob',
-      })
-      .then((res) => {
-        let blob = new Blob(res.data)
-        let url = window.URL.createObjectURL(blob)
-
-        let aTag = document.createElement('a')
-        aTag.style.display = 'none'
-        aTag.href = url
-        aTag.download = iterator.fileName
-        aTag.click()
-        window.URL.revokeObjectURL(url)
-      })
+    let customUrl = window.URL.createObjectURL(blob)
+    let aTag = document.createElement('a')
+    aTag.style.display = 'none'
+    aTag.href = customUrl
+    aTag.download = attachmentList[0].fileName
+    aTag.click()
+    window.URL.revokeObjectURL(customUrl)
+  } else {
+    downloadAndCompressToZipFolder(attachmentList)
   }
 }

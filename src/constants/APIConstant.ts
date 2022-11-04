@@ -19,4 +19,4 @@ export const API_LOAD_MSG_OF_CONVER = HOST + 'messages/'
 export const API_REVOKE_MSG = HOST + 'messages/recall/'
 export const API_SAVE_MSG = HOST + 'messages'
 export const API_DOWLOAD_FILE = HOST + 'messages/attachments/'
-export const API_FORWARD_MSG = HOST + 'forward' //tmp
+export const API_FORWARD_MSG = HOST + 'messages/forward/' //tmp

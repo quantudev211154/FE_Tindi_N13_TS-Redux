@@ -4,7 +4,7 @@ import ConfirmOTP from '../components/forget_pwd/ConfirmOTP'
 import ForgetPwdFooter from '../components/forget_pwd/ForgetPwdFooter'
 import ForgetPwdForm from '../components/forget_pwd/ForgetPwdForm'
 import ForgetPwdHeader from '../components/forget_pwd/ForgetPwdHeader'
-import { FirebaseAuthService } from '../services/FirebaseAuth'
+import { FirebaseService } from '../services/FirebaseAuth'
 
 const ForgetPwd = () => {
   const [isOpenOTPField, setIsOpenOTPField] = useState(false)
@@ -21,7 +21,7 @@ const ForgetPwd = () => {
   useEffect(() => {
     document.title = 'Quên mật khẩu'
 
-    FirebaseAuthService.generateRecaptchatVerifier('recaptchaPopup')
+    FirebaseService.generateRecaptchatVerifier('recaptchaPopup')
   }, [])
 
   return (

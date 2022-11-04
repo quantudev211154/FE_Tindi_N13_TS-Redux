@@ -6,7 +6,7 @@ import { Formik } from 'formik'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 import { RegisterFormValidateShape } from './RegisterFormValidateShape'
 import { useNavigate } from 'react-router-dom'
-import { FirebaseAuthService } from '../../services/FirebaseAuth'
+import { FirebaseService } from '../../services/FirebaseAuth'
 import {
   RegistrationPendingAccount,
   RegistrationPendingType,
@@ -35,7 +35,7 @@ const RegisterForm = () => {
   const [phoneErr, setPhoneErr] = useState('')
 
   useEffect(() => {
-    FirebaseAuthService.generateRecaptchatVerifier('reptcapchaPopup')
+    FirebaseService.generateRecaptchatVerifier('reptcapchaPopup')
   }, [])
 
   const onPhoneFieldBlur = async (
@@ -76,7 +76,7 @@ const RegisterForm = () => {
         convertedRegisterPayload
       )
 
-      FirebaseAuthService.sendFirebaseAuthOTP(
+      FirebaseService.sendFirebaseAuthOTP(
         RegistrationPendingAccount.getPendingRegisterAccount()?.phone as string,
         onSuccessSignInWithPhone
       )

@@ -12,16 +12,26 @@ import {
   UserCredential,
 } from 'firebase/auth'
 import { RegistrationPendingAccount } from '../utilities/registration/RegistrationPending'
+import {
+  FirebaseStorage,
+  getDownloadURL,
+  getStorage,
+  ref,
+} from 'firebase/storage'
+import axios from 'axios'
 
-class FirebaseAuth {
+class MyFirebase {
   private firebaseApp: FirebaseApp
   private firebaseAuth: Auth
   private confirmationResult: ConfirmationResult | null
   private recaptchaVerifier: RecaptchaVerifier | null
+  private storage: FirebaseStorage
 
   constructor() {
     this.firebaseApp = initializeApp(firebaseConfig)
     this.firebaseAuth = getAuth(this.firebaseApp)
+
+    this.storage = getStorage(this.firebaseApp)
 
     this.recaptchaVerifier = null
     this.confirmationResult = null
@@ -87,6 +97,31 @@ class FirebaseAuth {
         else console.log(err)
       })
   }
+
+  downloadFileFromFirebaseStorage = (httpFileUrl: string) => {
+    getDownloadURL(ref(this.storage, httpFileUrl))
+      .then((url) => {
+        const xhr = new XMLHttpRequest()
+        xhr.responseType = 'blob'
+        xhr.onload = (event) => {
+          const blob = xhr.response
+
+          let customUrl = window.URL.createObjectURL(blob)
+
+          let aTag = document.createElement('a')
+          aTag.style.display = 'none'
+          aTag.href = customUrl
+          aTag.download = httpFileUrl
+          aTag.click()
+          window.URL.revokeObjectURL(customUrl)
+        }
+        xhr.open('GET', url)
+        xhr.send()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 }
 
-export const FirebaseAuthService = new FirebaseAuth()
+export const FirebaseService = new MyFirebase()

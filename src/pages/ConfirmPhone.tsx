@@ -7,7 +7,7 @@ import { ArrowBack, RepeatOutlined } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { LoadingButton } from '@mui/lab'
 import { useAppDispatch } from '../redux_hooks'
-import { FirebaseAuthService } from '../services/FirebaseAuth'
+import { FirebaseService } from '../services/FirebaseAuth'
 import { login, register } from '../redux/thunks/AuthThunks'
 import {
   RegistrationPendingAccount,
@@ -42,7 +42,7 @@ const ConfirmPhone = () => {
   useEffect(() => {
     document.title = 'Xác nhận số điện thoại'
 
-    FirebaseAuthService.generateRecaptchatVerifier('recaptchatPopup')
+    FirebaseService.generateRecaptchatVerifier('recaptchatPopup')
   }, [])
 
   const onConfirmPhoneSuccess = () => {
@@ -104,7 +104,7 @@ const ConfirmPhone = () => {
   }
 
   const onFormSubmit = async (values: IConfirmPhone) => {
-    FirebaseAuthService.confirmFirebaseAuthOTP(
+    FirebaseService.confirmFirebaseAuthOTP(
       values.code,
       onConfirmPhoneSuccess,
       onConfirmPhoneFailure
@@ -191,7 +191,7 @@ const ConfirmPhone = () => {
                     variant='contained'
                     onClick={() => {
                       setIsProcessing(true)
-                      FirebaseAuthService.sendFirebaseAuthOTP(
+                      FirebaseService.sendFirebaseAuthOTP(
                         RegistrationPendingAccount.getPendingRegisterAccount()
                           ?.phone as string
                       )

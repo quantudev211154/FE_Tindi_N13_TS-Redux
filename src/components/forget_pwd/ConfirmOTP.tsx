@@ -8,7 +8,7 @@ import * as yup from 'yup'
 import { forgotPassword, login } from '../../redux/thunks/AuthThunks'
 import { LoginPayloadType } from '../../redux/types/AuthTypes'
 import { useAppDispatch } from '../../redux_hooks'
-import { FirebaseAuthService } from '../../services/FirebaseAuth'
+import { FirebaseService } from '../../services/FirebaseAuth'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 
 interface IConfirmOTP {
@@ -92,7 +92,7 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
   }
 
   const onFormSubmit = (values: IConfirmOTP) => {
-    FirebaseAuthService.confirmFirebaseAuthOTP(
+    FirebaseService.confirmFirebaseAuthOTP(
       values.code,
       onConfirmPhoneSuccess,
       onConfirmPhoneFailure
@@ -164,7 +164,7 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
                   variant='contained'
                   onClick={() => {
                     setIsProcessing(true)
-                    FirebaseAuthService.sendFirebaseAuthOTP(phone)
+                    FirebaseService.sendFirebaseAuthOTP(phone)
 
                     const t = window.setTimeout(() => {
                       setIsProcessing(false)

@@ -5,7 +5,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 import { useEffect, useState } from 'react'
-import { FirebaseAuthService } from '../../services/FirebaseAuth'
+import { FirebaseService } from '../../services/FirebaseAuth'
 import axios from 'axios'
 import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
 interface IForgetPwd {
@@ -26,7 +26,7 @@ const ForgetPwdForm = ({ openOTPField, setCurrentPhone }: Props) => {
   const [phoneErr, setPhoneErr] = useState('')
 
   useEffect(() => {
-    FirebaseAuthService.generateRecaptchatVerifier('reptcapchaPopup')
+    FirebaseService.generateRecaptchatVerifier('reptcapchaPopup')
   }, [])
 
   const onPhoneFieldEnough10Characters = async (
@@ -52,7 +52,7 @@ const ForgetPwdForm = ({ openOTPField, setCurrentPhone }: Props) => {
     if (!phoneErr) {
       setIsProcessing(true)
 
-      FirebaseAuthService.sendFirebaseAuthOTP(values.phone)
+      FirebaseService.sendFirebaseAuthOTP(values.phone)
 
       setCurrentPhone(values.phone)
       openOTPField(true)
