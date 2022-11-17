@@ -10,16 +10,21 @@ import {
   InputAdornment,
   TextField,
 } from '@mui/material'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../redux/slices/AuthSlice'
 import { contactState } from '../../../redux/slices/ContactSlice'
 import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
 import { loadContacts } from '../../../redux/thunks/ContactThunk'
+import { ContactType } from '../../../redux/types/ContactTypes'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
+import { findContactOnChangeField } from '../../../utilities/contacts/ContactUtils'
 import AddContact from './AddContact'
 import ContactMain from './overlay_components/contacts/ContactMain'
 
 const Contact = () => {
+  const [foundContactResult, setFoundContactResult] = useState<ContactType[]>(
+    []
+  )
   const contactRef = useRef<HTMLDivElement>(null)
   const addContactRef = useRef<HTMLDivElement>(null)
   const { currentUser } = useAppSelector(authState)
@@ -30,6 +35,16 @@ const Contact = () => {
   useEffect(() => {
     dispatch(loadContacts(currentUser?.id as number))
   }, [currentUser])
+
+  const onFindContactFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    if (contacts) {
+      setFoundContactResult(
+        findContactOnChangeField(event.target.value, contacts)
+      )
+    }
+  }
 
   const showAddContactModal = () => {
     contactRef.current?.classList.add('hidden')
@@ -63,6 +78,7 @@ const Contact = () => {
                   </InputAdornment>
                 ),
               }}
+              onChange={onFindContactFieldChange}
             />
           </div>
         </div>
@@ -92,12 +108,18 @@ const Contact = () => {
             <span className='mt-8 text-lg text-slate-800 font-medium text-center'>
               Bạn chưa có liên hệ nào.
               <br />
-              Thêm một vài liên hệ mới thôi nào!
+              Thêm một vài liên hệ mới thôi!
             </span>
           ) : (
             <></>
           )}
           {!isLoadingContacts &&
+            foundContactResult.length !== 0 &&
+            foundContactResult.map((contact) => (
+              <ContactMain key={contact.id} contact={contact} />
+            ))}
+          {!isLoadingContacts &&
+            foundContactResult.length === 0 &&
             contacts?.map((contact) => (
               <ContactMain key={contact.id} contact={contact} />
             ))}

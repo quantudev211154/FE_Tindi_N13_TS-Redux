@@ -26,7 +26,7 @@ import { ContactType } from '../../../redux/types/ContactTypes'
 import { UserType } from '../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
 import { createNewContact } from '../../../utilities/contacts/ContactUtils'
-import { createNewConversation } from '../../../utilities/conversation/ConversationUtils'
+import { createNewSingleConversation } from '../../../utilities/conversation/ConversationUtils'
 import FormErrorDisplay from '../../core/FormErrorDisplay'
 import UserAvatar from '../../core/UserAvatar'
 
@@ -138,7 +138,7 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
                   <div
                     className='cursor-pointer flex justify-start items-center rounded-xl p-3 bg-gray-300'
                     onClick={() => {
-                      createNewConversation(
+                      createNewSingleConversation(
                         currentUser as UserType,
                         result as ContactType,
                         conversationList,

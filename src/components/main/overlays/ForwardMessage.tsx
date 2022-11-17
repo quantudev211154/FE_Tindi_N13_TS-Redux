@@ -18,6 +18,7 @@ import { getTeammateInSingleConversation } from '../../../utilities/conversation
 import { UserType } from '../../../redux/types/UserTypes'
 import {
   AttachmentType,
+  ForwardMessagePayloadType,
   MessageStatusEnum,
   MessageType,
 } from '../../../redux/types/MessageTypes'
@@ -29,6 +30,7 @@ import { nanoid } from '@reduxjs/toolkit'
 import { showMessageHandlerResultToSnackbar } from '../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
 import axios from 'axios'
 import { API_FORWARD_MSG } from '../../../constants/APIConstant'
+import { forwardOneMessage } from '../../../redux/thunks/MessageThunks'
 
 const ForwardMessage = () => {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -46,47 +48,19 @@ const ForwardMessage = () => {
   }, [openForwardMessageOverlay])
 
   const forwardMessageToConversation = async (item: ConversationType) => {
-    // const forwardMessage: MessageType = {
-    //   conversation: item,
-    //   createdAt: new Date().toISOString(),
-    //   delete: false,
-    //   id: nanoid(),
-    //   message: (inBackgroundMessage as MessageType).message,
-    //   sender: currentUser as UserType,
-    //   status: MessageStatusEnum.SENDING,
-    //   type: (inBackgroundMessage as MessageType).type,
-    //   attachmentResponseList: (inBackgroundMessage as MessageType).attachmentResponseList
-    // }
-
     dispatch(toggleForwardMessageOverlay())
 
-    const payload = {
+    const payload: ForwardMessagePayloadType = {
       sender: currentUser as UserType,
       messageType: (inBackgroundMessage as MessageType).type,
       message: (inBackgroundMessage as MessageType).message,
-      attachments: (inBackgroundMessage as MessageType).attachmentResponseList,
+      attachments: (inBackgroundMessage as MessageType).attachmentResponseList
+        ? (inBackgroundMessage as MessageType).attachmentResponseList
+        : [],
+      converId: item.id,
     }
 
-    console.log(payload.attachments)
-
-    await axios.post(API_FORWARD_MSG + item.id, payload)
-
-    // const formData = new FormData()
-    // formData.append('conversationId', item.id.toString())
-    // formData.append('senderId', (currentUser as UserType).id.toString())
-    // formData.append(
-    //   'messageType',
-    //   (inBackgroundMessage as MessageType).type.toString()
-    // )
-    // formData.append('message', (inBackgroundMessage as MessageType).message)
-
-    // if ((inBackgroundMessage as MessageType).attachmentResponseList) {
-    //   for (const iterator of (inBackgroundMessage as MessageType)
-    //     .attachmentResponseList as AttachmentType[])
-    //     formData.append('file', iterator)
-    // }
-
-    // await axios.post
+    dispatch(forwardOneMessage(payload))
 
     showMessageHandlerResultToSnackbar(
       true,

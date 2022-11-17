@@ -19,7 +19,8 @@ const LatestMessage = ({ chat }: Props) => {
       const latestMsg = chat.messageLatest
 
       if (latestMsg.sender.id !== currentUser?.id)
-        setSenderName(latestMsg.sender.fullName)
+        setSenderName(latestMsg.sender.fullName + ':')
+      else setSenderName('Bạn:')
     }
   }, [])
 
@@ -32,7 +33,9 @@ const LatestMessage = ({ chat }: Props) => {
     >
       <span
         style={
-          currentChat?.id === chat.id ? { color: 'white' } : { color: 'gray' }
+          currentChat?.id === chat.id
+            ? { color: 'white' }
+            : { color: '#363534' }
         }
         className='mr-1'
       >

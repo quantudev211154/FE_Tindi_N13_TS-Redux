@@ -8,6 +8,12 @@ export const API_FORGOT_PWD = HOST + 'auth/forgot/password/'
 
 export const API_LOAD_CONVERS = HOST + 'conversations'
 export const API_ADD_CONVER = HOST + 'conversations'
+export const API_DELETE_CONVER = HOST + 'conversations/'
+export const API_UPDATE_CONVER = HOST + 'conversations/avatar/'
+export const API_ADD_MEMBERS_TO_CONVERSATION = HOST + 'participants/group'
+export const API_REMOVE_MEMBER = HOST + 'participants/group/participant'
+export const API_GRANT_PERMISSION = HOST + 'participants/grant'
+export const API_OUT_GROUP = HOST + 'participants/group/'
 
 export const API_LOAD_CONTACTS = HOST + 'users/contacts?userId='
 export const API_ADD_NEW_CONTACT = HOST + 'users/contacts'

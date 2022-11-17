@@ -7,6 +7,9 @@ import {
   AVATAR_LARGE_TEXT_SIZE,
   AVATAR_BASE_IMG_SIZE,
   AVATAR_BASE_TEXT_SIZE,
+  AVATAR_MINI,
+  AVATAR_MINI_IMG_SIZE,
+  AVATAR_MINI_TEXT_SIZE,
 } from './../../constants/UserAvatarConstant'
 
 type ReturnType = {
@@ -27,6 +30,12 @@ const calculatingUserAvatar = (size: string): ReturnType => {
       width: AVATAR_LARGE_IMG_SIZE,
       height: AVATAR_LARGE_IMG_SIZE,
       fontSize: AVATAR_LARGE_TEXT_SIZE,
+    }
+  } else if (size === AVATAR_MINI) {
+    return {
+      width: AVATAR_MINI_IMG_SIZE,
+      height: AVATAR_MINI_IMG_SIZE,
+      fontSize: AVATAR_MINI_TEXT_SIZE,
     }
   }
 

@@ -14,14 +14,20 @@ import DropdownItem, {
 import ConfirmLogout from '../../../../overlays/ConfirmLogout'
 import { useAppSelector } from '../../../../../../redux_hooks'
 import Contact from '../../../../overlays/Contact'
+import NewGroup from '../../../../overlays/NewGroup'
+import Settings from '../../../../overlays/Settings'
 
 interface Props {
   open: boolean
 }
 
 const Dropdown = ({ open }: Props) => {
-  const { openConfirmLogoutOverlay, openContactOverlay } =
-    useAppSelector(controlOverlaysState)
+  const {
+    openConfirmLogoutOverlay,
+    openContactOverlay,
+    openNewGroupOverlay,
+    openSettingOverlay,
+  } = useAppSelector(controlOverlaysState)
 
   const dropdownItemList: IDropdownItemProps[] = [
     {
@@ -32,22 +38,22 @@ const Dropdown = ({ open }: Props) => {
       followState: openContactOverlay,
       backdropContent: <Contact />,
     },
-    // {
-    //   key: 2,
-    //   icon: <GroupOutlined />,
-    //   label: 'Tạo nhóm',
-    //   handleClick: controlOverlaysActions.toggleConfirmLogoutOverlay,
-    //   followState: openConfirmLogoutOverlay,
-    //   backdropContent: <ConfirmLogout />,
-    // },
-    // {
-    //   key: 3,
-    //   icon: <SettingsOutlined />,
-    //   label: 'Cài đặt',
-    //   handleClick: controlOverlaysActions.toggleConfirmLogoutOverlay,
-    //   followState: openConfirmLogoutOverlay,
-    //   backdropContent: <ConfirmLogout />,
-    // },
+    {
+      key: 2,
+      icon: <GroupOutlined />,
+      label: 'Tạo nhóm',
+      handleClick: controlOverlaysActions.toggleNewGroupOverlay,
+      followState: openNewGroupOverlay,
+      backdropContent: <NewGroup />,
+    },
+    {
+      key: 3,
+      icon: <SettingsOutlined />,
+      label: 'Cài đặt',
+      handleClick: controlOverlaysActions.toggleSettingOverlay,
+      followState: openSettingOverlay,
+      backdropContent: <Settings />,
+    },
     {
       key: 4,
       icon: <LogoutOutlined />,

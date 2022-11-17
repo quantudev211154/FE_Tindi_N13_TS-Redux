@@ -25,10 +25,7 @@ const ChatContainer = () => {
 
   return (
     <div className='w-full h-full z-40 flex overflow-hidden justify-between transition-all'>
-      <div
-        style={{ width: openExpandedPanel ? '70%' : '100%' }}
-        className='h-full flex flex-col transition-all'
-      >
+      <div className='h-full flex flex-col transition-all flex-1'>
         <ChatHeader />
         <AddContactBar />
         <ChatMain />
@@ -36,13 +33,13 @@ const ChatContainer = () => {
       </div>
       <div
         style={{
-          width: openExpandedPanel ? '30%' : '0',
+          width: openExpandedPanel ? '18rem' : '0',
           transition: '.2s ease',
         }}
       >
         <SearchExpanded />
       </div>
-      <div className='overlays'>
+      <div className='overlays flex-initial'>
         <ForwardMessage />
       </div>
     </div>

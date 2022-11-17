@@ -1,5 +1,9 @@
 import { MessageType } from './MessageTypes'
-import { ParticipantType } from './ParticipantTypes'
+import {
+  ParticipantRoleEnum,
+  ParticipantStatusEnum,
+  ParticipantType,
+} from './ParticipantTypes'
 import { UserType } from './UserTypes'
 
 export type ConversationType = {
@@ -46,5 +50,38 @@ export type AddNewConversationPayloadType = {
   title: string
   avatar: string
   user: UserType
-  usersId: [number, number]
+  phones: string[]
+}
+
+export type UpdateConversationPayloadType = {
+  formData: FormData
+  conversationId: number
+}
+
+export type RemoveMemberPayload = {
+  adminId: number
+  participantId: number
+}
+
+export type GranPermissionPayloadType = {
+  adminId: number
+  participantId: number
+  role: ParticipantRoleEnum
+}
+
+export type AddMultiMemberPayloadType = {
+  conversationId: number
+  phones: string[]
+  status: ParticipantStatusEnum
+  createdAt: string
+}
+
+export type AddMultiMemberReturnType = {
+  converId: number
+  newParticipants: ParticipantType[]
+}
+
+export type OutGroupPayloadType = {
+  converId: number
+  participantId: number
 }

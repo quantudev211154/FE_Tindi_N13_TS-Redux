@@ -8,7 +8,6 @@ import LeftChat from './left_chat/LeftChat'
 import RightChat from './right_chat/RightChat'
 import { useAppDispatch } from './../../../../../../redux_hooks'
 import { ConversationType } from '../../../../../../redux/types/ConversationTypes'
-import { conversationDetailActions } from '../../../../../../redux/slices/ConversationDetailSlice'
 
 type Props = {
   chat: ConversationType
@@ -40,7 +39,7 @@ const Chat = ({ chat }: Props) => {
       }}
     >
       <LeftChat chat={chat} />
-      <RightChat />
+      <RightChat chat={chat} />
     </Button>
   )
 }

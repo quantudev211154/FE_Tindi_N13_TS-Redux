@@ -38,6 +38,7 @@ export type MessageType = {
   message: string
   createdAt: string
   status: MessageStatusEnum
+  revoke: boolean
   delete: boolean
   attachmentResponseList: AttachmentType[] | null
   socketFlag?: string
@@ -47,9 +48,17 @@ export type MessageType = {
 export type SaveMessagePayload = {
   formData: FormData
   socketFlag: string
-  to: UserType
+  to: UserType[]
 }
 
 export type SaveMessageFullfilled = {
   message: MessageType
+}
+
+export type ForwardMessagePayloadType = {
+  sender: UserType
+  messageType: MessageTypeEnum
+  message: string
+  attachments: AttachmentType[] | null
+  converId: number
 }

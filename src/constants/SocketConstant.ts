@@ -14,6 +14,8 @@ export enum SocketEventEnum {
   REVOKE_MSG = 'REVOKE_MSG',
   SEND_UPDATE_MSG_CMD = 'SEND_UPDATE_MSG_CMD',
   UPDATE_MSG = 'UPDATE_MSG',
+  ADD_MEMBERS = 'ADD_MEMBERS',
+  UPDATE_MEMBERS = 'UPDATE_MEMBERS',
 }
 
 export enum MessageInSocketEnum {
@@ -24,5 +26,5 @@ export enum MessageInSocketEnum {
 
 export type SendMessageWithSocketPayload = {
   message: MessageType
-  to: UserType
+  to: UserType[]
 }

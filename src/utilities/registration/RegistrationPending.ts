@@ -1,5 +1,3 @@
-import { randomBgrColorForAvatar } from '../user_avatar/creatingAvatarProps'
-
 export type RegistrationPendingType = {
   phone: string
   password: string

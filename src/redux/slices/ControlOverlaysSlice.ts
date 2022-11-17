@@ -7,6 +7,10 @@ const initialState: OverlaysType = {
   openContactOverlay: false,
   openForwardMessageOverlay: false,
   openPreviewFilesInMessage: false,
+  openNewGroupOverlay: false,
+  openSettingOverlay: false,
+  openViewGroupInfoOverlay: false,
+  openManageGroupOverlay: false,
 }
 
 const controlOverlaysSlice = createSlice({
@@ -24,6 +28,18 @@ const controlOverlaysSlice = createSlice({
     },
     togglePreviewFilesInMessage: (state) => {
       state.openPreviewFilesInMessage = !state.openPreviewFilesInMessage
+    },
+    toggleNewGroupOverlay: (state) => {
+      state.openNewGroupOverlay = !state.openNewGroupOverlay
+    },
+    toggleSettingOverlay: (state) => {
+      state.openSettingOverlay = !state.openSettingOverlay
+    },
+    toggleViewGroupInfoOverlay: (state) => {
+      state.openViewGroupInfoOverlay = !state.openViewGroupInfoOverlay
+    },
+    toggleManageGroupOverlay: (state) => {
+      state.openManageGroupOverlay = !state.openManageGroupOverlay
     },
   },
 })

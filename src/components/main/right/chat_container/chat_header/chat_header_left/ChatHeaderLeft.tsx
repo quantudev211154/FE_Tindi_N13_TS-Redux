@@ -6,10 +6,14 @@ import {
   ConversationType,
   ConversationTypeEnum,
 } from '../../../../../../redux/types/ConversationTypes'
+import { ParticipantType } from '../../../../../../redux/types/ParticipantTypes'
 import { UserType } from '../../../../../../redux/types/UserTypes'
 import { useAppSelector } from '../../../../../../redux_hooks'
 import { MySocket } from '../../../../../../services/TindiSocket'
 import { getTeammateInSingleConversation } from '../../../../../../utilities/conversation/ConversationUtils'
+import GroupAvatar, {
+  GroupAvatarSizeEnum,
+} from '../../../../../core/GroupAvatar'
 import UserAvatar from '../../../../../core/UserAvatar'
 import { AVATAR_SMALL } from './../../../../../../constants/UserAvatarConstant'
 
@@ -53,19 +57,21 @@ const ChatHeaderLeft = (props: Props) => {
 
   return (
     <div className='flex flex-row justify-start items-center whitespace-nowrap overflow-hidden text-ellipsis break-all'>
-      <UserAvatar
-        name={
-          currentChat?.type === ConversationTypeEnum.GROUP
-            ? (currentChat?.title as string)
-            : (targetUser?.fullName as string)
-        }
-        avatar={
-          currentChat?.type === ConversationTypeEnum.GROUP
-            ? (currentChat?.avatar as string)
-            : (targetUser?.avatar as string)
-        }
-        size={AVATAR_SMALL}
-      />
+      {currentChat?.type === ConversationTypeEnum.SINGLE ? (
+        <UserAvatar
+          name={targetUser?.fullName as string}
+          avatar={targetUser?.avatar as string}
+          size={AVATAR_SMALL}
+        />
+      ) : (
+        <GroupAvatar
+          groupAvatar={currentChat?.avatar as string}
+          groupName={currentChat?.title as string}
+          participants={currentChat?.participantResponse as ParticipantType[]}
+          size={GroupAvatarSizeEnum.BASE}
+        />
+      )}
+
       <div className='flex flex-col justify-start ml-3'>
         <span className='font-semibold transition-all'>
           {currentChat?.type === ConversationTypeEnum.GROUP

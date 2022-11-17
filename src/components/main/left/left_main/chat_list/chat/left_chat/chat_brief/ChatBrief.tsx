@@ -24,9 +24,9 @@ const ChatBrief = ({ chat }: Props) => {
         style={
           currentChat?.id === chat.id ? { color: 'white' } : { color: 'black' }
         }
-        className='text-[15px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
+        className='text-[15px] font-medium text-lg mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
       >
-        {chat.type === ConversationTypeEnum.GROUP
+        {currentUser && chat.type === ConversationTypeEnum.GROUP
           ? chat.title
           : getTeammateInSingleConversation(currentUser as UserType, chat).user
               .fullName}

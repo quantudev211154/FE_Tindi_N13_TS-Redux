@@ -7,7 +7,7 @@ const RightCol = () => {
   const { currentChat } = useAppSelector(conversationsControlState)
 
   return (
-    <div className='flex-auto h-full bg-gray-300'>
+    <div className='flex-1 h-full bg-gray-300'>
       {!currentChat?.id ? <Welcome /> : <ChatContainer />}
     </div>
   )

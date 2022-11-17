@@ -13,7 +13,7 @@ import {
 } from '../../utilities/registration/RegistrationPending'
 import axios from 'axios'
 import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
-import { randomBgrColorForAvatar } from '../../utilities/user_avatar/creatingAvatarProps'
+import { createRandomHEXColor } from '../../utilities/random_color_creator/CreateRandomHEXColor'
 
 interface IRegisterForm {
   name: string
@@ -69,7 +69,7 @@ const RegisterForm = () => {
         phone: values.phone,
         password: values.password,
         fullName: values.name,
-        avatar: randomBgrColorForAvatar(),
+        avatar: createRandomHEXColor(),
       }
 
       RegistrationPendingAccount.setPendingRegisterAccount(

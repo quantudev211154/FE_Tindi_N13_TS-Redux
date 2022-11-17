@@ -14,11 +14,7 @@ import {
   messageContextmenuState,
 } from '../../../../../../../redux/slices/MessageContextmenuSlice'
 import { revokeOneMessage } from '../../../../../../../redux/thunks/MessageThunks'
-import {
-  MessageStatusEnum,
-  MessageType,
-  MessageTypeEnum,
-} from '../../../../../../../redux/types/MessageTypes'
+import { MessageType } from '../../../../../../../redux/types/MessageTypes'
 import { UserType } from '../../../../../../../redux/types/UserTypes'
 import {
   useAppDispatch,
@@ -32,9 +28,6 @@ import MessageContextMenuItem from './MessageContextMenuItem'
 import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
 import { getTeammateInSingleConversation } from '../../../../../../../utilities/conversation/ConversationUtils'
 import { ConversationType } from '../../../../../../../redux/types/ConversationTypes'
-import { useEffect } from 'react'
-import { SocketEventEnum } from '../../../../../../../constants/SocketConstant'
-import { FirebaseService } from '../../../../../../../services/FirebaseAuth'
 
 const MessageContextMenu = () => {
   const { setHandlerResult } = messageContextmenuActions
@@ -143,11 +136,15 @@ const MessageContextMenu = () => {
             label='Trả lời'
             handler={copyMessageTextToClipboard}
           />
-          <MessageContextMenuItem
-            icon={<ContentCopy sx={{ fill: '#707579' }} />}
-            label='Sao chép nội dung'
-            handler={copyMessageTextToClipboard}
-          />
+          {currentMessage.message !== '' ? (
+            <MessageContextMenuItem
+              icon={<ContentCopy sx={{ fill: '#707579' }} />}
+              label='Sao chép nội dung'
+              handler={copyMessageTextToClipboard}
+            />
+          ) : (
+            <></>
+          )}
           <MessageContextMenuItem
             icon={<ForwardOutlined sx={{ fill: '#707579' }} />}
             label='Chuyển tiếp'

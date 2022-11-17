@@ -3,6 +3,7 @@ import {
   ActionCreatorWithPayload,
 } from '@reduxjs/toolkit'
 import axios from 'axios'
+import Contact from '../../components/main/overlays/Contact'
 import { API_GET_USER_BY_PHONE } from '../../constants/APIConstant'
 import { addNewConversation } from '../../redux/thunks/ConversationThunks'
 import { ContactType } from '../../redux/types/ContactTypes'
@@ -14,7 +15,7 @@ import {
 import { ParticipantType } from '../../redux/types/ParticipantTypes'
 import { UserType } from '../../redux/types/UserTypes'
 import { AppDispatch } from '../../redux_store'
-import { randomBgrColorForAvatar } from '../user_avatar/creatingAvatarProps'
+import { createRandomHEXColor } from '../random_color_creator/CreateRandomHEXColor'
 
 export const checkExistingSingleConversation = (
   userId1: number,
@@ -39,7 +40,32 @@ export const checkExistingSingleConversation = (
   return null
 }
 
-export const createNewConversation = async (
+export const createNewGroup = async (
+  dispatch: AppDispatch,
+  toggleNewGroupOverlay: ActionCreatorWithoutPayload<string>,
+  groupName: string,
+  currentUser: UserType,
+  membersOfGroup: ContactType[],
+  groupAvatar?: string
+) => {
+  try {
+    const memberIds = membersOfGroup.map((member) => member.phone)
+
+    memberIds.push(currentUser.phone)
+
+    const payload: AddNewConversationPayloadType = {
+      title: groupName,
+      avatar: groupAvatar !== undefined ? groupAvatar : createRandomHEXColor(),
+      user: currentUser as UserType,
+      phones: memberIds,
+    }
+    dispatch(addNewConversation(payload))
+  } catch (error) {}
+
+  dispatch(toggleNewGroupOverlay())
+}
+
+export const createNewSingleConversation = async (
   currentUser: UserType,
   contact: ContactType,
   conversationList: ConversationType[],
@@ -61,9 +87,12 @@ export const createNewConversation = async (
     try {
       const payload: AddNewConversationPayloadType = {
         title: contact.fullName,
-        avatar: randomBgrColorForAvatar(),
+        avatar: createRandomHEXColor(),
         user: currentUser as UserType,
-        usersId: [currentUser?.id as number, (response.data as UserType).id],
+        phones: [
+          currentUser?.phone as string,
+          (response.data as UserType).phone,
+        ],
       }
       dispatch(addNewConversation(payload))
     } catch (error) {}
@@ -81,4 +110,26 @@ export const getTeammateInSingleConversation = (
   )
 
   return teammate as ParticipantType
+}
+
+export const getRoleOfCurrentUserInConversation = (
+  currentUser: UserType,
+  currentConversation: ConversationType
+) => {
+  const participant = currentConversation.participantResponse.find(
+    (participant) => participant.user.phone === currentUser.phone
+  )
+
+  return participant?.role
+}
+
+export const isContactExistingInCurrentChatParticipant = (
+  contact: ContactType,
+  participantsList: ParticipantType[]
+) => {
+  let existing = participantsList.find(
+    (participant) => participant.user.phone === contact.phone
+  )
+
+  return existing !== undefined ? true : false
 }

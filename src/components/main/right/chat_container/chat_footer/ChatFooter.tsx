@@ -1,11 +1,13 @@
 import { AttachFile, ImageOutlined, Mood, Send } from '@mui/icons-material'
 import { Button, TextareaAutosize, Tooltip } from '@mui/material'
-import { nanoid } from '@reduxjs/toolkit'
 import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../../../redux/slices/AuthSlice'
 import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
 import { saveMessage } from '../../../../../redux/thunks/MessageThunks'
-import { ConversationType } from '../../../../../redux/types/ConversationTypes'
+import {
+  ConversationType,
+  ConversationTypeEnum,
+} from '../../../../../redux/types/ConversationTypes'
 import {
   AttachFileTypeEnum,
   MessageStatusEnum,
@@ -64,10 +66,11 @@ const ChatFooter = () => {
   const sendMsg = (caption?: string) => {
     if (files || msg !== '') {
       const message: MessageType = {
-        id: nanoid(),
+        id: new Date().getTime(),
         conversation: currentChat as ConversationType,
         createdAt: new Date().toISOString(),
         delete: false,
+        revoke: false,
         message: caption !== undefined ? caption : msg,
         sender: currentUser as UserType,
         status: MessageStatusEnum.SENT,
@@ -81,13 +84,24 @@ const ChatFooter = () => {
         isLoading: files ? true : undefined,
       }
 
-      const targetUser: ParticipantType = getTeammateInSingleConversation(
-        currentUser as UserType,
-        currentChat as ConversationType
-      )
+      const receiver: UserType[] = []
+
+      if (currentChat?.type === ConversationTypeEnum.SINGLE) {
+        const targetUser: ParticipantType = getTeammateInSingleConversation(
+          currentUser as UserType,
+          currentChat as ConversationType
+        )
+
+        receiver.push(targetUser.user)
+      } else {
+        for (let iterator of currentChat?.participantResponse as ParticipantType[]) {
+          receiver.push(iterator.user)
+        }
+      }
+
       MySocket.sendMessage({
         message,
-        to: targetUser.user,
+        to: receiver,
       })
 
       dispatch(addNewMessageToCurrentChat(message))
@@ -106,7 +120,7 @@ const ChatFooter = () => {
         saveMessage({
           formData,
           socketFlag: message.socketFlag as string,
-          to: targetUser.user,
+          to: receiver,
         })
       )
 
@@ -146,7 +160,7 @@ const ChatFooter = () => {
   }
 
   const onEmojiClick = (emojiObject: EmojiClickData, event: MouseEvent) => {
-    setMsg(msg + emojiObject)
+    setMsg(msg + emojiObject.emoji)
   }
 
   return (
@@ -181,7 +195,7 @@ const ChatFooter = () => {
                   <Mood />
                 </Button>
               </Tooltip>
-              <div className='absolute ttt left-0 bottom-full'>
+              <div className='absolute z-[100] left-0 bottom-full'>
                 {showEmojiPicker && (
                   <EmojiPicker
                     onEmojiClick={onEmojiClick}

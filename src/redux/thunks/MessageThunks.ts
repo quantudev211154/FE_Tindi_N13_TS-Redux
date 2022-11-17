@@ -14,6 +14,7 @@ import {
 } from '../../constants/ReduxConstant'
 import { ErrorType } from '../types/ErrorType'
 import {
+  ForwardMessagePayloadType,
   MessageType,
   SaveMessageFullfilled,
   SaveMessagePayload,
@@ -69,23 +70,27 @@ export const saveMessage = createAsyncThunk<
   }
 })
 
-export const forwardOneMessage = createAsyncThunk(
-  CONVERSATION_DETAIL_FORWARD_MESSAGE,
-  async (payload, thunkApi) => {
-    try {
-      const response = await axios.post(API_FORWARD_MSG, payload)
+export const forwardOneMessage = createAsyncThunk<
+  MessageType,
+  ForwardMessagePayloadType,
+  { rejectValue: ErrorType }
+>(CONVERSATION_DETAIL_FORWARD_MESSAGE, async (payload, thunkApi) => {
+  try {
+    const response = await axios.post(
+      API_FORWARD_MSG + payload.converId,
+      payload
+    )
 
-      return response.data
-    } catch (error) {
-      // if (axios.isAxiosError(error)) {
-      //   const err = {
-      //     message: error.message,
-      //   }
-      //   return thunkApi.rejectWithValue(err)
-      // } else return thunkApi.rejectWithValue({ message: 'Lỗi máy chủ' })
-    }
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const err = {
+        message: error.message,
+      }
+      return thunkApi.rejectWithValue(err)
+    } else return thunkApi.rejectWithValue({ message: 'Lỗi máy chủ' })
   }
-)
+})
 
 export const revokeOneMessage = createAsyncThunk<
   boolean,

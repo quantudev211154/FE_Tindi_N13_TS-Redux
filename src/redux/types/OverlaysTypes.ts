@@ -3,4 +3,8 @@ export type OverlaysType = {
   openContactOverlay: boolean
   openForwardMessageOverlay: boolean
   openPreviewFilesInMessage: boolean
+  openNewGroupOverlay: boolean
+  openSettingOverlay: boolean
+  openViewGroupInfoOverlay: boolean
+  openManageGroupOverlay: boolean
 }

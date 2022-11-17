@@ -1,8 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../redux_store'
-import { loadMessageOfConversation, saveMessage } from '../thunks/MessageThunks'
+import {
+  forwardOneMessage,
+  loadMessageOfConversation,
+  saveMessage,
+} from '../thunks/MessageThunks'
 import { ConversationDetailTypes } from '../types/ConversationDetailTypes'
-import { MessageType, SaveMessageFullfilled } from '../types/MessageTypes'
+import { MessageType } from '../types/MessageTypes'
 import { CONVERSATION_DETAIL_NAME } from './../../constants/ReduxConstant'
 
 const initialState: ConversationDetailTypes = {
@@ -14,8 +18,13 @@ const conversationDetailSlice = createSlice({
   name: CONVERSATION_DETAIL_NAME,
   initialState,
   reducers: {
-    addNewMessageToCurrentChat: (state, action) => {
-      state.messageList = [...state.messageList, action.payload]
+    addNewMessageToCurrentChat: (state, action: PayloadAction<MessageType>) => {
+      const existingMsg = state.messageList.find(
+        (msg) => msg.socketFlag === action.payload.socketFlag
+      )
+
+      if (existingMsg === undefined)
+        state.messageList = [...state.messageList, action.payload]
     },
     updateMessageBySocketFlag: (state, action: PayloadAction<MessageType>) => {
       for (let iterator of state.messageList) {
@@ -29,7 +38,7 @@ const conversationDetailSlice = createSlice({
     },
     revokeMessage: (state, action: PayloadAction<MessageType>) => {
       for (let message of state.messageList) {
-        if (message.id === action.payload.id) message.delete = true
+        if (message.id === action.payload.id) message.revoke = true
       }
     },
     deleteMessage: (state, action: PayloadAction<MessageType>) => {

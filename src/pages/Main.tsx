@@ -53,6 +53,13 @@ const Main = () => {
         dispatch(updateMessageBySocketFlag(data.message))
       }
     )
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_MEMBERS,
+      (data: any) => {
+        console.log(data)
+      }
+    )
   }, [currentUser])
 
   const onContextMenu = (

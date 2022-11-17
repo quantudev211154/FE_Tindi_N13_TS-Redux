@@ -10,7 +10,7 @@ import {
 import { ContactType } from '../../../../../redux/types/ContactTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
-import { createNewConversation } from '../../../../../utilities/conversation/ConversationUtils'
+import { createNewSingleConversation } from '../../../../../utilities/conversation/ConversationUtils'
 import UserAvatar from '../../../../core/UserAvatar'
 
 type Props = {
@@ -27,7 +27,7 @@ const ContactMain = ({ contact }: Props) => {
   return (
     <div
       onClick={() => {
-        createNewConversation(
+        createNewSingleConversation(
           currentUser as UserType,
           contact,
           conversationList,
@@ -49,33 +49,7 @@ const ContactMain = ({ contact }: Props) => {
           {contact.fullName}
         </span>
       </div>
-      <div className='flex-initial'>
-        {/* <Tooltip title='Xem các tuỳ chọn nâng cao'>
-          <Button
-            disableElevation
-            onClick={() => {
-              console.log(123)
-            }}
-            variant='contained'
-            sx={{
-              maxWidth: '2.5rem',
-              maxHeight: '2.5rem',
-              minWidth: '2.5rem',
-              minHeight: '2.5rem',
-              borderRadius: '50%',
-              textTransform: 'none',
-              bgcolor: 'transparent',
-              mr: 2,
-              color: '#363738',
-              fontSize: '0.875rem',
-              transition: '.2s ease',
-              '&:hover': { bgcolor: '#2f6896', color: 'white' },
-            }}
-          >
-            <SettingsOutlined />
-          </Button>
-        </Tooltip> */}
-      </div>
+      <div className='flex-initial'></div>
     </div>
   )
 }

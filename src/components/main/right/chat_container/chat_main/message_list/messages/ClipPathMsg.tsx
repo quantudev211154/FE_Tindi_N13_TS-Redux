@@ -1,8 +1,13 @@
+import { MessageType } from '../../../../../../../redux/types/MessageTypes'
+
 type Props = {
   fromSelf: boolean
+  message: MessageType
 }
 
-const ClipPathMsg = ({ fromSelf }: Props) => {
+const ClipPathMsg = ({ fromSelf, message }: Props) => {
+  if (message.message === '') return <></>
+
   return (
     <div
       style={fromSelf ? { right: '-0.562rem' } : { left: '-0.562rem' }}

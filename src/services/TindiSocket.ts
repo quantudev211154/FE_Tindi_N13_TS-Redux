@@ -6,6 +6,8 @@ import {
 } from '../constants/SocketConstant'
 import { ConversationType } from '../redux/types/ConversationTypes'
 import { MessageType } from '../redux/types/MessageTypes'
+import { ParticipantType } from '../redux/types/ParticipantTypes'
+import { UserType } from '../redux/types/UserTypes'
 
 class TindiSocket {
   private socket: Socket | null
@@ -56,6 +58,18 @@ class TindiSocket {
       conversation,
       message,
       targetUserId,
+    })
+  }
+
+  addMembers = (
+    conversation: ConversationType,
+    members: ParticipantType[],
+    to: UserType[]
+  ) => {
+    this.socket?.emit(SocketEventEnum.ADD_MEMBERS, {
+      conversationId: conversation.id,
+      members,
+      to,
     })
   }
 }

@@ -9,7 +9,10 @@ import {
   contactState,
 } from '../../../../../redux/slices/ContactSlice'
 import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
-import { ConversationType } from '../../../../../redux/types/ConversationTypes'
+import {
+  ConversationType,
+  ConversationTypeEnum,
+} from '../../../../../redux/types/ConversationTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
 import { createNewContact } from '../../../../../utilities/contacts/ContactUtils'
@@ -27,28 +30,32 @@ const AddContactBar = () => {
     useState<ParticipantType | null>(null)
 
   useEffect(() => {
-    const findContactPair = async () => {
-      const targetPaticipant = getTeammateInSingleConversation(
-        currentUser as UserType,
-        currentChat as ConversationType
-      )
+    if (currentChat && currentChat.type !== ConversationTypeEnum.GROUP) {
+      const findContactPair = async () => {
+        const targetPaticipant = getTeammateInSingleConversation(
+          currentUser as UserType,
+          currentChat as ConversationType
+        )
 
-      setTargetPaticipant(targetPaticipant)
+        setTargetPaticipant(targetPaticipant)
 
-      const formData = new FormData()
-      formData.append('phone', targetPaticipant.user.phone)
-      formData.append('userId', (currentUser as UserType).id.toString())
+        const formData = new FormData()
+        formData.append('phone', targetPaticipant.user.phone)
+        formData.append('userId', (currentUser as UserType).id.toString())
 
-      try {
-        await axios.post(API_CHECK_EXISTING_CONTACT, formData)
+        try {
+          await axios.post(API_CHECK_EXISTING_CONTACT, formData)
 
-        ref.current!.style.display = 'flex'
-      } catch (error) {
-        ref.current!.style.display = 'none'
+          ref.current!.style.display = 'flex'
+        } catch (error) {
+          ref.current!.style.display = 'none'
+        }
       }
-    }
 
-    findContactPair()
+      findContactPair()
+    } else {
+      ref.current!.style.display = 'none'
+    }
   }, [currentChat, contacts])
 
   const closeAddContactBar = () => {

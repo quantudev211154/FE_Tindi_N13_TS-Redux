@@ -7,6 +7,9 @@ import {
 import { UserType } from '../../../../../../../redux/types/UserTypes'
 import { useAppSelector } from '../../../../../../../redux_hooks'
 import { getTeammateInSingleConversation } from '../../../../../../../utilities/conversation/ConversationUtils'
+import GroupAvatar, {
+  GroupAvatarSizeEnum,
+} from '../../../../../../core/GroupAvatar'
 import UserAvatar from '../../../../../../core/UserAvatar'
 import ChatBrief from './chat_brief/ChatBrief'
 
@@ -37,7 +40,12 @@ const LeftChat = ({ chat }: Props) => {
 
   return (
     <div className=' left-chat py-1 min-w-0 flex-1 h-full flex flex-row justify-start items-center'>
-      <UserAvatar name={chat.title} avatar={chat.avatar} size={AVATAR_BASE} />
+      <GroupAvatar
+        groupName={chat.title}
+        groupAvatar={chat.avatar}
+        participants={chat.participantResponse}
+        size={GroupAvatarSizeEnum.BASE}
+      />
       <ChatBrief chat={chat} />
     </div>
   )
