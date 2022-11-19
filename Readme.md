@@ -18,13 +18,26 @@ Tindi Realtime chat application is a small project of "Brand new technologies" s
 ## Images
 
 ![Screenshot (296)](https://user-images.githubusercontent.com/69999366/202864920-85077a1f-6b4d-4718-9c25-0c2d2ca794c6.png)
+
 ![Screenshot (297)](https://user-images.githubusercontent.com/69999366/202864927-82e924ec-0ed4-4f94-ac95-739f172a7935.png)
+
 ![Screenshot (290)](https://user-images.githubusercontent.com/69999366/202864936-edbafd67-54a2-41d9-b858-b4a7d41c2f12.png)
+
 ![Screenshot (291)](https://user-images.githubusercontent.com/69999366/202864940-f9e7d9af-d900-4c3d-9134-6ae0f00ceb21.png)
+
 ![Screenshot (292)](https://user-images.githubusercontent.com/69999366/202864943-d96e3d69-0771-4e1e-b493-b482f1a44a6b.png)
+
 ![Screenshot (293)](https://user-images.githubusercontent.com/69999366/202864953-29350e7c-1ace-4f59-998d-bdc83d33e6b1.png)
+
 ![Screenshot (294)](https://user-images.githubusercontent.com/69999366/202864957-62f49e21-a45a-4db0-8597-b608a1715848.png)
+
 ![Screenshot (295)](https://user-images.githubusercontent.com/69999366/202864960-4ef4d6d4-a307-447d-b333-e4c1bcf132d6.png)
+
+![Capture3](https://user-images.githubusercontent.com/69999366/202865485-417204e2-7166-4264-8968-b3f3a57434b6.PNG)
+
+![Capture](https://user-images.githubusercontent.com/69999366/202865488-f5c612b2-553f-47c7-9351-8b838a3abb95.PNG)
+
+![Capture2](https://user-images.githubusercontent.com/69999366/202865491-b56ab474-0cc5-40df-a13e-b4e881420b98.PNG)
 
 ---
 ## Features
