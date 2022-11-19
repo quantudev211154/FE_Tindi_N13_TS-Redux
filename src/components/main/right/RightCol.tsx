@@ -25,10 +25,10 @@ const RightCol = () => {
     <div
       ref={ref}
       style={{
-        left: isOpenMessageList ? '0' : '110%',
+        left: isOpenMessageList ? '0' : window.innerWidth > 768 ? '0' : '110%',
         width: isOpenMessageList ? '100%' : '0',
       }}
-      className='absolute top-0 md:left-0 md:relative md:w-auto flex-1 h-full bg-gray-300 z-50 transition-all duration-500'
+      className='absolute top-0 md:left-0 md:w-auto md:relative flex-1 h-full bg-gray-300 z-50 transition-all duration-500'
     >
       {!currentChat?.id ? <Welcome /> : <ChatContainer />}
     </div>
