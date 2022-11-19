@@ -17,7 +17,7 @@ const ResizeHandle = ({ handleResize }: Props) => {
       id='resizer'
       onDrag={onDrag}
       draggable={true}
-      className='absolute divider top-0 -right-[2px] h-full w-[2px] opacity-0 flex-initial cursor-e-resize transition-all'
+      className='resizer hidden md:block absolute top-0 -right-[2px] h-full w-[2px] z-40 opacity-0 flex-initial cursor-e-resize transition-all'
     ></div>
   )
 }

@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import axios from 'axios'
 import { Formik } from 'formik'
-import { Ref, useState } from 'react'
+import { Ref, useEffect, useRef, useState } from 'react'
 import * as yup from 'yup'
 import { API_GET_USER_BY_PHONE } from '../../../constants/APIConstant'
 import { AVATAR_SMALL } from '../../../constants/UserAvatarConstant'
@@ -17,7 +17,10 @@ import {
   contactActions,
   contactState,
 } from '../../../redux/slices/ContactSlice'
-import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
+import {
+  controlOverlaysActions,
+  controlOverlaysState,
+} from '../../../redux/slices/ControlOverlaysSlice'
 import {
   conversationActions,
   conversationsControlState,
@@ -27,6 +30,7 @@ import { UserType } from '../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
 import { createNewContact } from '../../../utilities/contacts/ContactUtils'
 import { createNewSingleConversation } from '../../../utilities/conversation/ConversationUtils'
+import http from '../../../utilities/http/Http'
 import FormErrorDisplay from '../../core/FormErrorDisplay'
 import UserAvatar from '../../core/UserAvatar'
 
@@ -68,7 +72,7 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
 
     if (tmpPhone.length === 10) {
       try {
-        const response = await axios.get(API_GET_USER_BY_PHONE + tmpPhone)
+        const response = await http.get(API_GET_USER_BY_PHONE + tmpPhone)
 
         const data = response.data as UserType
 
@@ -124,7 +128,6 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
                     autoComplete='off'
                     label='Nhập số điện thoại của liên hệ mới'
                     placeholder='Số điện thoại người dùng mà bạn muốn thêm liên hệ'
-                    autoFocus
                     onChange={(e) => {
                       handleChange(e)
                       onPhoneFieldChange(e)

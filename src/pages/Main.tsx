@@ -73,7 +73,7 @@ const Main = () => {
 
   return (
     <div
-      className='w-full h-[100vh] relative flex flex-row justify-between items-center'
+      className='main relative w-full h-[100vh] flex flex-row justify-between items-center transition-all overflow-hidden'
       onContextMenu={onContextMenu}
     >
       <LeftCol />

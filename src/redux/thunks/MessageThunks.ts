@@ -12,6 +12,7 @@ import {
   CONVERSATION_DETAIL_REVOKE_MESSAGE,
   CONVERSATION_DETAIL_SAVE_MESSAGE,
 } from '../../constants/ReduxConstant'
+import http from '../../utilities/http/Http'
 import { ErrorType } from '../types/ErrorType'
 import {
   ForwardMessagePayloadType,
@@ -27,7 +28,7 @@ export const loadMessageOfConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DETAIL_LOAD_MESSAGES, async (payload, thunkApi) => {
   try {
-    const response = await axios.get(API_LOAD_MSG_OF_CONVER + payload)
+    const response = await http.get(API_LOAD_MSG_OF_CONVER + payload)
 
     return response.data
   } catch (error) {
@@ -47,7 +48,7 @@ export const saveMessage = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DETAIL_SAVE_MESSAGE, async (payload, thunkApi) => {
   try {
-    const response = await axios.post(API_SAVE_MSG, payload.formData, {
+    const response = await http.post(API_SAVE_MSG, payload.formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -76,7 +77,7 @@ export const forwardOneMessage = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DETAIL_FORWARD_MESSAGE, async (payload, thunkApi) => {
   try {
-    const response = await axios.post(
+    const response = await http.post(
       API_FORWARD_MSG + payload.converId,
       payload
     )
@@ -98,7 +99,7 @@ export const revokeOneMessage = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DETAIL_REVOKE_MESSAGE, async (payload, thunkApi) => {
   try {
-    await axios.post(API_REVOKE_MSG + payload)
+    await http.post(API_REVOKE_MSG + payload)
 
     return true
   } catch (error) {

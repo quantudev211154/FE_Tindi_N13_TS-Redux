@@ -83,7 +83,7 @@ const ManageGroup = (props: Props) => {
       }}
     >
       <div
-        className='w-1/3 bg-gray-200 rounded-2xl relative top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden
+        className='w-5/6 md:w-1/3 bg-gray-200 rounded-2xl relative top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden
       '
       >
         <Stack spacing={1} sx={{ width: '100%', borderRadius: '.375rem' }}>

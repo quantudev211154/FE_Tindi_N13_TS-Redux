@@ -34,6 +34,13 @@ const conversationsControlSlice = createSlice({
       state.isLoadingChatList = true
       state.conversationList = []
     },
+    deleteConversation: (state, action: PayloadAction<ConversationType>) => {
+      state.conversationList = state.conversationList.filter(
+        (conver) => conver.id !== action.payload.id
+      )
+
+      state.currentChat = null
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadConversations.pending, (state) => {
@@ -74,17 +81,17 @@ const conversationsControlSlice = createSlice({
       }
     })
 
-    builder.addCase(deleteConversation.pending, (state, action) => {
-      state.isLoadingChatList = true
-    })
+    // builder.addCase(deleteConversation.pending, (state, action) => {
+    //   state.isLoadingChatList = true
+    // })
 
-    builder.addCase(deleteConversation.fulfilled, (state, action) => {
-      state.conversationList = state.conversationList.filter(
-        (iterator) => iterator.id != action.payload
-      )
-      state.currentChat = null
-      state.isLoadingChatList = false
-    })
+    // builder.addCase(deleteConversation.fulfilled, (state, action) => {
+    //   state.conversationList = state.conversationList.filter(
+    //     (iterator) => iterator.id != action.payload
+    //   )
+    //   state.currentChat = null
+    //   state.isLoadingChatList = false
+    // })
 
     builder.addCase(
       updateConversationAvatarAndTitle.fulfilled,

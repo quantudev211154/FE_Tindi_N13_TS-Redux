@@ -9,15 +9,18 @@ const LeftCol = () => {
   const minWidth = 200
 
   const handleResize = (resizerXCor: number) => {
-    if (resizerXCor < maxWidth && resizerXCor > minWidth)
-      ref.current!.style.width = resizerXCor + 'px'
+    if (ref.current) {
+      if (window.screen.availWidth > 768) {
+        if (resizerXCor < maxWidth && resizerXCor > minWidth)
+          ref.current.style.width = resizerXCor + 'px'
+      }
+    }
   }
 
   return (
     <div
       ref={ref}
-      style={{ maxWidth: maxWidth }}
-      className='relative border-r-[1px] border-slate-300 left-col flex-initial flex flex-col justify-start h-full'
+      className='left-col relative w-full md:w-[30%] border-0 md:border md:border-r-[1px] md:border-slate-300 left-col flex-1 md:flex-initial flex flex-col justify-start h-full'
     >
       <LeftHeader />
       <LeftMain />

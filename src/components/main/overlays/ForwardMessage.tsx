@@ -5,7 +5,7 @@ import {
   controlOverlaysState,
 } from '../../../redux/slices/ControlOverlaysSlice'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { conversationsControlState } from '../../../redux/slices/ConversationsControlSlice'
 import UserAvatar from '../../core/UserAvatar'
 import { AVATAR_BASE } from '../../../constants/UserAvatarConstant'
@@ -14,7 +14,10 @@ import {
   ConversationTypeEnum,
 } from '../../../redux/types/ConversationTypes'
 import { authState } from '../../../redux/slices/AuthSlice'
-import { getTeammateInSingleConversation } from '../../../utilities/conversation/ConversationUtils'
+import {
+  findConversation,
+  getTeammateInSingleConversation,
+} from '../../../utilities/conversation/ConversationUtils'
 import { UserType } from '../../../redux/types/UserTypes'
 import {
   AttachmentType,
@@ -35,17 +38,31 @@ import { forwardOneMessage } from '../../../redux/thunks/MessageThunks'
 const ForwardMessage = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const { setHandlerResult } = messageContextmenuActions
-  const { currentChat } = useAppSelector(conversationsControlState)
+  const { conversationList, currentChat } = useAppSelector(
+    conversationsControlState
+  )
   const { inBackgroundMessage } = useAppSelector(messageContextmenuState)
   const { currentUser } = useAppSelector(authState)
   const { openForwardMessageOverlay } = useAppSelector(controlOverlaysState)
-  const { conversationList } = useAppSelector(conversationsControlState)
   const { toggleForwardMessageOverlay } = controlOverlaysActions
   const dispatch = useAppDispatch()
+  const [foundResult, setFoundResult] = useState<
+    ConversationType[] | undefined
+  >(undefined)
 
   useEffect(() => {
-    if (openForwardMessageOverlay) inputRef.current && inputRef.current!.focus()
+    if (openForwardMessageOverlay) inputRef.current && inputRef.current.focus()
   }, [openForwardMessageOverlay])
+
+  const onFindConverTextFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value
+
+    setFoundResult(
+      findConversation(value, currentUser as UserType, conversationList)
+    )
+  }
 
   const forwardMessageToConversation = async (item: ConversationType) => {
     dispatch(toggleForwardMessageOverlay())
@@ -78,17 +95,17 @@ const ForwardMessage = () => {
       }}
     >
       <div
-        className='w-1/3 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
+        className='w-5/6 md:w-1/3 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
         flex flex-col p-5 rounded-md bg-white'
       >
-        <div className='flex-initial flex justify-start items-center'>
+        <div className='flex-initial flex justify-start items-center pb-5'>
           <Button
             variant='contained'
             sx={{
-              maxWidth: '3rem',
-              maxHeight: '3rem',
-              minWidth: '3rem',
-              minHeight: '3rem',
+              maxWidth: '2.8rem',
+              maxHeight: '2.8rem',
+              minWidth: '2.8rem',
+              minHeight: '2.8rem',
               borderRadius: '50%',
               mr: 1,
               bgcolor: 'transparent',
@@ -109,11 +126,15 @@ const ForwardMessage = () => {
             type='text'
             name='target'
             className='w-full py-2 text-lg outline-none'
-            placeholder='Chuyển tiếp đến'
+            placeholder='Chuyển tiếp đến...'
+            onChange={onFindConverTextFieldChange}
           />
         </div>
         <div className='flex-auto max-h-56 overflow-y-scroll'>
-          {conversationList.map((item) => {
+          {(foundResult === undefined || foundResult.length === 0
+            ? conversationList
+            : foundResult
+          ).map((item) => {
             if (item.id === (currentChat as ConversationType).id)
               return <div key={item.id} className='hidden'></div>
 

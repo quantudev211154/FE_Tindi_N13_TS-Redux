@@ -1,5 +1,4 @@
 import { Button, Modal } from '@mui/material'
-import React from 'react'
 
 type Props = {
   open: boolean
@@ -25,7 +24,7 @@ const ConfirmDangerAction = ({
         reject()
       }}
     >
-      <div className='w-1/4 px-5 py-3 rounded-xl absolute left-1/2 top-1/2 tranform -translate-x-1/2 -translate-y-1/2 bg-white'>
+      <div className='w-2/3 md:w-1/4 px-5 py-3 rounded-xl absolute left-1/2 top-1/2 tranform -translate-x-1/2 -translate-y-1/2 bg-white'>
         <div>
           <p className='font-medium mb-3 text-lg'>{title}</p>
           <p className='text-red-600'>{message}</p>
@@ -44,7 +43,7 @@ const ConfirmDangerAction = ({
               '&:hover': { bgcolor: '#1472c4', color: 'white' },
             }}
           >
-            Đóng
+            Huỷ
           </Button>
           <Button
             onClick={() => {

@@ -13,7 +13,7 @@ import { useState } from 'react'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../../../../../redux/slices/ControlOverlaysSlice'
 import {
-  deleteConversation,
+  deleteConversation as deleteConversationThunk,
   outGroupConversation,
 } from '../../../../../../../redux/thunks/ConversationThunks'
 import { ConversationTypeEnum } from '../../../../../../../redux/types/ConversationTypes'
@@ -24,7 +24,10 @@ import {
 import ConfirmDangerAction from '../../../../../overlays/ConfirmDangerAction'
 import ManageGroup from '../../../../../overlays/ManageGroup'
 import ViewGroupInfoOverlay from '../../../../../overlays/ViewGroupInfoOverlay'
-import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
+import {
+  conversationActions,
+  conversationsControlState,
+} from './../../../../../../../redux/slices/ConversationsControlSlice'
 
 type Props = {}
 
@@ -39,6 +42,7 @@ const AdvancedAction = (props: Props) => {
   const [openDeleteChatOverlay, setOpenConfirmDeleteChatOverlay] =
     useState(false)
   const [openOutGroupOverlay, setOpenOutGroupOverlay] = useState(false)
+  const { deleteConversation } = conversationActions
 
   const handleOpenGroupSetting = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -51,7 +55,10 @@ const AdvancedAction = (props: Props) => {
   }
 
   const deleteChat = () => {
-    currentChat && dispatch(deleteConversation(currentChat.id))
+    if (currentChat) {
+      dispatch(deleteConversation(currentChat))
+      dispatch(deleteConversationThunk(currentChat.id))
+    }
   }
 
   const outGroupResolve = () => {

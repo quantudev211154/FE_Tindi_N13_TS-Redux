@@ -41,9 +41,12 @@ const ChatFooter = () => {
   const [attachFileType, setAttachFileType] = useState<
     AttachFileTypeEnum | undefined
   >(undefined)
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     setShowEmojiPicker(false)
+
+    textAreaRef.current && textAreaRef.current.focus()
   }, [currentChat])
 
   const onClosePreviewFiles = () => {
@@ -164,8 +167,8 @@ const ChatFooter = () => {
   }
 
   return (
-    <div className='w-full py-2 mx-auto flex-initial transition-all'>
-      <div className='w-2/3 mx-auto relative'>
+    <div className='w-full px-1 md:px-0 py-2 mx-auto flex-initial transition-all'>
+      <div className='w-full md:w-2/3 mx-auto relative'>
         <form ref={formRef} onSubmit={onSendMsg} encType='multipart/formData'>
           <div className='w-full flex flex-row justify-between items-center'>
             <div className='flex flex-row justify-between items-center w-full bg-white rounded-2xl px-2'>
@@ -205,6 +208,7 @@ const ChatFooter = () => {
               </div>
 
               <TextareaAutosize
+                ref={textAreaRef}
                 onFocusCapture={() => {
                   MySocket.changeTypingStatus(
                     (currentChat as ConversationType).id,
@@ -236,7 +240,7 @@ const ChatFooter = () => {
                 onFocus={() => {
                   setShowEmojiPicker(false)
                 }}
-                className='w-full rounded-2xl bg-white py-3 transition-all border-2 border-transparent outline-none'
+                className='flex-1 rounded-2xl bg-white py-3 transition-all border-2 border-transparent outline-none'
               />
               <div className='flex justify-end items-center'>
                 <Tooltip title='Đính kèm ảnh' placement='top'>

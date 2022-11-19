@@ -12,9 +12,13 @@ import {
   ConversationType,
   ConversationTypeEnum,
 } from '../../redux/types/ConversationTypes'
-import { ParticipantType } from '../../redux/types/ParticipantTypes'
+import {
+  ParticipantRoleEnum,
+  ParticipantType,
+} from '../../redux/types/ParticipantTypes'
 import { UserType } from '../../redux/types/UserTypes'
 import { AppDispatch } from '../../redux_store'
+import http from '../http/Http'
 import { createRandomHEXColor } from '../random_color_creator/CreateRandomHEXColor'
 
 export const checkExistingSingleConversation = (
@@ -73,7 +77,7 @@ export const createNewSingleConversation = async (
   changeCurrentChat: ActionCreatorWithPayload<ConversationType, string>,
   toggleContactOverlay: ActionCreatorWithoutPayload<string>
 ) => {
-  const response = await axios.get(API_GET_USER_BY_PHONE + contact.phone)
+  const response = await http.get(API_GET_USER_BY_PHONE + contact.phone)
 
   const existingConver = checkExistingSingleConversation(
     currentUser?.id as number,
@@ -132,4 +136,64 @@ export const isContactExistingInCurrentChatParticipant = (
   )
 
   return existing !== undefined ? true : false
+}
+
+export const findConversation = (
+  keyword: string,
+  currentUser: UserType,
+  conversationList: ConversationType[]
+): ConversationType[] => {
+  if (keyword === '') return []
+
+  let foundConvers: ConversationType[] = []
+
+  for (let iterator of conversationList) {
+    let tmp: ConversationType | undefined = undefined
+
+    if (iterator.type === ConversationTypeEnum.GROUP) {
+      if (iterator.title.includes(keyword)) {
+        tmp = iterator
+      }
+    } else {
+      const teammate = getTeammateInSingleConversation(currentUser, iterator)
+
+      if (teammate.user.fullName.includes(keyword)) {
+        tmp = iterator
+      }
+    }
+
+    if (tmp !== undefined) {
+      const existing = foundConvers.find(
+        (conver) => conver.id === (tmp as ConversationType).id
+      )
+
+      if (existing === undefined) foundConvers.push(tmp)
+    }
+  }
+
+  console.log(foundConvers)
+
+  return foundConvers
+}
+
+export const sortParticipantsByRole = (
+  currentChat: ConversationType
+): ParticipantType[] => {
+  let sorted: ParticipantType[] = []
+
+  for (let parti of currentChat.participantResponse) {
+    if (parti.role !== ParticipantRoleEnum.ADMIN) {
+      if (parti.role === ParticipantRoleEnum.MOD) {
+        sorted.unshift(parti)
+      } else sorted.push(parti)
+    }
+  }
+
+  const uniqueAdmin = currentChat.participantResponse.find(
+    (parti) => parti.role === ParticipantRoleEnum.ADMIN
+  )
+
+  if (uniqueAdmin !== undefined) sorted.unshift(uniqueAdmin)
+
+  return sorted
 }

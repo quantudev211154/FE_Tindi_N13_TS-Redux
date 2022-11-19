@@ -4,6 +4,7 @@ import { useAppDispatch } from '../../redux_hooks'
 
 export type IDropdownItemProps = {
   key: number
+  bgIcon: string
   icon: ReactNode
   label: string
   handleClick: Function
@@ -16,7 +17,7 @@ type Props = {
 }
 
 const DropdownItem = ({
-  item: { icon, label, handleClick, followState, backdropContent },
+  item: { bgIcon, icon, label, handleClick, followState, backdropContent },
 }: Props) => {
   const dispatch = useAppDispatch()
 
@@ -25,19 +26,15 @@ const DropdownItem = ({
       <Button
         variant='contained'
         fullWidth={true}
-        startIcon={icon}
         sx={{
           width: '100%',
           py: 1,
           bgcolor: 'transparent',
-          color: 'black',
           fontWeight: 'medium',
+          color: 'black',
           textTransform: 'none',
           justifyContent: 'flex-start',
           fontSize: '1em',
-          '& svg': {
-            fill: '#707579',
-          },
           '&:hover': {
             bgcolor: 'rgb(228,228,229)',
           },
@@ -45,10 +42,15 @@ const DropdownItem = ({
         disableElevation
         onClick={() => {
           dispatch(handleClick())
-          // console.log(123)
         }}
       >
-        <span className='ml-2'>{label}</span>
+        <label
+          style={{ backgroundColor: bgIcon }}
+          className='p-1 rounded-md text-white'
+        >
+          {icon}
+        </label>
+        <span className='ml-5'>{label}</span>
       </Button>
       <Modal
         open={followState}
@@ -56,20 +58,9 @@ const DropdownItem = ({
           dispatch(handleClick())
         }}
       >
-        <Box
-          sx={{
-            position: 'absolute' as 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'white',
-            boxShadow: 24,
-            borderRadius: '.8rem',
-          }}
-        >
+        <div className='w-5/6 md:w-1/3 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg'>
           {backdropContent}
-        </Box>
+        </div>
       </Modal>
     </>
   )

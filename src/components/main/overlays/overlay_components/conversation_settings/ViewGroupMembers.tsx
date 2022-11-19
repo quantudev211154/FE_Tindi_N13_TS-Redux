@@ -10,8 +10,9 @@ import {
   ParticipantType,
 } from '../../../../../redux/types/ParticipantTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ConversationTypeEnum } from '../../../../../redux/types/ConversationTypes'
+import { sortParticipantsByRole } from '../../../../../utilities/conversation/ConversationUtils'
 
 type Props = {
   setShowAddMemberToGroup: React.Dispatch<React.SetStateAction<boolean>>
@@ -28,12 +29,23 @@ const ViewGroupMembers = ({
 }: Props) => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
+  const [chatParticipants, setChatParticipants] = useState<ParticipantType[]>(
+    []
+  )
+
+  useEffect(() => {
+    setChatParticipants([])
+
+    if (currentChat) {
+      setChatParticipants(sortParticipantsByRole(currentChat))
+    }
+  }, [currentChat])
 
   return (
     <div className='w-full bg-white rounded-2xl pb-3'>
-      <div className='flex justify-between items-center px-5 py-3'>
+      <div className='flex justify-between items-center py-2'>
         <div
-          className='flex-1 flex items-center cursor-pointer hover:bg-gray-200 py-3 rounded-lg'
+          className='px-5 flex-1 flex items-center cursor-pointer hover:bg-gray-200 py-3 rounded-lg'
           onClick={() => {
             setShowViewAllMember(true)
           }}
@@ -43,7 +55,7 @@ const ViewGroupMembers = ({
             {currentChat && currentChat.participantResponse.length} thành viên
           </span>
         </div>
-        <div>
+        <div className='px-3'>
           {currentChat && currentChat.type === ConversationTypeEnum.GROUP ? (
             <Tooltip title='Thêm thành viên vào nhóm'>
               <Fab
@@ -68,7 +80,7 @@ const ViewGroupMembers = ({
       </div>
       <div className='w-full flex flex-col max-h-96 overflow-auto'>
         {currentChat &&
-          currentChat.participantResponse.map((participant) => {
+          chatParticipants.map((participant) => {
             const {
               user: { fullName, phone, avatar },
             } = participant

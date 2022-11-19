@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
 import { createNewContact } from '../../../../../utilities/contacts/ContactUtils'
 import { getTeammateInSingleConversation } from '../../../../../utilities/conversation/ConversationUtils'
 import { ParticipantType } from '../../../../../redux/types/ParticipantTypes'
+import http from '../../../../../utilities/http/Http'
 
 const AddContactBar = () => {
   const { currentUser } = useAppSelector(authState)
@@ -44,7 +45,7 @@ const AddContactBar = () => {
         formData.append('userId', (currentUser as UserType).id.toString())
 
         try {
-          await axios.post(API_CHECK_EXISTING_CONTACT, formData)
+          await http.post(API_CHECK_EXISTING_CONTACT, formData)
 
           ref.current!.style.display = 'flex'
         } catch (error) {

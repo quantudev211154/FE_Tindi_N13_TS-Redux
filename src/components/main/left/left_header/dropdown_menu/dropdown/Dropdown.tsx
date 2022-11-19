@@ -1,7 +1,10 @@
 import {
+  Group,
   GroupOutlined,
   LogoutOutlined,
+  Person,
   PersonOutlineOutlined,
+  Settings,
   SettingsOutlined,
 } from '@mui/icons-material'
 import {
@@ -15,7 +18,7 @@ import ConfirmLogout from '../../../../overlays/ConfirmLogout'
 import { useAppSelector } from '../../../../../../redux_hooks'
 import Contact from '../../../../overlays/Contact'
 import NewGroup from '../../../../overlays/NewGroup'
-import Settings from '../../../../overlays/Settings'
+import { default as SettingOverlay } from './../../../../overlays/Settings'
 
 interface Props {
   open: boolean
@@ -32,7 +35,8 @@ const Dropdown = ({ open }: Props) => {
   const dropdownItemList: IDropdownItemProps[] = [
     {
       key: 1,
-      icon: <PersonOutlineOutlined />,
+      bgIcon: '#e6306a',
+      icon: <Person sx={{ width: 23, height: 23 }} />,
       label: 'Danh bạ',
       handleClick: controlOverlaysActions.toggleContactOverlay,
       followState: openContactOverlay,
@@ -40,7 +44,8 @@ const Dropdown = ({ open }: Props) => {
     },
     {
       key: 2,
-      icon: <GroupOutlined />,
+      bgIcon: '#2780d9',
+      icon: <Group sx={{ width: 23, height: 23 }} />,
       label: 'Tạo nhóm',
       handleClick: controlOverlaysActions.toggleNewGroupOverlay,
       followState: openNewGroupOverlay,
@@ -48,15 +53,17 @@ const Dropdown = ({ open }: Props) => {
     },
     {
       key: 3,
-      icon: <SettingsOutlined />,
+      bgIcon: '#7f40f5',
+      icon: <Settings sx={{ width: 23, height: 23 }} />,
       label: 'Cài đặt',
       handleClick: controlOverlaysActions.toggleSettingOverlay,
       followState: openSettingOverlay,
-      backdropContent: <Settings />,
+      backdropContent: <SettingOverlay />,
     },
     {
       key: 4,
-      icon: <LogoutOutlined />,
+      bgIcon: '#f24033',
+      icon: <LogoutOutlined sx={{ width: 23, height: 23 }} />,
       label: 'Đăng xuất',
       handleClick: controlOverlaysActions.toggleConfirmLogoutOverlay,
       followState: openConfirmLogoutOverlay,
@@ -70,15 +77,15 @@ const Dropdown = ({ open }: Props) => {
         open
           ? {
               width: '17rem',
-              height: '13rem',
+              height: '15rem',
               fontSize: '.9rem',
               boxShadow: '0 .25rem .5rem .125rem rgba(114,114,114,0.25098)',
               visibility: 'visible',
               opacity: '1',
             }
           : {
-              width: '0',
-              height: '0',
+              width: '0rem',
+              height: '0rem',
               fontSize: '0rem',
               visibility: 'hidden',
               opacity: '0',

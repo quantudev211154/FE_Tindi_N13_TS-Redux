@@ -10,6 +10,7 @@ import {
   AUTH_LOGIN_THUNK,
   AUTH_REGISTER_THUNK,
 } from '../../constants/ReduxConstant'
+import http from '../../utilities/http/Http'
 import {
   CheckAuthPayload,
   LoginPayloadType,
@@ -30,7 +31,7 @@ export const login = createAsyncThunk<
     formData.append('phone', payload.phone)
     formData.append('password', payload.password)
 
-    const response = await axios.post(API_LOGIN, formData)
+    const response = await http.post(API_LOGIN, formData)
 
     return response.data
   } catch (error) {
@@ -48,7 +49,7 @@ export const register = createAsyncThunk(
   AUTH_REGISTER_THUNK,
   async (payload: RegisterPayloadType) => {
     try {
-      await axios.post(API_REGISTER, payload)
+      await http.post(API_REGISTER, payload)
     } catch (error) {
       console.log(error)
     }
@@ -81,7 +82,7 @@ export const forgotPassword = createAsyncThunk<
   { rejectValue: ErrorType }
 >(AUTH_FORGOT_PWD_THUNK, async (payload, thunkApi) => {
   try {
-    await axios.post(API_FORGOT_PWD + payload)
+    await http.post(API_FORGOT_PWD + payload)
 
     return true
   } catch (error) {

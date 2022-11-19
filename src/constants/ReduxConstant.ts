@@ -18,8 +18,7 @@ export const CONVERSATION_REMOVE_MEMBER =
   CONVERSATION_SLICE_NAME + '/removeMember'
 export const CONVERSATION_GRANT_PERMISSION =
   CONVERSATION_SLICE_NAME + '/grantPermission'
-  export const CONVERSATION_OUT_GROUP =
-  CONVERSATION_SLICE_NAME + '/outGroup'
+export const CONVERSATION_OUT_GROUP = CONVERSATION_SLICE_NAME + '/outGroup'
 
 export const CONTACT_SLICE_NAME = 'contact'
 export const CONTACT_LOAD_CONTACTS = CONTACT_SLICE_NAME + '/loadContacts'
@@ -40,3 +39,5 @@ export const FIREBASE_AUTH_NAME = 'firebaseAuth'
 export const SOCKET_SLICE_NAME = 'socket'
 
 export const MESSAGE_CONTEXT_MENU_NAME = 'msgContextMenu'
+
+export const RESPONSIVE = 'RESPONSIVE'

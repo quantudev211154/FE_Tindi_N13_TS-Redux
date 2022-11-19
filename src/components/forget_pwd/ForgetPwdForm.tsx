@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { FirebaseService } from '../../services/FirebaseAuth'
 import axios from 'axios'
 import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
+import http from '../../utilities/http/Http'
 interface IForgetPwd {
   phone: string
 }
@@ -35,7 +36,7 @@ const ForgetPwdForm = ({ openOTPField, setCurrentPhone }: Props) => {
   ) => {
     if (event.target.value.length === 10) {
       try {
-        await axios.get(API_CHECK_EXISTING_PHONE + event.target.value)
+        await http.get(API_CHECK_EXISTING_PHONE + event.target.value)
 
         setPhoneErr(
           'Chúng tôi chưa ghi nhận tài khoản Tindi dùng số điện thoại này. Có thể bạn đã nhầm rồi!'

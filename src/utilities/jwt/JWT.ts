@@ -6,6 +6,7 @@ import {
   LOCAL_REFRESH_TOKEN_NAME,
 } from '../../constants/AuthConstant'
 import { UserType } from '../../redux/types/UserTypes'
+import http from '../http/Http'
 
 class JWTManager {
   inMemoryToken: string | null
@@ -21,7 +22,7 @@ class JWTManager {
       if (event.key === LOCAL_LOGOUT_EVENT_NAME) this.inMemoryToken = null
     })
 
-    axios.defaults.withCredentials = true
+    http.defaults.withCredentials = true
   }
 
   getToken = () => this.inMemoryToken
@@ -56,13 +57,13 @@ class JWTManager {
         return false
       }
 
-      const response = await axios.post(API_GET_REFRESH_TOKEN, {
+      const response = await http.post(API_GET_REFRESH_TOKEN, {
         refreshToken: inLocalStorageRefreshToken,
       })
 
       const data = (await response.data) as {
         accessToken: string
-        user: UserType //Error here
+        user: UserType
       }
 
       this.setToken(data.accessToken)
@@ -101,10 +102,10 @@ class JWTManager {
 
   private pinBearerTokenToCommonHeader = (accessToken: string) => {
     accessToken
-      ? (axios.defaults.headers.common[
+      ? (http.defaults.headers.common[
           'Authorization'
         ] = `Bearer ${accessToken}`)
-      : delete axios.defaults.headers.common['Authorization']
+      : delete http.defaults.headers.common['Authorization']
   }
 }
 

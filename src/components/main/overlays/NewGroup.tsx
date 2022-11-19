@@ -1,10 +1,13 @@
 import { Button, TextField, Tooltip } from '@mui/material'
 import { Formik } from 'formik'
-import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
+import {
+  controlOverlaysActions,
+  controlOverlaysState,
+} from '../../../redux/slices/ControlOverlaysSlice'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
 import * as yup from 'yup'
 import FormErrorDisplay from '../../core/FormErrorDisplay'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import AddMembersToGroup from './overlay_components/new_group/AddMembersToGroup'
 import { NewGroupPayloadType } from '../../../redux/types/GroupTypes'
 import { loadContacts } from './../../../redux/thunks/ContactThunk'
@@ -21,6 +24,7 @@ const initialValue: INewGroup = {
 
 const NewGroup = () => {
   const { currentUser } = useAppSelector(authState)
+  const { openNewGroupOverlay } = useAppSelector(controlOverlaysState)
   const controlOverlayActions = controlOverlaysActions
   const dispatch = useAppDispatch()
   const [isOpenAddMemberOverlay, setIsOpenAddMembersOverlay] = useState(false)
@@ -28,10 +32,15 @@ const NewGroup = () => {
   const [newGroupInfo, setNewGroupInfo] = useState<
     NewGroupPayloadType | undefined
   >(undefined)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     dispatch(loadContacts(currentUser?.id as number))
   }, [])
+
+  useEffect(() => {
+    if (openNewGroupOverlay) inputRef.current && inputRef.current.focus()
+  }, [openNewGroupOverlay])
 
   const backToNewGroupOverlay = () => {
     setIsOpenAddMembersOverlay(false)
@@ -144,6 +153,7 @@ const NewGroup = () => {
                 </div> */}
                 <div className='flex-1'>
                   <TextField
+                    inputRef={inputRef}
                     fullWidth
                     name='groupName'
                     label='Tên nhóm'

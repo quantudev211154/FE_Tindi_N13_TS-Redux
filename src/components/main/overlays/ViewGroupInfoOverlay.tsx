@@ -68,7 +68,7 @@ const ViewGroupInfoOverlay = () => {
       }}
     >
       <div
-        className='sm:w-2/3 md:w-1/3 bg-gray-200 rounded-2xl relative top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden
+        className='w-5/6 md:w-1/3 bg-gray-200 rounded-2xl relative top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden
       '
       >
         <div

@@ -3,6 +3,7 @@ import JSZip from 'jszip'
 import {
   AttachFileTypeEnum,
   AttachmentType,
+  MessageType,
 } from '../../redux/types/MessageTypes'
 
 export const getTypeOfAttachment = (
@@ -56,4 +57,19 @@ export const dowloadAttachmentsListOfMessage = async (
   } else {
     downloadAndCompressToZipFolder(attachmentList)
   }
+}
+
+export const findMessage = (
+  keyword: string,
+  messageList: MessageType[]
+): MessageType[] => {
+  if (keyword === '') return []
+
+  const found: MessageType[] = []
+
+  for (let message of messageList) {
+    if (message.message.includes(keyword)) found.push(message)
+  }
+
+  return found
 }

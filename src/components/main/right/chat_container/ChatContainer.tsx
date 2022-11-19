@@ -24,7 +24,7 @@ const ChatContainer = () => {
   }, [currentChat])
 
   return (
-    <div className='w-full h-full z-40 flex overflow-hidden justify-between transition-all'>
+    <div className='relative w-full h-full z-40 flex overflow-hidden justify-between transition-all'>
       <div className='h-full flex flex-col transition-all flex-1'>
         <ChatHeader />
         <AddContactBar />
@@ -32,9 +32,16 @@ const ChatContainer = () => {
         <ChatFooter />
       </div>
       <div
+        className='expander h-full shadow-2xl shadow-slate-700 md:shadow-none absolute md:relative z-50 bg-white'
         style={{
-          width: openExpandedPanel ? '18rem' : '0',
+          width: openExpandedPanel ? '20rem' : '0',
           transition: '.2s ease',
+          right:
+            window.screen.availWidth < 768
+              ? openExpandedPanel
+                ? '100%'
+                : '0'
+              : '0',
         }}
       >
         <SearchExpanded />

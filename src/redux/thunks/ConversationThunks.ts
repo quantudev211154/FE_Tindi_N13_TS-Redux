@@ -20,6 +20,7 @@ import {
   CONVERSATION_REMOVE_MEMBER,
   CONVERSATION_UPDATE_CONVER,
 } from '../../constants/ReduxConstant'
+import http from '../../utilities/http/Http'
 import {
   AddMultiMemberPayloadType,
   AddMultiMemberReturnType,
@@ -38,7 +39,7 @@ export const loadConversations = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_LOAD_CONVERS_THUNK, async (payload: number, thunkApi) => {
   try {
-    const response = await axios.get(`${API_LOAD_CONVERS}/${payload}`)
+    const response = await http.get(`${API_LOAD_CONVERS}/${payload}`)
 
     return response.data
   } catch (error) {
@@ -58,7 +59,7 @@ export const addNewConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_ADD_NEW_CONVER, async (payload, thunkApi) => {
   try {
-    const response = await axios.post(API_ADD_CONVER, payload)
+    const response = await http.post(API_ADD_CONVER, payload)
 
     return response.data
   } catch (error) {
@@ -78,7 +79,7 @@ export const updateConversationAvatarAndTitle = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_UPDATE_CONVER, async (payload, thunkApi) => {
   try {
-    const response = await axios.post(
+    const response = await http.post(
       API_UPDATE_CONVER + payload.conversationId,
       payload.formData
     )
@@ -101,7 +102,7 @@ export const deleteConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DELETE_CONVER, async (payload, thunkApi) => {
   try {
-    const response = await axios.delete(API_DELETE_CONVER + payload)
+    const response = await http.delete(API_DELETE_CONVER + payload)
 
     return payload
   } catch (error) {
@@ -121,7 +122,7 @@ export const addMultiParticipantToConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_ADD_MEMBER, async (payload, thunkApi) => {
   try {
-    const response = await axios.post<ParticipantType[]>(
+    const response = await http.post<ParticipantType[]>(
       API_ADD_MEMBERS_TO_CONVERSATION,
       payload
     )
@@ -149,7 +150,7 @@ export const removeParticipant = createAsyncThunk<
 >(CONVERSATION_REMOVE_MEMBER, async (payload, thunkApi) => {
   try {
     console.log(payload)
-    const response = await axios.post(
+    const response = await http.post(
       `${API_REMOVE_MEMBER}?adminId=${payload.adminId}&participantId=${payload.participantId}`
     )
 
@@ -171,7 +172,7 @@ export const outGroupConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_OUT_GROUP, async (payload, thunkApi) => {
   try {
-    const response = await axios.delete(API_OUT_GROUP + payload)
+    const response = await http.delete(API_OUT_GROUP + payload)
 
     return payload
   } catch (error) {
@@ -191,7 +192,7 @@ export const grantPermission = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_GRANT_PERMISSION, async (payload, thunkApi) => {
   try {
-    const response = await axios.post(
+    const response = await http.post(
       `${API_GRANT_PERMISSION}?adminId=${payload.adminId}&participantId=${payload.participantId}&role=${payload.role}`
     )
 

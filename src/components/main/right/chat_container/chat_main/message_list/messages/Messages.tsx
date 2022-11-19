@@ -96,7 +96,7 @@ const Messages = ({ item }: Props) => {
         style={{
           justifyContent: fromSelf ? 'flex-end' : 'flex-start',
         }}
-        className='relative w-2/3 mx-auto flex flex-row'
+        className='relative w-full px-5 md:w-2/3 mx-auto flex flex-row'
       >
         <div className='flex flex-col justify-end mr-3 py-1'>
           {showAvatar &&
@@ -131,14 +131,14 @@ const Messages = ({ item }: Props) => {
                   ? '.85rem .85rem 0 .85rem'
                   : '.85rem .85rem .85rem 0',
             }}
-            className='relative sm:min-w-[50%] md:min-w-[20%]'
+            className='relative min-w-[20%]'
           >
             {item.delete ? (
               <></>
             ) : (
-              <div className='flex flex-col justify-start sm:min-w-[50%] md:min-w-[40%]'>
+              <div className='flex flex-col justify-start sm:min-w-[50%] md:min-w-[40%] '>
                 {item.isLoading ? (
-                  <div className='w-full h-20 rounded-md bg-slate-400 flex justify-center items-center'>
+                  <div className='w-full h-20 rounded-2xl bg-slate-400 flex justify-center items-center'>
                     <CircularProgress
                       color='info'
                       sx={{ width: '1rem', height: '1rem' }}
@@ -210,7 +210,7 @@ const Messages = ({ item }: Props) => {
                     }
                   : { backgroundColor: 'transparent' }
               }
-              className='absolute bottom-0 right-0'
+              className='absolute bottom-0 right-0 flex justify-end items-center'
             >
               <span className='text-[.7rem] mr-1 text-slate-500'>
                 {item.revoke ? '' : parseDate(item.createdAt)}

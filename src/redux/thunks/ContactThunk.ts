@@ -8,6 +8,7 @@ import {
   CONTACT_ADD_NEW_CONTACT,
   CONTACT_LOAD_CONTACTS,
 } from '../../constants/ReduxConstant'
+import http from '../../utilities/http/Http'
 import {
   AddNewContactPayloadType,
   LoadContactsReturnType,
@@ -20,7 +21,7 @@ export const loadContacts = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONTACT_LOAD_CONTACTS, async (payload, thunkApi) => {
   try {
-    const response = await axios.get(API_LOAD_CONTACTS + payload)
+    const response = await http.get(API_LOAD_CONTACTS + payload)
 
     return response.data
   } catch (error) {
@@ -40,7 +41,7 @@ export const addNewContact = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONTACT_ADD_NEW_CONTACT, async (payload, thunkApi) => {
   try {
-    const response = await axios.post(API_ADD_NEW_CONTACT, payload)
+    const response = await http.post(API_ADD_NEW_CONTACT, payload)
 
     console.log(response.data)
     return response.data

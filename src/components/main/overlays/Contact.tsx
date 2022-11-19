@@ -13,7 +13,10 @@ import {
 import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../redux/slices/AuthSlice'
 import { contactState } from '../../../redux/slices/ContactSlice'
-import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
+import {
+  controlOverlaysActions,
+  controlOverlaysState,
+} from '../../../redux/slices/ControlOverlaysSlice'
 import { loadContacts } from '../../../redux/thunks/ContactThunk'
 import { ContactType } from '../../../redux/types/ContactTypes'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
@@ -30,7 +33,14 @@ const Contact = () => {
   const { currentUser } = useAppSelector(authState)
   const { contacts, isLoadingContacts } = useAppSelector(contactState)
   const { toggleContactOverlay } = controlOverlaysActions
+  const { openContactOverlay } = useAppSelector(controlOverlaysState)
   const dispatch = useAppDispatch()
+  const findContactInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (openContactOverlay)
+      findContactInputRef.current && findContactInputRef.current.focus()
+  }, [openContactOverlay])
 
   useEffect(() => {
     dispatch(loadContacts(currentUser?.id as number))
@@ -66,6 +76,7 @@ const Contact = () => {
           <p className='text-xl font-medium'>Danh bạ</p>
           <div className='searchbar py-2'>
             <TextField
+              inputRef={findContactInputRef}
               fullWidth
               type='text'
               name='contactSearch'

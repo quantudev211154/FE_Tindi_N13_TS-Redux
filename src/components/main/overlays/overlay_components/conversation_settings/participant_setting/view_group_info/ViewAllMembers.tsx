@@ -1,6 +1,6 @@
 import { ArrowBack, ClearOutlined } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { AVATAR_BASE } from '../../../../../../../constants/UserAvatarConstant'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../../../../../redux/slices/ControlOverlaysSlice'
@@ -13,6 +13,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
+import { sortParticipantsByRole } from '../../../../../../../utilities/conversation/ConversationUtils'
 import UserAvatar from '../../../../../../core/UserAvatar'
 import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
 import ViewParticipantInfo from './ViewParticipantInfo'
@@ -29,6 +30,15 @@ const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
   const [selectedParticipant, setSelectedParticipant] = useState<
     ParticipantType | undefined
   >(undefined)
+  const [chatParticipants, setChatParticipants] = useState<ParticipantType[]>(
+    []
+  )
+
+  useEffect(() => {
+    if (currentChat) {
+      setChatParticipants(sortParticipantsByRole(currentChat))
+    }
+  }, [currentChat])
 
   return (
     <div className='w-full rounded-2xl bg-white'>
@@ -88,7 +98,7 @@ const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
         </div>
         <div className='px-5 py-2'>
           {currentChat &&
-            currentChat.participantResponse.map((participant) => {
+            chatParticipants.map((participant) => {
               const {
                 user: { fullName, phone, avatar },
               } = participant

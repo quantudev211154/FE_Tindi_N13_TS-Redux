@@ -14,6 +14,7 @@ import {
 import axios from 'axios'
 import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
 import { createRandomHEXColor } from '../../utilities/random_color_creator/CreateRandomHEXColor'
+import http from '../../utilities/http/Http'
 
 interface IRegisterForm {
   name: string
@@ -44,7 +45,7 @@ const RegisterForm = () => {
   ) => {
     if (event.target.value.length === 10) {
       try {
-        await axios.get(API_CHECK_EXISTING_PHONE + values.phone)
+        await http.get(API_CHECK_EXISTING_PHONE + values.phone)
 
         setPhoneErr('')
       } catch (error) {

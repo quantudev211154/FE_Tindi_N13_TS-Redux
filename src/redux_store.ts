@@ -6,6 +6,7 @@ import CurrentChatNavigationSlice from './redux/slices/CurrentChatNavigationSlic
 import ConversationDetailSlice from './redux/slices/ConversationDetailSlice'
 import ContactSlice from './redux/slices/ContactSlice'
 import MessageContextmenuSlice from './redux/slices/MessageContextmenuSlice'
+import Responsive from './redux/slices/Responsive'
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     contacts: ContactSlice,
     converDetail: ConversationDetailSlice,
     messageContextMenu: MessageContextmenuSlice,
+    responsive: Responsive,
   },
 })
 
