@@ -23,9 +23,7 @@ import { showMessageHandlerResultToSnackbar } from '../../../utilities/message_h
 import { acceptImageType } from '../../../utilities/upload_files/UploadFileUtil'
 import { conversationsControlState } from './../../../redux/slices/ConversationsControlSlice'
 
-type Props = {}
-
-const ManageGroup = (props: Props) => {
+const ManageGroup = () => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const dispatch = useAppDispatch()

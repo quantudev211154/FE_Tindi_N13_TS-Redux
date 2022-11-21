@@ -1,5 +1,3 @@
-import { SettingsOutlined } from '@mui/icons-material'
-import { Button, Tooltip } from '@mui/material'
 import { AVATAR_SMALL } from '../../../../../constants/UserAvatarConstant'
 import { authState } from '../../../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../../../redux/slices/ControlOverlaysSlice'

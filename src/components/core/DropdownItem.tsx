@@ -1,4 +1,4 @@
-import { Box, Button, Modal } from '@mui/material'
+import { Button, Modal } from '@mui/material'
 import { ReactNode } from 'react'
 import { useAppDispatch } from '../../redux_hooks'
 

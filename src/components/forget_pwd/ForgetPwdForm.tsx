@@ -6,7 +6,6 @@ import * as yup from 'yup'
 import FormErrorDisplay from '../core/FormErrorDisplay'
 import { useEffect, useState } from 'react'
 import { FirebaseService } from '../../services/FirebaseAuth'
-import axios from 'axios'
 import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
 import http from '../../utilities/http/Http'
 interface IForgetPwd {
@@ -31,8 +30,7 @@ const ForgetPwdForm = ({ openOTPField, setCurrentPhone }: Props) => {
   }, [])
 
   const onPhoneFieldEnough10Characters = async (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    values: IForgetPwd
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     if (event.target.value.length === 10) {
       try {
@@ -94,7 +92,7 @@ const ForgetPwdForm = ({ openOTPField, setCurrentPhone }: Props) => {
                 autoFocus
                 onChange={(e) => {
                   handleChange(e)
-                  onPhoneFieldEnough10Characters(e, values)
+                  onPhoneFieldEnough10Characters(e)
                 }}
                 value={values.phone}
               />

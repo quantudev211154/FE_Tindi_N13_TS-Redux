@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../redux_store'
-import {
-  forwardOneMessage,
-  loadMessageOfConversation,
-  saveMessage,
-} from '../thunks/MessageThunks'
+import { loadMessageOfConversation, saveMessage } from '../thunks/MessageThunks'
 import { ConversationDetailTypes } from '../types/ConversationDetailTypes'
 import { MessageType } from '../types/MessageTypes'
 import { CONVERSATION_DETAIL_NAME } from './../../constants/ReduxConstant'

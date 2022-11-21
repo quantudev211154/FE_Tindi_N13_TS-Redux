@@ -30,9 +30,7 @@ import {
   conversationsControlState,
 } from './../../../../../../../redux/slices/ConversationsControlSlice'
 
-type Props = {}
-
-const AdvancedAction = (props: Props) => {
+const AdvancedAction = () => {
   const { currentUser } = useAppSelector(authState)
   const { toggleViewGroupInfoOverlay, toggleManageGroupOverlay } =
     controlOverlaysActions

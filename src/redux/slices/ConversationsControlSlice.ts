@@ -3,10 +3,8 @@ import { RootState } from '../../redux_store'
 import {
   addMultiParticipantToConversation,
   addNewConversation,
-  deleteConversation,
   grantPermission,
   loadConversations,
-  outGroupConversation,
   removeParticipant,
   updateConversationAvatarAndTitle,
 } from '../thunks/ConversationThunks'
@@ -15,7 +13,6 @@ import {
   ConversationControlType,
   ConversationType,
 } from '../types/ConversationTypes'
-import { ParticipantType } from '../types/ParticipantTypes'
 
 const initialState: ConversationControlType = {
   currentChat: null,
@@ -42,7 +39,6 @@ const conversationsControlSlice = createSlice({
 
       state.currentChat = null
     },
-    addNewConversation: (state, action: PayloadAction<ConversationType>) => {},
   },
   extraReducers: (builder) => {
     builder.addCase(loadConversations.pending, (state) => {
@@ -82,18 +78,6 @@ const conversationsControlSlice = createSlice({
         }
       }
     })
-
-    // builder.addCase(deleteConversation.pending, (state, action) => {
-    //   state.isLoadingChatList = true
-    // })
-
-    // builder.addCase(deleteConversation.fulfilled, (state, action) => {
-    //   state.conversationList = state.conversationList.filter(
-    //     (iterator) => iterator.id != action.payload
-    //   )
-    //   state.currentChat = null
-    //   state.isLoadingChatList = false
-    // })
 
     builder.addCase(
       updateConversationAvatarAndTitle.fulfilled,
@@ -146,29 +130,6 @@ const conversationsControlSlice = createSlice({
         }
       }
     )
-
-    // builder.addCase(outGroupConversation.fulfilled, (state, action) => {
-    //   for (let iterator of state.conversationList) {
-    //     state.currentChat = null
-
-    //     let result = iterator.participantResponse.find(
-    //       (participant) => participant.id === action.payload
-    //     )
-
-    //     if (result !== undefined) {
-    //       iterator.participantResponse = iterator.participantResponse.filter(
-    //         (parti) => parti.id !== action.payload
-    //       )
-
-    //       if (state.currentChat) {
-    //         state.currentChat.participantResponse =
-    //           state.currentChat.participantResponse.filter(
-    //             (parti) => parti.id !== action.payload
-    //           )
-    //       }
-    //     }
-    //   }
-    // })
 
     builder.addCase(grantPermission.fulfilled, (state, action) => {
       for (let iterator of state.conversationList) {

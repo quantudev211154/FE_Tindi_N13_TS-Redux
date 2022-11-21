@@ -2,8 +2,6 @@ import {
   ActionCreatorWithoutPayload,
   ActionCreatorWithPayload,
 } from '@reduxjs/toolkit'
-import axios from 'axios'
-import Contact from '../../components/main/overlays/Contact'
 import { API_GET_USER_BY_PHONE } from '../../constants/APIConstant'
 import { addNewConversation } from '../../redux/thunks/ConversationThunks'
 import { ContactType } from '../../redux/types/ContactTypes'

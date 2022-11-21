@@ -1,4 +1,4 @@
-import { ArrowBack, RestartAltOutlined, Security } from '@mui/icons-material'
+import { ArrowBack, Security } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Alert, AlertTitle, Collapse, Stack, TextField } from '@mui/material'
 import { Formik } from 'formik'

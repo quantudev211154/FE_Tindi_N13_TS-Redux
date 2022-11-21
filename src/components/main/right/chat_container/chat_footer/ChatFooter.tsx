@@ -162,7 +162,7 @@ const ChatFooter = () => {
     }
   }
 
-  const onEmojiClick = (emojiObject: EmojiClickData, event: MouseEvent) => {
+  const onEmojiClick = (emojiObject: EmojiClickData) => {
     setMsg(msg + emojiObject.emoji)
   }
 

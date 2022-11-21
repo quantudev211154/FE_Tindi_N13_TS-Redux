@@ -20,19 +20,14 @@ import {
 } from '../../../utilities/conversation/ConversationUtils'
 import { UserType } from '../../../redux/types/UserTypes'
 import {
-  AttachmentType,
   ForwardMessagePayloadType,
-  MessageStatusEnum,
   MessageType,
 } from '../../../redux/types/MessageTypes'
 import {
   messageContextmenuActions,
   messageContextmenuState,
 } from './../../../redux/slices/MessageContextmenuSlice'
-import { nanoid } from '@reduxjs/toolkit'
 import { showMessageHandlerResultToSnackbar } from '../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
-import axios from 'axios'
-import { API_FORWARD_MSG } from '../../../constants/APIConstant'
 import { forwardOneMessage } from '../../../redux/thunks/MessageThunks'
 
 const ForwardMessage = () => {
