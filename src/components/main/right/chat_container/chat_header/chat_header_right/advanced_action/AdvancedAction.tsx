@@ -22,6 +22,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
+import { MySocket } from '../../../../../../../services/TindiSocket'
 import ConfirmDangerAction from '../../../../../overlays/ConfirmDangerAction'
 import ManageGroup from '../../../../../overlays/ManageGroup'
 import ViewGroupInfoOverlay from '../../../../../overlays/ViewGroupInfoOverlay'
@@ -56,6 +57,11 @@ const AdvancedAction = () => {
 
   const deleteChat = () => {
     if (currentChat) {
+      const currentUsers = currentChat.participantResponse.map(
+        (parti) => parti.user
+      )
+      MySocket.deleteConversation(currentUsers, currentChat)
+
       dispatch(deleteConversation(currentChat))
       dispatch(deleteConversationThunk(currentChat.id))
       dispatch(openMessageList(false))

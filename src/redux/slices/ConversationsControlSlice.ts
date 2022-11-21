@@ -13,6 +13,7 @@ import {
   ConversationControlType,
   ConversationType,
 } from '../types/ConversationTypes'
+import { ParticipantType } from '../types/ParticipantTypes'
 
 const initialState: ConversationControlType = {
   currentChat: null,
@@ -24,6 +25,9 @@ const conversationsControlSlice = createSlice({
   name: 'chatsControl',
   initialState,
   reducers: {
+    resetCurrentChat: (state) => {
+      state.currentChat = null
+    },
     changeCurrentChat: (state, action: PayloadAction<ConversationType>) => {
       state.currentChat = action.payload
     },
@@ -37,7 +41,53 @@ const conversationsControlSlice = createSlice({
         (conver) => conver.id !== action.payload.id
       )
 
-      state.currentChat = null
+      if (state.currentChat && state.currentChat.id === action.payload.id) {
+        state.currentChat = null
+      }
+    },
+    addNewConversation: (state, action: PayloadAction<ConversationType>) => {
+      const existingConver = state.conversationList.find(
+        (conver) => conver.id === action.payload.id
+      )
+
+      if (existingConver === undefined) {
+        state.conversationList.push(action.payload)
+      }
+    },
+    addMoreMembersToConversation: (
+      state,
+      action: PayloadAction<[ConversationType, ParticipantType[]]>
+    ) => {
+      const existingConver = state.conversationList.find(
+        (conver) => conver.id === action.payload[0].id
+      )
+
+      if (existingConver === undefined) {
+        let newConver = action.payload[0]
+
+        for (let parti of action.payload[1]) {
+          newConver.participantResponse.push(parti)
+        }
+
+        state.conversationList.push(action.payload[0])
+      } else {
+        const existingParti = existingConver.participantResponse.find(
+          (parti) => parti.id === action.payload[1][0].id
+        )
+
+        if (existingParti === undefined) {
+          for (let parti of action.payload[1]) {
+            existingConver.participantResponse.push(parti)
+
+            if (
+              state.currentChat &&
+              state.currentChat.id === existingConver.id
+            ) {
+              state.currentChat.participantResponse.push(parti)
+            }
+          }
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -119,13 +169,14 @@ const conversationsControlSlice = createSlice({
     builder.addCase(
       addMultiParticipantToConversation.fulfilled,
       (state, action) => {
-        if (state.currentChat)
-          state.currentChat.participantResponse =
-            action.payload.participantResponse
+        const existingConver = state.conversationList.find(
+          (conver) => conver.id === action.payload.converId
+        )
 
-        for (let conver of state.conversationList) {
-          if (conver.id === action.payload.id) {
-            conver.participantResponse = action.payload.participantResponse
+        if (state.currentChat && existingConver !== undefined) {
+          for (let participant of action.payload.newParticipants) {
+            state.currentChat.participantResponse.push(participant)
+            existingConver.participantResponse.push(participant)
           }
         }
       }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { authState } from '../../../../../redux/slices/AuthSlice'
 import { contactState } from '../../../../../redux/slices/ContactSlice'
 import { controlOverlaysActions } from '../../../../../redux/slices/ControlOverlaysSlice'
+import { responsiveActions } from '../../../../../redux/slices/Responsive'
 import { ContactType } from '../../../../../redux/types/ContactTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
@@ -25,6 +26,7 @@ const AddMembersToGroup = ({ groupName, backToNewGroupOverlay }: Props) => {
   const { toggleNewGroupOverlay } = controlOverlaysActions
   const { currentUser } = useAppSelector(authState)
   const dispatch = useAppDispatch()
+  const { openMessageList } = responsiveActions
 
   const onFindContactFieldChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -124,6 +126,8 @@ const AddMembersToGroup = ({ groupName, backToNewGroupOverlay }: Props) => {
         <Button
           disabled={addedMembers.length >= 2 ? false : true}
           onClick={() => {
+            let timer = -1
+
             if (addedMembers.length >= 2) {
               createNewGroup(
                 dispatch,
@@ -132,7 +136,13 @@ const AddMembersToGroup = ({ groupName, backToNewGroupOverlay }: Props) => {
                 currentUser as UserType,
                 addedMembers
               )
+
+              timer = window.setTimeout(() => {
+                dispatch(openMessageList(true))
+              }, 1000)
             }
+
+            return () => window.clearTimeout(timer)
           }}
           disableElevation
           variant='contained'

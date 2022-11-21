@@ -4,7 +4,10 @@ import { useEffect } from 'react'
 import LeftCol from '../components/main/left/LeftCol'
 import RightCol from '../components/main/right/RightCol'
 import { useAppDispatch } from './../redux_hooks'
-import { loadConversations } from '../redux/thunks/ConversationThunks'
+import {
+  deleteConversation as deleteConversationThunk,
+  loadConversations,
+} from '../redux/thunks/ConversationThunks'
 import { MySocket } from '../services/TindiSocket'
 import {
   SendMessageWithSocketPayload,
@@ -15,13 +18,25 @@ import MessageContextMenu from '../components/main/right/chat_container/chat_mai
 import { messageContextmenuActions } from '../redux/slices/MessageContextmenuSlice'
 import MessageContextmenuHandlerResultSnackbar from './../components/snackbar/MessageContextmenuHandlerResultSnackbar'
 import { calContextMenuPos } from '../utilities/context_menu/ContextMenu'
+import { conversationActions } from '../redux/slices/ConversationsControlSlice'
+import { conversationsControlState } from './../redux/slices/ConversationsControlSlice'
+import { showMessageHandlerResultToSnackbar } from '../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
+import { responsiveActions } from '../redux/slices/Responsive'
+import { ConversationType } from '../redux/types/ConversationTypes'
+import { ParticipantRoleEnum } from '../redux/types/ParticipantTypes'
 
 const Main = () => {
   const { currentUser } = useAppSelector(authState)
+  const { currentChat } = useAppSelector(conversationsControlState)
   const { addNewMessageToCurrentChat } = conversationDetailActions
+  const { openMessageList } = responsiveActions
+  const { deleteConversation } = conversationActions
   const dispatch = useAppDispatch()
+  const { addNewConversation, addMoreMembersToConversation } =
+    conversationActions
   const { setCurrentCoordinate } = messageContextmenuActions
   const { revokeMessage, updateMessageBySocketFlag } = conversationDetailActions
+  const { setHandlerResult } = messageContextmenuActions
 
   useEffect(() => {
     document.title = `Xin chào - ${
@@ -57,7 +72,47 @@ const Main = () => {
     MySocket.getTindiSocket()?.on(
       SocketEventEnum.UPDATE_MEMBERS,
       (data: any) => {
-        console.log(data)
+        dispatch(
+          addMoreMembersToConversation([data.conversation, data.participants])
+        )
+      }
+    )
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_CONVERLIST_AFTER_CREATE,
+      (data: any) => {
+        dispatch(addNewConversation(data.newConver))
+      }
+    )
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_CONVERLIST_AFTER_DELETE,
+      (data: any) => {
+        if (currentChat && currentChat.id === data.conversation.id) {
+          dispatch(openMessageList(false))
+          console.log(123)
+        }
+        dispatch(deleteConversation(data.conversation))
+        dispatch(deleteConversationThunk(data.conversation.id))
+
+        const deleteConverAdmin = (
+          data.conversation as ConversationType
+        ).participantResponse.find(
+          (parti) => parti.role === ParticipantRoleEnum.ADMIN
+        )
+
+        if (
+          deleteConverAdmin !== undefined &&
+          currentUser &&
+          deleteConverAdmin.user.id !== currentUser.id
+        ) {
+          showMessageHandlerResultToSnackbar(
+            false,
+            `Nhóm ${data.conversation.title} vừa bị quản trị viên giải tán`,
+            dispatch,
+            setHandlerResult
+          )
+        }
       }
     )
   }, [currentUser])

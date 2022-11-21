@@ -6,6 +6,7 @@ import {
 } from '../constants/SocketConstant'
 import { ConversationType } from '../redux/types/ConversationTypes'
 import { MessageType } from '../redux/types/MessageTypes'
+import { ParticipantType } from '../redux/types/ParticipantTypes'
 import { UserType } from '../redux/types/UserTypes'
 
 class TindiSocket {
@@ -60,11 +61,27 @@ class TindiSocket {
     })
   }
 
-  addMoreMembersToGroup = (conversation: ConversationType, to: UserType[]) => {
+  addMoreMembersToGroup = (
+    conversation: ConversationType,
+    newParticipants: ParticipantType[],
+    to: UserType[]
+  ) => {
     this.socket?.emit(SocketEventEnum.ADD_MEMBERS, {
-      conversation: conversation,
+      conversation,
+      participants: newParticipants,
       to,
     })
+  }
+
+  createNewConversation = (to: UserType[], newConver: ConversationType) => {
+    this.socket?.emit(SocketEventEnum.CREATE_CONVER, {
+      to,
+      newConver,
+    })
+  }
+
+  deleteConversation = (to: UserType[], conversation: ConversationType) => {
+    this.socket?.emit(SocketEventEnum.DELETE_CONVER, { to, conversation })
   }
 }
 

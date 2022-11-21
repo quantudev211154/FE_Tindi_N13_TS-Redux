@@ -22,8 +22,10 @@ import {
 } from '../../constants/ReduxConstant'
 import { MySocket } from '../../services/TindiSocket'
 import http from '../../utilities/http/Http'
+import { createRandomHEXColor } from '../../utilities/random_color_creator/CreateRandomHEXColor'
 import {
   AddMultiMemberPayloadType,
+  AddMultiMemberReturnType,
   AddMultiMemberServerPayloadType,
   AddNewConversationPayloadType,
   ConversationType,
@@ -32,7 +34,11 @@ import {
   UpdateConversationPayloadType,
 } from '../types/ConversationTypes'
 import { ErrorType } from '../types/ErrorType'
-import { ParticipantType } from '../types/ParticipantTypes'
+import {
+  ParticipantStatusEnum,
+  ParticipantType,
+} from '../types/ParticipantTypes'
+import { UserRoleEnum, UserStatusEnum } from '../types/UserTypes'
 
 export const loadConversations = createAsyncThunk<
   any,
@@ -61,6 +67,13 @@ export const addNewConversation = createAsyncThunk<
 >(CONVERSATION_ADD_NEW_CONVER, async (payload, thunkApi) => {
   try {
     const response = await http.post(API_ADD_CONVER, payload)
+
+    const newConver = response.data as ConversationType
+
+    const currentUsers = newConver.participantResponse.map(
+      (parti) => parti.user
+    )
+    MySocket.createNewConversation(currentUsers, newConver)
 
     return response.data
   } catch (error) {
@@ -118,30 +131,64 @@ export const deleteConversation = createAsyncThunk<
 })
 
 export const addMultiParticipantToConversation = createAsyncThunk<
-  ConversationType,
+  AddMultiMemberReturnType,
   AddMultiMemberPayloadType,
   { rejectValue: ErrorType }
 >(CONVERSATION_ADD_MEMBER, async (payload, thunkApi) => {
   try {
-    const response = await http.post<ParticipantType[]>(
+    const response = await http.post(
       API_ADD_MEMBERS_TO_CONVERSATION,
       payload as AddMultiMemberServerPayloadType
     )
 
-    payload.conversation.participantResponse = [
-      ...payload.conversation.participantResponse,
-      ...response.data,
-    ]
+    let newParticipants: ParticipantType[] = []
 
-    console.log(payload.conversation.participantResponse)
+    for (let iterator of response.data) {
+      let parti: ParticipantType = {
+        id: iterator.id,
+        createdAt: iterator.createdAt,
+        nickName: !iterator.nickName
+          ? iterator.user.fullName
+          : iterator.nickName,
+        role: iterator.role,
+        status: !iterator.status
+          ? ParticipantStatusEnum.STABLE
+          : iterator.status,
+        updateAt: !iterator.updateAt ? iterator.createdAt : iterator.updateAt,
+        user: {
+          id: iterator.user.id,
+          avatar: !iterator.user.avatar
+            ? createRandomHEXColor()
+            : iterator.user.avatar,
+          fullName: iterator.user.fullName,
+          phone: iterator.user.phone,
+          createdAt: iterator.user.createdAt,
+          email: '',
+          password: '',
+          role: UserRoleEnum.USER,
+          status: UserStatusEnum.ACTIVE,
+          tokenVersion: -1,
+          updateAt: new Date().toISOString(),
+        },
+      }
+
+      newParticipants.push(parti)
+    }
 
     const currentUsers = payload.conversation.participantResponse.map(
       (participant) => participant.user
     )
+    const newUsers = newParticipants.map((parti) => parti.user)
 
-    MySocket.addMoreMembersToGroup(payload.conversation, currentUsers)
+    MySocket.addMoreMembersToGroup(payload.conversation, newParticipants, [
+      ...currentUsers,
+      ...newUsers,
+    ])
 
-    return payload.conversation
+    return {
+      converId: payload.conversationId,
+      newParticipants,
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const err: ErrorType = {
