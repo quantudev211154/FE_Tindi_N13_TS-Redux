@@ -2,7 +2,6 @@ import {
   ArrowBack,
   BlockOutlined,
   ClearOutlined,
-  DeleteOutline,
   InfoOutlined,
   PanToolOutlined,
   PersonOffOutlined,
@@ -10,10 +9,7 @@ import {
 } from '@mui/icons-material'
 import { Button, Stack } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import {
-  AVATAR_BASE,
-  AVATAR_LARGE,
-} from '../../../../../../../constants/UserAvatarConstant'
+import { AVATAR_LARGE } from '../../../../../../../constants/UserAvatarConstant'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../../../../../redux/slices/ControlOverlaysSlice'
 import { conversationsControlState } from '../../../../../../../redux/slices/ConversationsControlSlice'

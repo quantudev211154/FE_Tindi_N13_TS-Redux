@@ -62,7 +62,7 @@ const authSlice = createSlice({
       state.isAuthLoading = false
     })
 
-    builder.addCase(checkAuth.rejected, (state, action) => {
+    builder.addCase(checkAuth.rejected, (state) => {
       state.isAuth = false
       state.isAuthLoading = true
     })

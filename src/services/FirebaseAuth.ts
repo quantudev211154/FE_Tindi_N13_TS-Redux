@@ -9,16 +9,13 @@ import {
   getAuth,
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  UserCredential,
 } from 'firebase/auth'
-import { RegistrationPendingAccount } from '../utilities/registration/RegistrationPending'
 import {
   FirebaseStorage,
   getDownloadURL,
   getStorage,
   ref,
 } from 'firebase/storage'
-import axios from 'axios'
 
 class MyFirebase {
   private firebaseApp: FirebaseApp
@@ -56,7 +53,7 @@ class MyFirebase {
       captchaPopupElementId,
       {
         size: 'invisible',
-        callback: (response: any) => {},
+        callback: () => {},
       },
       this.firebaseAuth
     )
@@ -89,7 +86,7 @@ class MyFirebase {
   ) => {
     this.confirmationResult
       ?.confirm(OTP)
-      .then((result: UserCredential) => {
+      .then(() => {
         resolve()
       })
       .catch((err: any) => {
@@ -103,7 +100,7 @@ class MyFirebase {
       .then((url) => {
         const xhr = new XMLHttpRequest()
         xhr.responseType = 'blob'
-        xhr.onload = (event) => {
+        xhr.onload = () => {
           const blob = xhr.response
 
           let customUrl = window.URL.createObjectURL(blob)

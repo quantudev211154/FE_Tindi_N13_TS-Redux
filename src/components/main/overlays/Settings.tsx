@@ -1,14 +1,10 @@
 import {
   AccountCircle,
-  AccountCircleOutlined,
   ClearOutlined,
   Password,
-  PasswordOutlined,
   Shield,
-  ShieldOutlined,
 } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import React from 'react'
 import { authState } from '../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
 import { UserType } from '../../../redux/types/UserTypes'
@@ -16,9 +12,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
 import UserAvatar from '../../core/UserAvatar'
 import { AVATAR_LARGE } from './../../../constants/UserAvatarConstant'
 
-type Props = {}
-
-const Settings = (props: Props) => {
+const Settings = () => {
   const { currentUser } = useAppSelector(authState)
   const { toggleSettingOverlay } = controlOverlaysActions
   const dispatch = useAppDispatch()

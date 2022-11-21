@@ -1,12 +1,4 @@
-import {
-  Group,
-  GroupOutlined,
-  LogoutOutlined,
-  Person,
-  PersonOutlineOutlined,
-  Settings,
-  SettingsOutlined,
-} from '@mui/icons-material'
+import { Group, LogoutOutlined, Person, Settings } from '@mui/icons-material'
 import {
   controlOverlaysActions,
   controlOverlaysState,

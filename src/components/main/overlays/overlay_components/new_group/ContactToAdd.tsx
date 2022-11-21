@@ -1,5 +1,4 @@
 import { Checkbox } from '@mui/material'
-import React from 'react'
 import { AVATAR_SMALL } from '../../../../../constants/UserAvatarConstant'
 import { ContactType } from '../../../../../redux/types/ContactTypes'
 import UserAvatar from '../../../../core/UserAvatar'

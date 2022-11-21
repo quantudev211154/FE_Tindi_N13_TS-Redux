@@ -17,9 +17,7 @@ import GroupAvatar, {
 import UserAvatar from '../../../../../core/UserAvatar'
 import { AVATAR_SMALL } from './../../../../../../constants/UserAvatarConstant'
 
-type Props = {}
-
-const ChatHeaderLeft = (props: Props) => {
+const ChatHeaderLeft = () => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const [targetUser, setTargetUser] = useState<UserType | undefined>(undefined)
@@ -37,7 +35,7 @@ const ChatHeaderLeft = (props: Props) => {
       MySocket.getTindiSocket()?.on(
         SocketEventEnum.CHANGE_TYPING_STATE,
         (data: any) => {
-          const { conversationId, currentUserId, targetUserId, isTyping } = data
+          const { conversationId, targetUserId, isTyping } = data
 
           if (conversationId === (currentChat as ConversationType).id) {
             if (isTyping) {

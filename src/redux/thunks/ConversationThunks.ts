@@ -24,7 +24,6 @@ import { MySocket } from '../../services/TindiSocket'
 import http from '../../utilities/http/Http'
 import {
   AddMultiMemberPayloadType,
-  AddMultiMemberReturnType,
   AddMultiMemberServerPayloadType,
   AddNewConversationPayloadType,
   ConversationType,
@@ -104,7 +103,7 @@ export const deleteConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DELETE_CONVER, async (payload, thunkApi) => {
   try {
-    const response = await http.delete(API_DELETE_CONVER + payload)
+    await http.delete(API_DELETE_CONVER + payload)
 
     return payload
   } catch (error) {
@@ -160,8 +159,7 @@ export const removeParticipant = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_REMOVE_MEMBER, async (payload, thunkApi) => {
   try {
-    console.log(payload)
-    const response = await http.post(
+    await http.post(
       `${API_REMOVE_MEMBER}?adminId=${payload.adminId}&participantId=${payload.participantId}`
     )
 
@@ -183,7 +181,7 @@ export const outGroupConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_OUT_GROUP, async (payload, thunkApi) => {
   try {
-    const response = await http.delete(API_OUT_GROUP + payload)
+    await http.delete(API_OUT_GROUP + payload)
 
     return payload
   } catch (error) {

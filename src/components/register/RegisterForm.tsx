@@ -11,7 +11,6 @@ import {
   RegistrationPendingAccount,
   RegistrationPendingType,
 } from '../../utilities/registration/RegistrationPending'
-import axios from 'axios'
 import { API_CHECK_EXISTING_PHONE } from '../../constants/APIConstant'
 import { createRandomHEXColor } from '../../utilities/random_color_creator/CreateRandomHEXColor'
 import http from '../../utilities/http/Http'

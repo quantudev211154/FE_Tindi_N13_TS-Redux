@@ -1,6 +1,5 @@
 import { Modal, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { AVATAR_LARGE } from '../../../constants/UserAvatarConstant'
 import { authState } from '../../../redux/slices/AuthSlice'
 import {
   controlOverlaysActions,
@@ -14,8 +13,6 @@ import {
 import { UserType } from '../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../redux_hooks'
 import { getTeammateInSingleConversation } from '../../../utilities/conversation/ConversationUtils'
-import GroupAvatar, { GroupAvatarSizeEnum } from '../../core/GroupAvatar'
-import UserAvatar from '../../core/UserAvatar'
 import ViewGroupMembers from './overlay_components/conversation_settings/ViewGroupMembers'
 import ViewGroupPhotos from './overlay_components/conversation_settings/ViewGroupPhotos'
 import ViewGroupHeader from './overlay_components/conversation_settings/ViewGroupHeader'

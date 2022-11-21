@@ -6,9 +6,8 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material'
-import axios from 'axios'
 import { Formik } from 'formik'
-import { Ref, useEffect, useRef, useState } from 'react'
+import { Ref, useState } from 'react'
 import * as yup from 'yup'
 import { API_GET_USER_BY_PHONE } from '../../../constants/APIConstant'
 import { AVATAR_SMALL } from '../../../constants/UserAvatarConstant'
@@ -17,10 +16,7 @@ import {
   contactActions,
   contactState,
 } from '../../../redux/slices/ContactSlice'
-import {
-  controlOverlaysActions,
-  controlOverlaysState,
-} from '../../../redux/slices/ControlOverlaysSlice'
+import { controlOverlaysActions } from '../../../redux/slices/ControlOverlaysSlice'
 import {
   conversationActions,
   conversationsControlState,

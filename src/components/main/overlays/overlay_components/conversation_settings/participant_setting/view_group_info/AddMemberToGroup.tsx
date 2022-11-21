@@ -1,4 +1,4 @@
-import { ArrowBack, Search } from '@mui/icons-material'
+import { Search } from '@mui/icons-material'
 import { Button, InputAdornment, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import { contactState } from '../../../../../../../redux/slices/ContactSlice'
@@ -14,18 +14,11 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
-import { MySocket } from '../../../../../../../services/TindiSocket'
-import {
-  findContactOnChangeField,
-  parseContactTypetoParticipantType,
-} from '../../../../../../../utilities/contacts/ContactUtils'
+import { findContactOnChangeField } from '../../../../../../../utilities/contacts/ContactUtils'
 import { isContactExistingInCurrentChatParticipant } from '../../../../../../../utilities/conversation/ConversationUtils'
 import { showMessageHandlerResultToSnackbar } from '../../../../../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
 import ContactToAdd from '../../../new_group/ContactToAdd'
-import {
-  conversationActions,
-  conversationsControlState,
-} from './../../../../../../../redux/slices/ConversationsControlSlice'
+import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
 
 type Props = {
   setShowAddMemberToGroup: React.Dispatch<React.SetStateAction<boolean>>

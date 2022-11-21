@@ -1,6 +1,5 @@
 import { useAppSelector } from '../../../../../../../../redux_hooks'
 import LatestMessage from './LatestMessage'
-import { useEffect, useState } from 'react'
 import { conversationsControlState } from '../../../../../../../../redux/slices/ConversationsControlSlice'
 import {
   ConversationType,

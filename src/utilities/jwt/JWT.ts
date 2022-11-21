@@ -1,4 +1,3 @@
-import axios from 'axios'
 import jwtDecode, { JwtPayload } from 'jwt-decode'
 import { API_GET_REFRESH_TOKEN } from '../../constants/APIConstant'
 import {

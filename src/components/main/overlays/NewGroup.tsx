@@ -1,4 +1,4 @@
-import { Button, TextField, Tooltip } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import { Formik } from 'formik'
 import {
   controlOverlaysActions,
@@ -28,7 +28,6 @@ const NewGroup = () => {
   const controlOverlayActions = controlOverlaysActions
   const dispatch = useAppDispatch()
   const [isOpenAddMemberOverlay, setIsOpenAddMembersOverlay] = useState(false)
-  const [groupAvatar, setGroupAvatar] = useState<File | undefined>(undefined)
   const [newGroupInfo, setNewGroupInfo] = useState<
     NewGroupPayloadType | undefined
   >(undefined)
@@ -51,7 +50,7 @@ const NewGroup = () => {
 
     setNewGroupInfo({
       ...newGroupInfo,
-      avatar: groupAvatar !== undefined ? groupAvatar : createRandomHEXColor(),
+      avatar: createRandomHEXColor(),
       title: values.groupName,
     })
   }
@@ -77,80 +76,6 @@ const NewGroup = () => {
                 </p>
               </div>
               <div className='w-full flex justify-between items-center'>
-                {/* <div className='flex-initial h-full'>
-                  <Tooltip title='Thêm ảnh đại diện cho nhóm'>
-                    <Button
-                      component='label'
-                      disableElevation
-                      onClick={() => {
-                        console.log(123)
-                      }}
-                      variant='contained'
-                      sx={{
-                        position: 'relative',
-                        maxWidth: '5rem',
-                        maxHeight: '5rem',
-                        minWidth: '5rem',
-                        minHeight: '5rem',
-                        borderRadius: '50%',
-                        width: '5rem',
-                        height: '5rem',
-                        textTransform: 'none',
-                        bgcolor: '#3181f7',
-                        mr: 2,
-                        color: 'white',
-                        fontSize: '0.875rem',
-                        padding: groupAvatar !== undefined ? 0 : 'auto',
-                        transition: '.2s ease',
-                        '&:hover': { bgcolor: '#246fe0', color: 'white' },
-                      }}
-                    >
-                      {groupAvatar !== undefined ? (
-                        <>
-                          <img
-                            src={URL.createObjectURL(groupAvatar)}
-                            className='w-full h-full object-cover rounded-full z-20'
-                          />
-                          <div
-                            style={{
-                              backgroundColor: 'rgba(94, 88, 91, 0.1)',
-                            }}
-                            className='absolute w-full h-full z-30 rounded-full'
-                          >
-                            <AddPhotoAlternateOutlined
-                              sx={{
-                                width: '2rem',
-                                height: '2rem',
-                                position: 'absolute',
-                                left: '50%',
-                                top: '50%',
-                                color: 'gray',
-                                zIndex: '30',
-                                transform: 'translate(-50%, -50%)',
-                              }}
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <AddPhotoAlternateOutlined
-                          sx={{ width: '2rem', height: '2rem' }}
-                        />
-                      )}
-                      <input
-                        type='file'
-                        hidden
-                        accept={acceptImageType()}
-                        onChange={(event) => {
-                          const files = event.target.files
-
-                          if (files) {
-                            setGroupAvatar(files[0])
-                          }
-                        }}
-                      />
-                    </Button>
-                  </Tooltip>
-                </div> */}
                 <div className='flex-1'>
                   <TextField
                     inputRef={inputRef}

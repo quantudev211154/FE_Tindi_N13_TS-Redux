@@ -1,8 +1,4 @@
-import {
-  PersonRemoveAlt1Outlined,
-  Search,
-  SettingsOutlined,
-} from '@mui/icons-material'
+import { Search } from '@mui/icons-material'
 import {
   Backdrop,
   Button,

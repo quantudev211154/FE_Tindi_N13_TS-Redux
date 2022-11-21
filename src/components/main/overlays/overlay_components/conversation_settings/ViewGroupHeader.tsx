@@ -1,12 +1,5 @@
-import {
-  AddPhotoAlternateOutlined,
-  ClearOutlined,
-  DeleteOutline,
-  EditOutlined,
-  ExitToAppOutlined,
-} from '@mui/icons-material'
-import { Button, Tooltip } from '@mui/material'
-import React, { useState } from 'react'
+import { ClearOutlined } from '@mui/icons-material'
+import { Button } from '@mui/material'
 import { AVATAR_LARGE } from '../../../../../constants/UserAvatarConstant'
 import { controlOverlaysActions } from '../../../../../redux/slices/ControlOverlaysSlice'
 import {
@@ -15,8 +8,6 @@ import {
 } from '../../../../../redux/types/ConversationTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch } from '../../../../../redux_hooks'
-import { getTeammateInSingleConversation } from '../../../../../utilities/conversation/ConversationUtils'
-import { acceptImageType } from '../../../../../utilities/upload_files/UploadFileUtil'
 import GroupAvatar, { GroupAvatarSizeEnum } from '../../../../core/GroupAvatar'
 import UserAvatar from '../../../../core/UserAvatar'
 
@@ -31,7 +22,6 @@ const ViewGroupHeader = ({
 }: Props) => {
   const { toggleViewGroupInfoOverlay } = controlOverlaysActions
   const dispatch = useAppDispatch()
-  const [groupAvatar, setGroupAvatar] = useState<File | undefined>(undefined)
 
   return (
     <div className='w-full rounded-2xl px-5 py-3 bg-white flex flex-col justify-start items-center'>

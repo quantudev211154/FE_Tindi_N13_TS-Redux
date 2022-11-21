@@ -1,5 +1,4 @@
-import React from 'react'
-import { AVATAR_BASE, AVATAR_SMALL } from '../../constants/UserAvatarConstant'
+import { AVATAR_SMALL } from '../../constants/UserAvatarConstant'
 import { authState } from '../../redux/slices/AuthSlice'
 import { MessageType } from '../../redux/types/MessageTypes'
 import { useAppSelector } from '../../redux_hooks'

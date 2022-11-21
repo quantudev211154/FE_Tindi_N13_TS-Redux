@@ -1,6 +1,5 @@
 import { Close } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import axios from 'axios'
 import { useEffect, useRef, useState } from 'react'
 import { API_CHECK_EXISTING_CONTACT } from '../../../../../constants/APIConstant'
 import { authState } from '../../../../../redux/slices/AuthSlice'
