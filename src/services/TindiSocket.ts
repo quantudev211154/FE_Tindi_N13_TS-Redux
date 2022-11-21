@@ -61,14 +61,9 @@ class TindiSocket {
     })
   }
 
-  addMembers = (
-    conversation: ConversationType,
-    members: ParticipantType[],
-    to: UserType[]
-  ) => {
+  addMoreMembersToGroup = (conversation: ConversationType, to: UserType[]) => {
     this.socket?.emit(SocketEventEnum.ADD_MEMBERS, {
-      conversationId: conversation.id,
-      members,
+      conversation: conversation,
       to,
     })
   }

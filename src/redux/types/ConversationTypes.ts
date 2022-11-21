@@ -71,10 +71,16 @@ export type GranPermissionPayloadType = {
 
 export type AddMultiMemberPayloadType = {
   conversationId: number
+  conversation: ConversationType
   phones: string[]
   status: ParticipantStatusEnum
   createdAt: string
 }
+
+export type AddMultiMemberServerPayloadType = Omit<
+  AddMultiMemberPayloadType,
+  'conversation'
+>
 
 export type AddMultiMemberReturnType = {
   converId: number

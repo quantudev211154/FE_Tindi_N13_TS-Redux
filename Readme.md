@@ -40,6 +40,7 @@ Tindi Realtime chat application is a small project of "Brand new technologies" s
 ![Capture2](https://user-images.githubusercontent.com/69999366/202865491-b56ab474-0cc5-40df-a13e-b4e881420b98.PNG)
 
 ---
+
 ## Features
 
 - Log-in (used JWT to authenticate)
@@ -68,7 +69,7 @@ Tindi Realtime chat application is a small project of "Brand new technologies" s
 - TailwindCSS
 - Emoji Picker React
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#table-of-contents)
 
 ---
 
@@ -81,7 +82,7 @@ Tindi Realtime chat application is a small project of "Brand new technologies" s
 
 ---
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#table-of-contents)
 
 ---
 
@@ -89,4 +90,4 @@ Tindi Realtime chat application is a small project of "Brand new technologies" s
 
 - Facebook - [@quantu211154](https://www.facebook.com/quan.tu.96558061/)
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#table-of-contents)

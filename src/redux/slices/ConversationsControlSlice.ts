@@ -15,6 +15,7 @@ import {
   ConversationControlType,
   ConversationType,
 } from '../types/ConversationTypes'
+import { ParticipantType } from '../types/ParticipantTypes'
 
 const initialState: ConversationControlType = {
   currentChat: null,
@@ -41,6 +42,7 @@ const conversationsControlSlice = createSlice({
 
       state.currentChat = null
     },
+    addNewConversation: (state, action: PayloadAction<ConversationType>) => {},
   },
   extraReducers: (builder) => {
     builder.addCase(loadConversations.pending, (state) => {
@@ -133,19 +135,13 @@ const conversationsControlSlice = createSlice({
     builder.addCase(
       addMultiParticipantToConversation.fulfilled,
       (state, action) => {
-        let result = state.conversationList.find(
-          (conver) => conver.id === action.payload.converId
-        )
+        if (state.currentChat)
+          state.currentChat.participantResponse =
+            action.payload.participantResponse
 
-        if (result !== undefined) {
-          for (let iterator of action.payload.newParticipants) {
-            result.participantResponse.push(iterator)
-          }
-        }
-
-        if (state.currentChat) {
-          for (let iterator of action.payload.newParticipants) {
-            state.currentChat.participantResponse.push(iterator)
+        for (let conver of state.conversationList) {
+          if (conver.id === action.payload.id) {
+            conver.participantResponse = action.payload.participantResponse
           }
         }
       }

@@ -20,10 +20,12 @@ import {
   CONVERSATION_REMOVE_MEMBER,
   CONVERSATION_UPDATE_CONVER,
 } from '../../constants/ReduxConstant'
+import { MySocket } from '../../services/TindiSocket'
 import http from '../../utilities/http/Http'
 import {
   AddMultiMemberPayloadType,
   AddMultiMemberReturnType,
+  AddMultiMemberServerPayloadType,
   AddNewConversationPayloadType,
   ConversationType,
   GranPermissionPayloadType,
@@ -117,21 +119,30 @@ export const deleteConversation = createAsyncThunk<
 })
 
 export const addMultiParticipantToConversation = createAsyncThunk<
-  AddMultiMemberReturnType,
+  ConversationType,
   AddMultiMemberPayloadType,
   { rejectValue: ErrorType }
 >(CONVERSATION_ADD_MEMBER, async (payload, thunkApi) => {
   try {
     const response = await http.post<ParticipantType[]>(
       API_ADD_MEMBERS_TO_CONVERSATION,
-      payload
+      payload as AddMultiMemberServerPayloadType
     )
 
-    const returnType: AddMultiMemberReturnType = {
-      converId: payload.conversationId,
-      newParticipants: response.data,
-    }
-    return returnType
+    payload.conversation.participantResponse = [
+      ...payload.conversation.participantResponse,
+      ...response.data,
+    ]
+
+    console.log(payload.conversation.participantResponse)
+
+    const currentUsers = payload.conversation.participantResponse.map(
+      (participant) => participant.user
+    )
+
+    MySocket.addMoreMembersToGroup(payload.conversation, currentUsers)
+
+    return payload.conversation
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const err: ErrorType = {

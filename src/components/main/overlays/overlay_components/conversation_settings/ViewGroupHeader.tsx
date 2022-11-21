@@ -33,8 +33,6 @@ const ViewGroupHeader = ({
   const dispatch = useAppDispatch()
   const [groupAvatar, setGroupAvatar] = useState<File | undefined>(undefined)
 
-  console.log(currentChat?.avatar)
-
   return (
     <div className='w-full rounded-2xl px-5 py-3 bg-white flex flex-col justify-start items-center'>
       <div className='w-full flex justify-between items-center pb-3'>

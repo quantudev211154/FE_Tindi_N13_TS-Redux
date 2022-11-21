@@ -14,11 +14,18 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
-import { findContactOnChangeField } from '../../../../../../../utilities/contacts/ContactUtils'
+import { MySocket } from '../../../../../../../services/TindiSocket'
+import {
+  findContactOnChangeField,
+  parseContactTypetoParticipantType,
+} from '../../../../../../../utilities/contacts/ContactUtils'
 import { isContactExistingInCurrentChatParticipant } from '../../../../../../../utilities/conversation/ConversationUtils'
 import { showMessageHandlerResultToSnackbar } from '../../../../../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
 import ContactToAdd from '../../../new_group/ContactToAdd'
-import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
+import {
+  conversationActions,
+  conversationsControlState,
+} from './../../../../../../../redux/slices/ConversationsControlSlice'
 
 type Props = {
   setShowAddMemberToGroup: React.Dispatch<React.SetStateAction<boolean>>
@@ -83,9 +90,10 @@ const AddMemberToGroup = ({ setShowAddMemberToGroup }: Props) => {
       const phones = newMembers.map((member) => member.phone)
 
       const payload: AddMultiMemberPayloadType = {
-        conversationId: currentChat?.id,
+        conversationId: currentChat.id,
+        conversation: currentChat,
         createdAt: new Date().toISOString(),
-        status: ParticipantStatusEnum.STATBLE,
+        status: ParticipantStatusEnum.STABLE,
         phones,
       }
       dispatch(addMultiParticipantToConversation(payload))
@@ -168,6 +176,7 @@ const AddMemberToGroup = ({ setShowAddMemberToGroup }: Props) => {
           Huỷ
         </Button>
         <Button
+          disabled={newMembers.length > 0 ? false : true}
           onClick={() => {
             addNewMembers()
           }}
