@@ -7,7 +7,7 @@ export enum ParticipantRoleEnum {
 }
 
 export enum ParticipantStatusEnum {
-  STATBLE = 'STABLE',
+  STABLE = 'STABLE',
   MUTED = 'MUTED',
   REMOVED = 'REMOVED',
 }

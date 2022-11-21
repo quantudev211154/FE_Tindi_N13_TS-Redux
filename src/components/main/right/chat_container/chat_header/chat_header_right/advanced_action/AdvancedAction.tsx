@@ -12,6 +12,7 @@ import { Button, Menu, MenuItem, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../../../../../redux/slices/ControlOverlaysSlice'
+import { responsiveActions } from '../../../../../../../redux/slices/Responsive'
 import {
   deleteConversation as deleteConversationThunk,
   outGroupConversation,
@@ -43,6 +44,7 @@ const AdvancedAction = (props: Props) => {
     useState(false)
   const [openOutGroupOverlay, setOpenOutGroupOverlay] = useState(false)
   const { deleteConversation } = conversationActions
+  const { openMessageList } = responsiveActions
 
   const handleOpenGroupSetting = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -58,6 +60,7 @@ const AdvancedAction = (props: Props) => {
     if (currentChat) {
       dispatch(deleteConversation(currentChat))
       dispatch(deleteConversationThunk(currentChat.id))
+      dispatch(openMessageList(false))
     }
   }
 
@@ -150,15 +153,19 @@ const AdvancedAction = (props: Props) => {
               <DirectionsRunOutlined sx={{ color: '#cf0632', mr: 2 }} />
               <span className='text-sm text-[#cf0632]'>Rời nhóm</span>
             </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleCloseGroupSetting()
-                setOpenConfirmDeleteChatOverlay(true)
-              }}
-            >
-              <DeleteOutline sx={{ color: '#cf0632', mr: 2 }} />
-              <span className='text-sm text-[#cf0632]'>Giải tán nhóm</span>
-            </MenuItem>
+            {currentUser && currentUser.id === currentChat.creator.id ? (
+              <MenuItem
+                onClick={() => {
+                  handleCloseGroupSetting()
+                  setOpenConfirmDeleteChatOverlay(true)
+                }}
+              >
+                <DeleteOutline sx={{ color: '#cf0632', mr: 2 }} />
+                <span className='text-sm text-[#cf0632]'>Giải tán nhóm</span>
+              </MenuItem>
+            ) : (
+              <div className='hidden'></div>
+            )}
           </div>
         ) : (
           <div className='hidden'></div>

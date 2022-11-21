@@ -4,6 +4,11 @@ import {
   AddNewContactPayloadType,
   ContactType,
 } from '../../redux/types/ContactTypes'
+import {
+  ParticipantRoleEnum,
+  ParticipantStatusEnum,
+  ParticipantType,
+} from '../../redux/types/ParticipantTypes'
 import { UserType } from '../../redux/types/UserTypes'
 import { AppDispatch } from '../../redux_store'
 
@@ -46,4 +51,35 @@ export const findContactOnChangeField = (
   }
 
   return foundContacts
+}
+
+export const parseContactTypetoParticipantType = (
+  contacts: ContactType[]
+): ParticipantType[] => {
+  if (contacts.length === 0) return []
+
+  let parsed: ParticipantType[] = []
+
+  for (let contact of contacts) {
+    const currentTime = new Date()
+
+    let participant: ParticipantType = {
+      id: currentTime.getTime(),
+      user: {
+        id: currentTime.getTime(),
+        avatar: contact.avatar as string,
+        fullName: contact.fullName,
+        phone: contact.phone,
+      },
+      createdAt: currentTime.toISOString(),
+      nickName: contact.fullName,
+      role: ParticipantRoleEnum.MEM,
+      status: ParticipantStatusEnum.STABLE,
+      updateAt: currentTime.toISOString(),
+    }
+
+    parsed.push(participant)
+  }
+
+  return parsed
 }
