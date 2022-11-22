@@ -28,14 +28,17 @@ import { ParticipantRoleEnum } from '../redux/types/ParticipantTypes'
 const Main = () => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
-  const { addNewMessageToCurrentChat } = conversationDetailActions
   const { openMessageList } = responsiveActions
-  const { deleteConversation } = conversationActions
+  const { deleteConversation, updateStatusForParticipant } = conversationActions
   const dispatch = useAppDispatch()
   const { addNewConversation, addMoreMembersToConversation } =
     conversationActions
   const { setCurrentCoordinate } = messageContextmenuActions
-  const { revokeMessage, updateMessageBySocketFlag } = conversationDetailActions
+  const {
+    revokeMessage,
+    updateMessageBySocketFlag,
+    addNewMessageToCurrentChat,
+  } = conversationDetailActions
   const { setHandlerResult } = messageContextmenuActions
 
   useEffect(() => {
@@ -51,6 +54,10 @@ const Main = () => {
       MySocket.killSocketSession(currentUser?.id as number)
     })
 
+    initSocketActions()
+  }, [currentUser])
+
+  const initSocketActions = () => {
     MySocket.getTindiSocket()?.on(
       SocketEventEnum.RECEIVE_MSG,
       (data: SendMessageWithSocketPayload) => {
@@ -115,7 +122,16 @@ const Main = () => {
         }
       }
     )
-  }, [currentUser])
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_STATUS_FOR_PARTICIPANT,
+      (data: any) => {
+        dispatch(
+          updateStatusForParticipant([data.conversation, data.to, data.status])
+        )
+      }
+    )
+  }
 
   const onContextMenu = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>

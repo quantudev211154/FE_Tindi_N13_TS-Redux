@@ -25,11 +25,9 @@ const RightCol = () => {
         }
       }
     }
-  }, [currentChat])
 
-  useEffect(() => {
     if (ref.current) {
-      if (currentChat == null) {
+      if (currentChat == null && window.innerWidth < 768) {
         ref.current.style.left = '110%'
         ref.current.style.width = '0'
       } else {

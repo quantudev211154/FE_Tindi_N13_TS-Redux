@@ -9,6 +9,7 @@ import {
   API_OUT_GROUP,
   API_REMOVE_MEMBER,
   API_UPDATE_CONVER,
+  API_UPDATE_STATUS_OF_MEMBER,
 } from '../../constants/APIConstant'
 import {
   CONVERSATION_ADD_MEMBER,
@@ -19,6 +20,7 @@ import {
   CONVERSATION_OUT_GROUP,
   CONVERSATION_REMOVE_MEMBER,
   CONVERSATION_UPDATE_CONVER,
+  CONVERSATION_UPDATE_STATUS_OF_MEMBER,
 } from '../../constants/ReduxConstant'
 import { MySocket } from '../../services/TindiSocket'
 import http from '../../utilities/http/Http'
@@ -29,9 +31,10 @@ import {
   AddMultiMemberServerPayloadType,
   AddNewConversationPayloadType,
   ConversationType,
-  GranPermissionPayloadType,
+  GrantPermissionPayloadType,
   RemoveMemberPayload,
   UpdateConversationPayloadType,
+  UpdateStatusOfParticipantPayloadType,
 } from '../types/ConversationTypes'
 import { ErrorType } from '../types/ErrorType'
 import {
@@ -244,12 +247,34 @@ export const outGroupConversation = createAsyncThunk<
 
 export const grantPermission = createAsyncThunk<
   ParticipantType,
-  GranPermissionPayloadType,
+  GrantPermissionPayloadType,
   { rejectValue: ErrorType }
 >(CONVERSATION_GRANT_PERMISSION, async (payload, thunkApi) => {
   try {
     const response = await http.post(
       `${API_GRANT_PERMISSION}?adminId=${payload.adminId}&participantId=${payload.participantId}&role=${payload.role}`
+    )
+
+    return response.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const err: ErrorType = {
+        message: error.message,
+      }
+
+      return thunkApi.rejectWithValue(err)
+    } else return thunkApi.rejectWithValue({ message: 'Lỗi máy chủ' })
+  }
+})
+
+export const updateStatusOfParticipant = createAsyncThunk<
+  ParticipantType,
+  UpdateStatusOfParticipantPayloadType,
+  { rejectValue: ErrorType }
+>(CONVERSATION_UPDATE_STATUS_OF_MEMBER, async (payload, thunkApi) => {
+  try {
+    const response = await http.put<ParticipantType>(
+      `${API_UPDATE_STATUS_OF_MEMBER}?adminId=${payload.adminId}&participantId=${payload.participantId}&status=${payload.status}`
     )
 
     return response.data

@@ -15,7 +15,10 @@ import {
   MessageTypeEnum,
 } from '../../../../../redux/types/MessageTypes'
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
-import { ParticipantType } from '../../../../../redux/types/ParticipantTypes'
+import {
+  ParticipantStatusEnum,
+  ParticipantType,
+} from '../../../../../redux/types/ParticipantTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
 import { MySocket } from '../../../../../services/TindiSocket'
@@ -42,8 +45,17 @@ const ChatFooter = () => {
     AttachFileTypeEnum | undefined
   >(undefined)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
+  const [status, setStatus] = useState(ParticipantStatusEnum.STABLE)
 
   useEffect(() => {
+    if (currentChat && currentUser) {
+      let currentParti = currentChat.participantResponse.find(
+        (parti) => parti.user.id === currentUser.id
+      )
+
+      if (currentParti !== undefined) setStatus(currentParti.status)
+    }
+
     setShowEmojiPicker(false)
 
     textAreaRef.current && textAreaRef.current.focus()
@@ -169,117 +181,12 @@ const ChatFooter = () => {
   return (
     <div className='w-full px-1 md:px-0 py-2 mx-auto flex-initial transition-all'>
       <div className='w-full md:w-2/3 mx-auto relative'>
-        <form ref={formRef} onSubmit={onSendMsg} encType='multipart/formData'>
-          <div className='w-full flex flex-row justify-between items-center'>
-            <div className='flex flex-row justify-between items-center w-full bg-white rounded-2xl px-2'>
-              <Tooltip title='Đính kèm emoji'>
-                <Button
-                  id='showEmojiPicker'
-                  variant='contained'
-                  sx={{
-                    maxWidth: '2rem',
-                    maxHeight: '2rem',
-                    minWidth: '2rem',
-                    minHeight: '2rem',
-                    borderRadius: '50%',
-                    bgcolor: 'transparent',
-                    color: 'gray',
-                    ml: 1,
-                    '&:hover': {
-                      bgcolor: 'transparent',
-                      color: '#710e8c',
-                    },
-                  }}
-                  disableElevation
-                  onClick={() => {
-                    setShowEmojiPicker(!showEmojiPicker)
-                  }}
-                >
-                  <Mood />
-                </Button>
-              </Tooltip>
-              <div className='absolute z-[100] left-0 bottom-full'>
-                {showEmojiPicker && (
-                  <EmojiPicker
-                    onEmojiClick={onEmojiClick}
-                    lazyLoadEmojis={true}
-                  />
-                )}
-              </div>
-
-              <TextareaAutosize
-                ref={textAreaRef}
-                onFocusCapture={() => {
-                  MySocket.changeTypingStatus(
-                    (currentChat as ConversationType).id,
-                    (currentUser as UserType).id,
-                    getTeammateInSingleConversation(
-                      currentUser as UserType,
-                      currentChat as ConversationType
-                    ).user.id,
-                    true
-                  )
-                }}
-                onBlur={() => {
-                  MySocket.changeTypingStatus(
-                    (currentChat as ConversationType).id,
-                    (currentUser as UserType).id,
-                    getTeammateInSingleConversation(
-                      currentUser as UserType,
-                      currentChat as ConversationType
-                    ).user.id,
-                    false
-                  )
-                }}
-                autoFocus
-                maxRows={4}
-                value={msg}
-                onKeyDown={onInputKeyPress}
-                placeholder='Viết tin nhắn nào...'
-                onChange={onInputChange}
-                onFocus={() => {
-                  setShowEmojiPicker(false)
-                }}
-                className='flex-1 rounded-2xl bg-white py-3 transition-all border-2 border-transparent outline-none'
-              />
-              <div className='flex justify-end items-center'>
-                <Tooltip title='Đính kèm ảnh' placement='top'>
+        {status === ParticipantStatusEnum.STABLE ? (
+          <form ref={formRef} onSubmit={onSendMsg} encType='multipart/formData'>
+            <div className='w-full flex flex-row justify-between items-center'>
+              <div className='flex flex-row justify-between items-center w-full bg-white rounded-2xl px-2'>
+                <Tooltip title='Đính kèm emoji'>
                   <Button
-                    component='label'
-                    id='showEmojiPicker'
-                    variant='contained'
-                    sx={{
-                      maxWidth: '2rem',
-                      maxHeight: '2rem',
-                      minWidth: '2rem',
-                      minHeight: '2rem',
-                      borderRadius: '50%',
-                      bgcolor: 'transparent',
-                      color: 'gray',
-                      '&:hover': {
-                        bgcolor: 'transparent',
-                        color: '#063c99',
-                      },
-                    }}
-                    disableElevation
-                    onClick={() => {
-                      setAttachFileType(AttachFileTypeEnum.IMAGE)
-                      setShowEmojiPicker(false)
-                    }}
-                  >
-                    <ImageOutlined />
-                    <input
-                      type='file'
-                      onChange={onAttachMessageChange}
-                      multiple
-                      hidden
-                      accept={acceptImageType()}
-                    />
-                  </Button>
-                </Tooltip>
-                <Tooltip title='Đính kèm file' placement='top'>
-                  <Button
-                    component='label'
                     id='showEmojiPicker'
                     variant='contained'
                     sx={{
@@ -293,54 +200,167 @@ const ChatFooter = () => {
                       ml: 1,
                       '&:hover': {
                         bgcolor: 'transparent',
-                        color: '#063c99',
+                        color: '#710e8c',
                       },
                     }}
                     disableElevation
                     onClick={() => {
-                      setShowEmojiPicker(false)
+                      setShowEmojiPicker(!showEmojiPicker)
                     }}
                   >
-                    <AttachFile />
-                    <input
-                      type='file'
-                      multiple
-                      hidden
-                      accept={acceptFileType()}
-                    />
+                    <Mood />
                   </Button>
                 </Tooltip>
+                <div className='absolute z-[100] left-0 bottom-full'>
+                  {showEmojiPicker && (
+                    <EmojiPicker
+                      onEmojiClick={onEmojiClick}
+                      lazyLoadEmojis={true}
+                    />
+                  )}
+                </div>
+
+                <TextareaAutosize
+                  ref={textAreaRef}
+                  onFocusCapture={() => {
+                    MySocket.changeTypingStatus(
+                      (currentChat as ConversationType).id,
+                      (currentUser as UserType).id,
+                      getTeammateInSingleConversation(
+                        currentUser as UserType,
+                        currentChat as ConversationType
+                      ).user.id,
+                      true
+                    )
+                  }}
+                  onBlur={() => {
+                    MySocket.changeTypingStatus(
+                      (currentChat as ConversationType).id,
+                      (currentUser as UserType).id,
+                      getTeammateInSingleConversation(
+                        currentUser as UserType,
+                        currentChat as ConversationType
+                      ).user.id,
+                      false
+                    )
+                  }}
+                  autoFocus
+                  maxRows={4}
+                  value={msg}
+                  onKeyDown={onInputKeyPress}
+                  placeholder='Viết tin nhắn nào...'
+                  onChange={onInputChange}
+                  onFocus={() => {
+                    setShowEmojiPicker(false)
+                  }}
+                  className='flex-1 rounded-2xl bg-white py-3 transition-all border-2 border-transparent outline-none'
+                />
+                <div className='flex justify-end items-center'>
+                  <Tooltip title='Đính kèm ảnh' placement='top'>
+                    <Button
+                      component='label'
+                      id='showEmojiPicker'
+                      variant='contained'
+                      sx={{
+                        maxWidth: '2rem',
+                        maxHeight: '2rem',
+                        minWidth: '2rem',
+                        minHeight: '2rem',
+                        borderRadius: '50%',
+                        bgcolor: 'transparent',
+                        color: 'gray',
+                        '&:hover': {
+                          bgcolor: 'transparent',
+                          color: '#063c99',
+                        },
+                      }}
+                      disableElevation
+                      onClick={() => {
+                        setAttachFileType(AttachFileTypeEnum.IMAGE)
+                        setShowEmojiPicker(false)
+                      }}
+                    >
+                      <ImageOutlined />
+                      <input
+                        type='file'
+                        onChange={onAttachMessageChange}
+                        multiple
+                        hidden
+                        accept={acceptImageType()}
+                      />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title='Đính kèm file' placement='top'>
+                    <Button
+                      component='label'
+                      id='showEmojiPicker'
+                      variant='contained'
+                      sx={{
+                        maxWidth: '2rem',
+                        maxHeight: '2rem',
+                        minWidth: '2rem',
+                        minHeight: '2rem',
+                        borderRadius: '50%',
+                        bgcolor: 'transparent',
+                        color: 'gray',
+                        ml: 1,
+                        '&:hover': {
+                          bgcolor: 'transparent',
+                          color: '#063c99',
+                        },
+                      }}
+                      disableElevation
+                      onClick={() => {
+                        setShowEmojiPicker(false)
+                      }}
+                    >
+                      <AttachFile />
+                      <input
+                        type='file'
+                        multiple
+                        hidden
+                        accept={acceptFileType()}
+                      />
+                    </Button>
+                  </Tooltip>
+                </div>
               </div>
-            </div>
-            <Button
-              type='submit'
-              variant='contained'
-              sx={{
-                maxWidth: '3rem',
-                maxHeight: '3rem',
-                minWidth: '3rem',
-                minHeight: '3rem',
-                borderRadius: '50%',
-                ml: 1,
-                bgcolor: 'white',
-                '&:hover': {
-                  bgcolor: '#318eeb',
-                  '& svg': {
-                    fill: 'white',
-                  },
-                },
-              }}
-              disableElevation
-            >
-              <Send
+              <Button
+                type='submit'
+                variant='contained'
                 sx={{
-                  fill: 'gray',
-                  cursor: 'pointer',
+                  maxWidth: '3rem',
+                  maxHeight: '3rem',
+                  minWidth: '3rem',
+                  minHeight: '3rem',
+                  borderRadius: '50%',
+                  ml: 1,
+                  bgcolor: 'white',
+                  '&:hover': {
+                    bgcolor: '#318eeb',
+                    '& svg': {
+                      fill: 'white',
+                    },
+                  },
                 }}
-              />
-            </Button>
+                disableElevation
+              >
+                <Send
+                  sx={{
+                    fill: 'gray',
+                    cursor: 'pointer',
+                  }}
+                />
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <div className='w-full py-3 rounded-lg bg-gray-200 text-center pointer-events-none'>
+            <span className='italic text-sm text-center'>
+              Bạn không được phép nhắn tin trong nhóm này
+            </span>
           </div>
-        </form>
+        )}
       </div>
       <PreviewFiles
         files={files}

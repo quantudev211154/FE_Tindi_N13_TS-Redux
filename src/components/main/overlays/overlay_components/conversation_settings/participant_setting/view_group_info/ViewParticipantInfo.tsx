@@ -6,6 +6,7 @@ import {
   PanToolOutlined,
   PersonOffOutlined,
   ShareLocationOutlined,
+  ThumbUpAltOutlined,
 } from '@mui/icons-material'
 import { Button, Stack } from '@mui/material'
 import React, { useEffect, useState } from 'react'
@@ -17,15 +18,17 @@ import { messageContextmenuActions } from '../../../../../../../redux/slices/Mes
 import {
   grantPermission,
   removeParticipant,
+  updateStatusOfParticipant,
 } from '../../../../../../../redux/thunks/ConversationThunks'
 import {
   ConversationType,
   ConversationTypeEnum,
-  GranPermissionPayloadType,
+  GrantPermissionPayloadType,
   RemoveMemberPayload,
 } from '../../../../../../../redux/types/ConversationTypes'
 import {
   ParticipantRoleEnum,
+  ParticipantStatusEnum,
   ParticipantType,
 } from '../../../../../../../redux/types/ParticipantTypes'
 import { UserType } from '../../../../../../../redux/types/UserTypes'
@@ -33,6 +36,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
+import { MySocket } from '../../../../../../../services/TindiSocket'
 import { getRoleOfCurrentUserInConversation } from '../../../../../../../utilities/conversation/ConversationUtils'
 import { showMessageHandlerResultToSnackbar } from '../../../../../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
 import UserAvatar from '../../../../../../core/UserAvatar'
@@ -116,7 +120,7 @@ const ViewParticipantInfo = ({
       )
 
       if (participantOfCurrentUser !== undefined) {
-        const grantPayloadType: GranPermissionPayloadType = {
+        const grantPayloadType: GrantPermissionPayloadType = {
           adminId: participantOfCurrentUser.id,
           participantId: participant.id,
           role:
@@ -136,6 +140,42 @@ const ViewParticipantInfo = ({
               ? ' gán quyền điều hành cho thành viên '
               : ' thu hồi quyền điều hành của thành viên '
           }` + participant.user.fullName,
+          dispatch,
+          setHandlerResult
+        )
+      }
+    }
+  }
+
+  const updateStatusForParticipant = () => {
+    if (currentUser && currentChat && participant !== undefined) {
+      const admin = currentChat.participantResponse.find(
+        (parti) => parti.user.id === currentUser.id
+      )
+
+      if (admin !== undefined) {
+        const status =
+          participant.status === ParticipantStatusEnum.MUTED
+            ? ParticipantStatusEnum.STABLE
+            : ParticipantStatusEnum.MUTED
+
+        MySocket.changeStatusForParticipant(
+          participant.user,
+          currentChat,
+          status
+        )
+
+        dispatch(
+          updateStatusOfParticipant({
+            adminId: admin.id,
+            participantId: participant.id,
+            status,
+          })
+        )
+
+        showMessageHandlerResultToSnackbar(
+          true,
+          `Đã cập nhật trạng thái cho thành viên ${participant.user.fullName}`,
           dispatch,
           setHandlerResult
         )
@@ -212,7 +252,9 @@ const ViewParticipantInfo = ({
         </div>
         {currentChat?.type === ConversationTypeEnum.GROUP ? (
           <div className='py-1 bg-white'>
-            {participant?.role === ParticipantRoleEnum.MEM ? (
+            {roleOfCurrentUser === ParticipantRoleEnum.ADMIN ||
+            (roleOfCurrentUser === ParticipantRoleEnum.MOD &&
+              participant?.role === ParticipantRoleEnum.MEM) ? (
               <div
                 className='px-5 py-3 cursor-pointer hover:bg-gray-200'
                 onClick={() => {
@@ -254,13 +296,32 @@ const ViewParticipantInfo = ({
                 participant.role === ParticipantRoleEnum.ADMIN ? (
                   <></>
                 ) : (
-                  <div className='px-5 py-3 cursor-pointer hover:bg-gray-200'>
-                    <BlockOutlined
-                      sx={{ color: '#cf0632', width: 26, height: 26 }}
-                    />
-                    <span className='ml-5 text-[#cf0632]'>
-                      Chặn gửi tin nhắn
-                    </span>
+                  <div
+                    className='px-5 py-3 cursor-pointer hover:bg-gray-200'
+                    onClick={() => {
+                      updateStatusForParticipant()
+                      setSelectedParticipant(undefined)
+                    }}
+                  >
+                    {participant?.status === ParticipantStatusEnum.STABLE ? (
+                      <>
+                        <BlockOutlined
+                          sx={{ color: '#cf0632', width: 26, height: 26 }}
+                        />
+                        <span className='ml-5 text-[#cf0632]'>
+                          Chặn gửi tin nhắn
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <ThumbUpAltOutlined
+                          sx={{ color: '#1d4ed8', width: 26, height: 26 }}
+                        />
+                        <span className='ml-5 text-[#1d4ed8]'>
+                          Cho phép nhắn tin trở lại
+                        </span>
+                      </>
+                    )}
                   </div>
                 )}
                 {participant !== undefined &&

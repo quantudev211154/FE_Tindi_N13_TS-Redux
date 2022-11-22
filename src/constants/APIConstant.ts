@@ -14,6 +14,7 @@ export const API_ADD_MEMBERS_TO_CONVERSATION = 'participants/group'
 export const API_REMOVE_MEMBER = 'participants/group/participant'
 export const API_GRANT_PERMISSION = 'participants/grant'
 export const API_OUT_GROUP = 'participants/group/'
+export const API_UPDATE_STATUS_OF_MEMBER = 'participants/mute'
 
 export const API_LOAD_CONTACTS = 'users/contacts?userId='
 export const API_ADD_NEW_CONTACT = 'users/contacts'

@@ -7,13 +7,18 @@ import {
   loadConversations,
   removeParticipant,
   updateConversationAvatarAndTitle,
+  updateStatusOfParticipant,
 } from '../thunks/ConversationThunks'
 import { forwardOneMessage, saveMessage } from '../thunks/MessageThunks'
 import {
   ConversationControlType,
   ConversationType,
 } from '../types/ConversationTypes'
-import { ParticipantType } from '../types/ParticipantTypes'
+import {
+  ParticipantStatusEnum,
+  ParticipantType,
+} from '../types/ParticipantTypes'
+import { UserType } from '../types/UserTypes'
 
 const initialState: ConversationControlType = {
   currentChat: null,
@@ -86,6 +91,40 @@ const conversationsControlSlice = createSlice({
               state.currentChat.participantResponse.push(parti)
             }
           }
+        }
+      }
+    },
+    updateStatusForParticipant: (
+      state,
+      action: PayloadAction<[ConversationType, UserType, ParticipantStatusEnum]>
+    ) => {
+      if (state.currentChat) {
+        let existingParti = state.currentChat.participantResponse.find(
+          (parti) => parti.user.id === action.payload[1].id
+        )
+
+        if (
+          existingParti !== undefined &&
+          existingParti.status !== action.payload[2]
+        ) {
+          existingParti.status = action.payload[2]
+        }
+      }
+
+      let existingConver = state.conversationList.find(
+        (conver) => conver.id === action.payload[0].id
+      )
+
+      if (existingConver !== undefined) {
+        let existingParti = existingConver.participantResponse.find(
+          (parti) => parti.user.id === action.payload[1].id
+        )
+
+        if (
+          existingParti !== undefined &&
+          existingParti.status !== action.payload[2]
+        ) {
+          existingParti.status = action.payload[2]
         }
       }
     },
@@ -190,16 +229,38 @@ const conversationsControlSlice = createSlice({
 
         if (result !== undefined) {
           result.role = action.payload.role
+        }
+      }
 
-          if (state.currentChat) {
-            const result2 = state.currentChat.participantResponse.find(
-              (parti) => parti.id === action.payload.id
-            )
+      if (state.currentChat) {
+        const result2 = state.currentChat.participantResponse.find(
+          (parti) => parti.id === action.payload.id
+        )
 
-            if (result2 !== undefined) {
-              result2.role = action.payload.role
-            }
-          }
+        if (result2 !== undefined) {
+          result2.role = action.payload.role
+        }
+      }
+    })
+
+    builder.addCase(updateStatusOfParticipant.fulfilled, (state, action) => {
+      for (let iterator of state.conversationList) {
+        let result = iterator.participantResponse.find(
+          (participant) => participant.id === action.payload.id
+        )
+
+        if (result !== undefined) {
+          result.status = action.payload.status
+        }
+      }
+
+      if (state.currentChat) {
+        const result2 = state.currentChat.participantResponse.find(
+          (parti) => parti.id === action.payload.id
+        )
+
+        if (result2 !== undefined) {
+          result2.status = action.payload.status
         }
       }
     })

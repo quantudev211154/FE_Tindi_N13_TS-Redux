@@ -6,7 +6,10 @@ import {
 } from '../constants/SocketConstant'
 import { ConversationType } from '../redux/types/ConversationTypes'
 import { MessageType } from '../redux/types/MessageTypes'
-import { ParticipantType } from '../redux/types/ParticipantTypes'
+import {
+  ParticipantStatusEnum,
+  ParticipantType,
+} from '../redux/types/ParticipantTypes'
 import { UserType } from '../redux/types/UserTypes'
 
 class TindiSocket {
@@ -82,6 +85,18 @@ class TindiSocket {
 
   deleteConversation = (to: UserType[], conversation: ConversationType) => {
     this.socket?.emit(SocketEventEnum.DELETE_CONVER, { to, conversation })
+  }
+
+  changeStatusForParticipant = (
+    to: UserType,
+    conversation: ConversationType,
+    status: ParticipantStatusEnum
+  ) => {
+    this.socket?.emit(SocketEventEnum.CHANGE_STATUS_FOR_PARTICIPANT, {
+      to,
+      conversation,
+      status,
+    })
   }
 }
 

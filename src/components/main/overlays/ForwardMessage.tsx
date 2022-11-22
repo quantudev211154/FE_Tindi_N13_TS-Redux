@@ -90,7 +90,7 @@ const ForwardMessage = () => {
       }}
     >
       <div
-        className='w-5/6 md:w-1/3 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
+        className='w-5/6 max-h-[90vh] overflow-y-auto md:w-1/3 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
         flex flex-col p-5 rounded-md bg-white'
       >
         <div className='flex-initial flex justify-start items-center pb-5'>

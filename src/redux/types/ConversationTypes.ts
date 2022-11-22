@@ -63,7 +63,7 @@ export type RemoveMemberPayload = {
   participantId: number
 }
 
-export type GranPermissionPayloadType = {
+export type GrantPermissionPayloadType = {
   adminId: number
   participantId: number
   role: ParticipantRoleEnum
@@ -90,4 +90,10 @@ export type AddMultiMemberReturnType = {
 export type OutGroupPayloadType = {
   converId: number
   participantId: number
+}
+
+export type UpdateStatusOfParticipantPayloadType = {
+  adminId: number
+  participantId: number
+  status: ParticipantStatusEnum
 }
