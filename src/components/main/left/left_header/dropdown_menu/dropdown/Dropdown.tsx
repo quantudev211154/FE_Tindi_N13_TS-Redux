@@ -69,7 +69,6 @@ const Dropdown = ({ open }: Props) => {
         open
           ? {
               width: '17rem',
-              height: '15rem',
               fontSize: '.9rem',
               boxShadow: '0 .25rem .5rem .125rem rgba(114,114,114,0.25098)',
               visibility: 'visible',
@@ -77,7 +76,6 @@ const Dropdown = ({ open }: Props) => {
             }
           : {
               width: '0rem',
-              height: '0rem',
               fontSize: '0rem',
               visibility: 'hidden',
               opacity: '0',
