@@ -288,7 +288,7 @@ const ViewParticipantInfo = ({
                   sx={{ color: '#cf0632', width: 26, height: 26 }}
                 />
                 <span className='ml-5 text-[#cf0632]'>
-                  Gỡ quyền điều hành nhóm
+                  Thu hồi quyền điều hành nhóm
                 </span>
               </div>
             ) : (
@@ -335,8 +335,6 @@ const ViewParticipantInfo = ({
                 getRoleOfCurrentUserInConversation(currentUser, currentChat) !==
                   ParticipantRoleEnum.MEM &&
                 participant.role === ParticipantRoleEnum.MEM ? (
-                  <></>
-                ) : (
                   <div
                     className='px-5 py-3 cursor-pointer hover:bg-gray-200'
                     onClick={() => {
@@ -349,6 +347,8 @@ const ViewParticipantInfo = ({
                     />
                     <span className='ml-5 text-[#cf0632]'>Xoá khỏi nhóm</span>
                   </div>
+                ) : (
+                  <></>
                 )}
               </div>
             ) : (
