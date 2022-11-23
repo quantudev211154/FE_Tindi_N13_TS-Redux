@@ -26,6 +26,7 @@ const initialState: ConversationControlType = {
   currentChat: null,
   conversationList: [],
   isLoadingChatList: true,
+  findConverKeyword: '',
 }
 
 const conversationsControlSlice = createSlice({
@@ -34,6 +35,9 @@ const conversationsControlSlice = createSlice({
   reducers: {
     resetCurrentChat: (state) => {
       state.currentChat = null
+    },
+    setFindConverKeyword: (state, action: PayloadAction<string>) => {
+      state.findConverKeyword = action.payload
     },
     changeCurrentChat: (state, action: PayloadAction<ConversationType>) => {
       state.currentChat = action.payload

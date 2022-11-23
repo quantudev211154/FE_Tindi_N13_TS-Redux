@@ -169,8 +169,6 @@ export const findConversation = (
     }
   }
 
-  console.log(foundConvers)
-
   return foundConvers
 }
 
@@ -228,4 +226,13 @@ export const getRoleOfParticipant = (
   if (existingParti !== undefined) role = existingParti.role
 
   return role
+}
+
+export const getParticipantsByRole = (
+  role: ParticipantRoleEnum,
+  participants: ParticipantType[]
+): ParticipantType[] => {
+  if (participants.length === 0) return []
+
+  return participants.filter((parti) => parti.role === role)
 }

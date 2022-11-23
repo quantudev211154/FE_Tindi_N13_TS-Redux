@@ -23,6 +23,7 @@ export type ConversationControlType = {
   currentChat: ConversationType | null
   conversationList: ConversationType[]
   isLoadingChatList: boolean
+  findConverKeyword: string
 }
 
 export enum ConversationStatusEnum {

@@ -23,7 +23,7 @@ const ChatBrief = ({ chat }: Props) => {
         style={
           currentChat?.id === chat.id ? { color: 'white' } : { color: 'black' }
         }
-        className='text-[15px] font-medium text-lg mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
+        className='font-medium text-[1rem] mb-1 whitespace-nowrap overflow-hidden text-ellipsis break-all'
       >
         {currentUser && chat.type === ConversationTypeEnum.GROUP
           ? chat.title

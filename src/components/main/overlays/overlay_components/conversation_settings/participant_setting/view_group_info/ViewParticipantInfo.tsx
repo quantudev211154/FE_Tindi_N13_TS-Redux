@@ -330,8 +330,11 @@ const ViewParticipantInfo = ({
                   </div>
                 )}
                 {participant !== undefined &&
-                (participant.role === ParticipantRoleEnum.MOD ||
-                  participant.role === ParticipantRoleEnum.ADMIN) ? (
+                currentChat &&
+                currentUser &&
+                getRoleOfCurrentUserInConversation(currentUser, currentChat) !==
+                  ParticipantRoleEnum.MEM &&
+                participant.role === ParticipantRoleEnum.MEM ? (
                   <></>
                 ) : (
                   <div

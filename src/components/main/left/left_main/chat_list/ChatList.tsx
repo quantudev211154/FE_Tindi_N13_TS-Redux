@@ -3,11 +3,24 @@ import { conversationsControlState } from '../../../../../redux/slices/Conversat
 import { useAppSelector } from '../../../../../redux_hooks'
 import ChatListSkeleton from '../ChatListSkeleton'
 import Chat from './chat/Chat'
+import { useState, useEffect } from 'react'
+import { ConversationType } from '../../../../../redux/types/ConversationTypes'
+import { authState } from './../../../../../redux/slices/AuthSlice'
+import { findConversation } from '../../../../../utilities/conversation/ConversationUtils'
 
 const ChatList = () => {
-  const { conversationList, isLoadingChatList } = useAppSelector(
-    conversationsControlState
-  )
+  const { currentUser } = useAppSelector(authState)
+  const { conversationList, isLoadingChatList, findConverKeyword } =
+    useAppSelector(conversationsControlState)
+  const [foundConvers, setFoundConvers] = useState<ConversationType[]>([])
+
+  useEffect(() => {
+    if (currentUser) {
+      setFoundConvers(
+        findConversation(findConverKeyword, currentUser, conversationList)
+      )
+    }
+  }, [findConverKeyword])
 
   if (isLoadingChatList)
     return (
@@ -35,9 +48,20 @@ const ChatList = () => {
       ) : (
         <></>
       )}
-      {conversationList.map((conversation) => {
-        return <Chat key={conversation.id} chat={conversation} />
-      })}
+      {foundConvers.length !== 0 ? (
+        foundConvers.map((conversation) => {
+          return <Chat key={conversation.id} chat={conversation} />
+        })
+      ) : (
+        <></>
+      )}
+      {foundConvers.length === 0 ? (
+        conversationList.map((conversation) => {
+          return <Chat key={conversation.id} chat={conversation} />
+        })
+      ) : (
+        <></>
+      )}
     </Stack>
   )
 }

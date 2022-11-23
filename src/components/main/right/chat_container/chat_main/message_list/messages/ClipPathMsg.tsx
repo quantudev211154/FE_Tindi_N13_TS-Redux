@@ -11,7 +11,7 @@ const ClipPathMsg = ({ fromSelf, message }: Props) => {
   return (
     <div
       style={fromSelf ? { right: '-0.562rem' } : { left: '-0.562rem' }}
-      className='absolute height-[1.125rem] bottom-[0.0625rem] -right-[0.562rem]'
+      className='absolute height-[1.125rem] bottom-[0.0225rem] sm:bottom-[0.0625rem] -right-[0.562rem]'
     >
       {fromSelf ? (
         <svg width='9' height='20' xmlns='http://www.w3.org/2000/svg'>

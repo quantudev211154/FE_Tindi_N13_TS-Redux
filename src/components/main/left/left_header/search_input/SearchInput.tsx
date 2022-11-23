@@ -1,11 +1,19 @@
 import { Search } from '@mui/icons-material'
 import { InputAdornment, InputBase, Stack } from '@mui/material'
+import { conversationActions } from '../../../../../redux/slices/ConversationsControlSlice'
+import { useAppDispatch } from '../../../../../redux_hooks'
 
 const SearchInput = () => {
+  const { setFindConverKeyword } = conversationActions
+  const dispatch = useAppDispatch()
+
   return (
     <div className='w-full'>
       <Stack maxWidth='100%'>
         <InputBase
+          onChange={(e) => {
+            dispatch(setFindConverKeyword(e.target.value))
+          }}
           type='search'
           startAdornment={
             <InputAdornment position='start'>
