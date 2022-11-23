@@ -18,12 +18,15 @@ import {
   outGroupConversation,
 } from '../../../../../../../redux/thunks/ConversationThunks'
 import { ConversationTypeEnum } from '../../../../../../../redux/types/ConversationTypes'
+import { ParticipantRoleEnum } from '../../../../../../../redux/types/ParticipantTypes'
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
 import { MySocket } from '../../../../../../../services/TindiSocket'
+import { getRoleOfParticipant } from '../../../../../../../utilities/conversation/ConversationUtils'
 import ConfirmDangerAction from '../../../../../overlays/ConfirmDangerAction'
+import GrantPermissionBeforeOutGroup from '../../../../../overlays/GrantPermissionBeforeOutGroup'
 import ManageGroup from '../../../../../overlays/ManageGroup'
 import ViewGroupInfoOverlay from '../../../../../overlays/ViewGroupInfoOverlay'
 import {
@@ -44,6 +47,7 @@ const AdvancedAction = () => {
   const [openOutGroupOverlay, setOpenOutGroupOverlay] = useState(false)
   const { deleteConversation } = conversationActions
   const { openMessageList } = responsiveActions
+  const [openGrantPermission, setOpenGrantPermission] = useState(false)
 
   const handleOpenGroupSetting = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -76,7 +80,12 @@ const AdvancedAction = () => {
         )
 
         if (participant !== undefined) {
-          dispatch(outGroupConversation(participant.id))
+          dispatch(outGroupConversation([currentChat, participant]))
+          MySocket.outGroup(
+            currentChat,
+            participant,
+            currentChat.participantResponse.map((parti) => parti.user)
+          )
         }
       }
     }
@@ -118,17 +127,21 @@ const AdvancedAction = () => {
         ) : (
           <div className='hidden'></div>
         )}
-        {currentChat && currentChat.type === ConversationTypeEnum.GROUP ? (
+        <MenuItem
+          onClick={() => {
+            dispatch(toggleViewGroupInfoOverlay())
+            handleCloseGroupSetting()
+          }}
+        >
+          <InfoOutlined sx={{ color: 'gray', mr: 2 }} />
+          <span className='text-sm'>Xem thông tin nhóm</span>
+        </MenuItem>
+        {currentUser &&
+        currentChat &&
+        currentChat.type === ConversationTypeEnum.GROUP &&
+        getRoleOfParticipant(currentUser, currentChat.participantResponse) !==
+          ParticipantRoleEnum.MEM ? (
           <div>
-            <MenuItem
-              onClick={() => {
-                dispatch(toggleViewGroupInfoOverlay())
-                handleCloseGroupSetting()
-              }}
-            >
-              <InfoOutlined sx={{ color: 'gray', mr: 2 }} />
-              <span className='text-sm'>Xem thông tin nhóm</span>
-            </MenuItem>
             <MenuItem
               onClick={() => {
                 dispatch(toggleManageGroupOverlay())
@@ -142,22 +155,47 @@ const AdvancedAction = () => {
         ) : (
           <div className='hidden'></div>
         )}
-        <MenuItem onClick={handleCloseGroupSetting}>
-          <CleaningServicesOutlined sx={{ color: 'gray', mr: 2 }} />
-          <span className='text-sm'>Xoá tất cả tin nhắn</span>
-        </MenuItem>
+        {currentUser &&
+        currentChat &&
+        getRoleOfParticipant(currentUser, currentChat.participantResponse) ===
+          ParticipantRoleEnum.ADMIN ? (
+          <MenuItem onClick={handleCloseGroupSetting}>
+            <CleaningServicesOutlined sx={{ color: 'gray', mr: 2 }} />
+            <span className='text-sm'>Xoá tất cả tin nhắn</span>
+          </MenuItem>
+        ) : (
+          <div className='hidden'></div>
+        )}
         {currentChat && currentChat.type === ConversationTypeEnum.GROUP ? (
           <div>
             <MenuItem
               onClick={() => {
-                setOpenOutGroupOverlay(true)
-                handleCloseGroupSetting()
+                if (currentUser && currentChat) {
+                  let existingParti = currentChat.participantResponse.find(
+                    (parti) => parti.user.id === currentUser.id
+                  )
+
+                  if (existingParti !== undefined) {
+                    if (existingParti?.role === ParticipantRoleEnum.ADMIN) {
+                      setOpenGrantPermission(true)
+                      handleCloseGroupSetting()
+                    } else {
+                      setOpenOutGroupOverlay(true)
+                      handleCloseGroupSetting()
+                    }
+                  }
+                }
               }}
             >
               <DirectionsRunOutlined sx={{ color: '#cf0632', mr: 2 }} />
               <span className='text-sm text-[#cf0632]'>Rời nhóm</span>
             </MenuItem>
-            {currentUser && currentUser.id === currentChat.creator.id ? (
+            {currentUser &&
+            currentChat &&
+            getRoleOfParticipant(
+              currentUser,
+              currentChat.participantResponse
+            ) === ParticipantRoleEnum.ADMIN ? (
               <MenuItem
                 onClick={() => {
                   handleCloseGroupSetting()
@@ -228,6 +266,15 @@ const AdvancedAction = () => {
               ? 'Rời nhóm'
               : 'Rời nhóm'
           }
+        />
+      </div>
+      <div className='modals'>
+        <GrantPermissionBeforeOutGroup
+          isOpen={openGrantPermission}
+          onClose={() => {
+            setOpenGrantPermission(false)
+          }}
+          outGroup={outGroupResolve}
         />
       </div>
     </div>

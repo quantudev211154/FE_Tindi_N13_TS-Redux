@@ -101,7 +101,16 @@ export const updateConversationAvatarAndTitle = createAsyncThunk<
       payload.formData
     )
 
-    return response.data
+    const newConver = response.data as ConversationType
+
+    MySocket.changeConverInfo(
+      newConver,
+      newConver.avatar,
+      newConver.title,
+      payload.users
+    )
+
+    return newConver
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const err: ErrorType = {
@@ -227,13 +236,13 @@ export const removeParticipant = createAsyncThunk<
 
 export const outGroupConversation = createAsyncThunk<
   number,
-  number,
+  [ConversationType, ParticipantType],
   { rejectValue: ErrorType }
 >(CONVERSATION_OUT_GROUP, async (payload, thunkApi) => {
   try {
-    await http.delete(API_OUT_GROUP + payload)
+    await http.delete(API_OUT_GROUP + payload[1].id)
 
-    return payload
+    return payload[0].id
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const err: ErrorType = {

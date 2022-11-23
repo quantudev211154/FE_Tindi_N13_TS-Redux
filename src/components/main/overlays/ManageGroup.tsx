@@ -61,6 +61,7 @@ const ManageGroup = () => {
       const payload: UpdateConversationPayloadType = {
         formData,
         conversationId: currentChat.id,
+        users: currentChat.participantResponse.map((parti) => parti.user),
       }
       dispatch(updateConversationAvatarAndTitle(payload))
 

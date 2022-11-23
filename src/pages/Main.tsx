@@ -29,10 +29,18 @@ const Main = () => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const { openMessageList } = responsiveActions
-  const { deleteConversation, updateStatusForParticipant } = conversationActions
+  const {
+    deleteConversation,
+    updateStatusForParticipant,
+    removeParticipantFromGroup,
+  } = conversationActions
   const dispatch = useAppDispatch()
-  const { addNewConversation, addMoreMembersToConversation } =
-    conversationActions
+  const {
+    addNewConversation,
+    addMoreMembersToConversation,
+    changeRoleOfParticipant,
+    changeConversationInfo,
+  } = conversationActions
   const { setCurrentCoordinate } = messageContextmenuActions
   const {
     revokeMessage,
@@ -53,9 +61,11 @@ const Main = () => {
     window.addEventListener('beforeunload', () => {
       MySocket.killSocketSession(currentUser?.id as number)
     })
-
-    initSocketActions()
   }, [currentUser])
+
+  useEffect(() => {
+    initSocketActions()
+  }, [currentChat])
 
   const initSocketActions = () => {
     MySocket.getTindiSocket()?.on(
@@ -128,6 +138,55 @@ const Main = () => {
       (data: any) => {
         dispatch(
           updateStatusForParticipant([data.conversation, data.to, data.status])
+        )
+      }
+    )
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_CONVERLIST_AFTER_OUT,
+      (data: any) => {
+        dispatch(
+          removeParticipantFromGroup([data.conversation, data.participant])
+        )
+
+        if (
+          currentChat &&
+          currentUser &&
+          currentChat.id === data.conversation.id &&
+          currentUser.id !== data.participant.user.id
+        ) {
+          showMessageHandlerResultToSnackbar(
+            false,
+            `Thành viên ${data.participant.user.fullName} vừa rời nhóm`,
+            dispatch,
+            setHandlerResult
+          )
+        }
+      }
+    )
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_CONVERLIST_AFTER_CHANGE_ROLE,
+      (data: any) => {
+        dispatch(
+          changeRoleOfParticipant([
+            data.conversation,
+            data.participant,
+            data.role,
+          ])
+        )
+      }
+    )
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_CONVER_AFTER_CHANGE_INFO,
+      (data: any) => {
+        dispatch(
+          changeConversationInfo([
+            data.conversation,
+            data.avatar,
+            data.groupName,
+          ])
         )
       }
     )

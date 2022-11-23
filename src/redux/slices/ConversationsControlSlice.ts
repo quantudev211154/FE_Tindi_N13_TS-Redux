@@ -5,6 +5,7 @@ import {
   addNewConversation,
   grantPermission,
   loadConversations,
+  outGroupConversation,
   removeParticipant,
   updateConversationAvatarAndTitle,
   updateStatusOfParticipant,
@@ -15,6 +16,7 @@ import {
   ConversationType,
 } from '../types/ConversationTypes'
 import {
+  ParticipantRoleEnum,
   ParticipantStatusEnum,
   ParticipantType,
 } from '../types/ParticipantTypes'
@@ -126,6 +128,75 @@ const conversationsControlSlice = createSlice({
         ) {
           existingParti.status = action.payload[2]
         }
+      }
+    },
+    removeParticipantFromGroup: (
+      state,
+      action: PayloadAction<[ConversationType, ParticipantType]>
+    ) => {
+      if (state.currentChat && state.currentChat.id === action.payload[0].id) {
+        state.currentChat.participantResponse =
+          state.currentChat.participantResponse.filter(
+            (parti) => parti.id !== action.payload[1].id
+          )
+      }
+
+      for (let conver of state.conversationList) {
+        if (conver.id === action.payload[0].id) {
+          conver.participantResponse = conver.participantResponse.filter(
+            (parti) => parti.id !== action.payload[1].id
+          )
+
+          return
+        }
+      }
+    },
+    changeRoleOfParticipant: (
+      state,
+      action: PayloadAction<
+        [ConversationType, ParticipantType, ParticipantRoleEnum]
+      >
+    ) => {
+      if (state.currentChat && state.currentChat.id === action.payload[0].id) {
+        let existingParti = state.currentChat.participantResponse.find(
+          (parti) => parti.id === action.payload[1].id
+        )
+
+        if (existingParti !== undefined) {
+          existingParti.role = action.payload[2]
+        }
+      }
+
+      const existingConver = state.conversationList.find(
+        (conver) => conver.id === action.payload[0].id
+      )
+
+      if (existingConver !== undefined) {
+        let existingParti = existingConver.participantResponse.find(
+          (parti) => parti.id === action.payload[1].id
+        )
+
+        if (existingParti !== undefined) {
+          existingParti.role = action.payload[2]
+        }
+      }
+    },
+    changeConversationInfo: (
+      state,
+      action: PayloadAction<[ConversationType, string, string]>
+    ) => {
+      if (state.currentChat && state.currentChat.id === action.payload[0].id) {
+        state.currentChat.avatar = action.payload[1]
+        state.currentChat.title = action.payload[2]
+      }
+
+      const existingConversation = state.conversationList.find(
+        (conver) => conver.id === action.payload[0].id
+      )
+
+      if (existingConversation !== undefined) {
+        existingConversation.avatar = action.payload[1]
+        existingConversation.title = action.payload[2]
       }
     },
   },
@@ -263,6 +334,14 @@ const conversationsControlSlice = createSlice({
           result2.status = action.payload.status
         }
       }
+    })
+
+    builder.addCase(outGroupConversation.fulfilled, (state, action) => {
+      state.currentChat = null
+
+      state.conversationList = state.conversationList.filter(
+        (conver) => conver.id !== action.payload
+      )
     })
   },
 })

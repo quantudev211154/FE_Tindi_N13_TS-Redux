@@ -7,6 +7,7 @@ import {
 import { ConversationType } from '../redux/types/ConversationTypes'
 import { MessageType } from '../redux/types/MessageTypes'
 import {
+  ParticipantRoleEnum,
   ParticipantStatusEnum,
   ParticipantType,
 } from '../redux/types/ParticipantTypes'
@@ -96,6 +97,46 @@ class TindiSocket {
       to,
       conversation,
       status,
+    })
+  }
+
+  outGroup = (
+    conversation: ConversationType,
+    participant: ParticipantType,
+    to: UserType[]
+  ) => {
+    this.socket?.emit(SocketEventEnum.OUT_GROUP, {
+      conversation,
+      participant,
+      to,
+    })
+  }
+
+  changeRoleOfParticipant = (
+    conversation: ConversationType,
+    participant: ParticipantType,
+    role: ParticipantRoleEnum,
+    to: UserType[]
+  ) => {
+    this.socket?.emit(SocketEventEnum.CHANGE_ROLE_OF_PARTICIPANT, {
+      conversation,
+      participant,
+      role,
+      to,
+    })
+  }
+
+  changeConverInfo = (
+    conversation: ConversationType,
+    avatar: string,
+    groupName: string,
+    to: UserType[]
+  ) => {
+    this.socket?.emit(SocketEventEnum.CHANGE_CONVER_INFO, {
+      conversation,
+      avatar,
+      groupName,
+      to,
     })
   }
 }

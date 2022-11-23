@@ -195,3 +195,37 @@ export const sortParticipantsByRole = (
 
   return sorted
 }
+
+export const findParticipants = (
+  keyword: string,
+  participants: ParticipantType[]
+): ParticipantType[] => {
+  if (participants.length === 0) return []
+
+  let founds: ParticipantType[] = []
+
+  for (let i of participants) {
+    if (i.user.fullName.includes(keyword)) {
+      const existing = founds.find((parti) => parti.id === i.id)
+
+      if (existing === undefined) {
+        founds.push(i)
+      }
+    }
+  }
+
+  return founds
+}
+
+export const getRoleOfParticipant = (
+  user: UserType,
+  participants: ParticipantType[]
+): ParticipantRoleEnum => {
+  let role: ParticipantRoleEnum = ParticipantRoleEnum.MEM
+
+  let existingParti = participants.find((parti) => parti.user.id === user.id)
+
+  if (existingParti !== undefined) role = existingParti.role
+
+  return role
+}

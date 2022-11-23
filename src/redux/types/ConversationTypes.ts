@@ -56,6 +56,7 @@ export type AddNewConversationPayloadType = {
 export type UpdateConversationPayloadType = {
   formData: FormData
   conversationId: number
+  users: UserType[]
 }
 
 export type RemoveMemberPayload = {

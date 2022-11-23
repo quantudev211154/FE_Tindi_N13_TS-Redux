@@ -114,7 +114,7 @@ const ViewParticipantInfo = ({
   }
 
   const grantOrRevokePermissionForMember = (selection: GrantOrRevokeEnum) => {
-    if (currentUser && participant) {
+    if (currentChat && currentUser && participant) {
       const participantOfCurrentUser = currentChat?.participantResponse.find(
         (parti) => parti.user.id === currentUser.id
       )
@@ -133,6 +133,12 @@ const ViewParticipantInfo = ({
 
         dispatch(grantPermission(grantPayloadType))
 
+        MySocket.changeRoleOfParticipant(
+          currentChat,
+          participant,
+          grantPayloadType.role,
+          currentChat.participantResponse.map((parti) => parti.user)
+        )
         showMessageHandlerResultToSnackbar(
           true,
           `Đã ${
@@ -252,9 +258,8 @@ const ViewParticipantInfo = ({
         </div>
         {currentChat?.type === ConversationTypeEnum.GROUP ? (
           <div className='py-1 bg-white'>
-            {roleOfCurrentUser === ParticipantRoleEnum.ADMIN ||
-            (roleOfCurrentUser === ParticipantRoleEnum.MOD &&
-              participant?.role === ParticipantRoleEnum.MEM) ? (
+            {roleOfCurrentUser !== ParticipantRoleEnum.MEM &&
+            participant?.role === ParticipantRoleEnum.MEM ? (
               <div
                 className='px-5 py-3 cursor-pointer hover:bg-gray-200'
                 onClick={() => {
