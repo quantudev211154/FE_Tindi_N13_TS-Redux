@@ -27,7 +27,7 @@ const Login = () => {
       <div
         className='absolute bg-white p-8 rounded-md
       top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-      w-2/3 md:w-1/3'
+      w-5/6 md:w-1/3'
       >
         <LoginHeader />
         <LoginForm />

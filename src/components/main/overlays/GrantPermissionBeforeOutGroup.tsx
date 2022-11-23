@@ -15,10 +15,7 @@ import {
   sortParticipantsByRole,
 } from '../../../utilities/conversation/ConversationUtils'
 import UserAvatar from '../../core/UserAvatar'
-import {
-  conversationActions,
-  conversationsControlState,
-} from './../../../redux/slices/ConversationsControlSlice'
+import { conversationsControlState } from './../../../redux/slices/ConversationsControlSlice'
 
 type Props = {
   isOpen: boolean

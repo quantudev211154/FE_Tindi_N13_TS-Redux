@@ -9,7 +9,7 @@ export const AVATAR_MINI_TEXT_SIZE = 15
 export const AVATAR_SMALL_IMG_SIZE = 38
 export const AVATAR_SMALL_TEXT_SIZE = 15
 
-export const AVATAR_BASE_IMG_SIZE = 45
+export const AVATAR_BASE_IMG_SIZE = 53
 export const AVATAR_BASE_TEXT_SIZE = 18
 
 export const AVATAR_LARGE_IMG_SIZE = 70
