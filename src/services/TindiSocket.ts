@@ -15,14 +15,31 @@ import { UserType } from '../redux/types/UserTypes'
 
 class TindiSocket {
   private socket: Socket | null
+  private flag: number | null
 
   constructor() {
     this.socket = null
+    this.flag = null
   }
+
+  private resetSocket = () => {
+    this.socket = null
+    this.flag = null
+  }
+
+  getTindiFlag = () => this.flag
 
   initTindiSocket = (currentUserId: number) => {
     this.socket = io(SOCKET_HOST)
-    this.socket.emit(SocketEventEnum.FIRE_CONNECTION, { userId: currentUserId })
+
+    if (!this.flag) {
+      this.flag = new Date().getTime()
+    }
+
+    this.socket.emit(SocketEventEnum.FIRE_CONNECTION, {
+      userId: currentUserId,
+      flag: this.flag,
+    })
   }
 
   getTindiSocket = () => this.socket
@@ -36,7 +53,11 @@ class TindiSocket {
   }
 
   killSocketSession = (currentUserId: number) => {
-    this.socket?.emit(SocketEventEnum.DISCONNECT, { userId: currentUserId })
+    this.socket?.emit(SocketEventEnum.DISCONNECT, {
+      userId: currentUserId,
+      flag: this.flag,
+    })
+    this.resetSocket()
   }
 
   changeTypingStatus = (
@@ -56,12 +77,12 @@ class TindiSocket {
   revokeMessage = (
     conversation: ConversationType,
     message: MessageType,
-    targetUserId: number
+    to: UserType[]
   ) => {
     this.socket?.emit(SocketEventEnum.SEND_REVOKE_MSG_CMD, {
       conversation,
       message,
-      targetUserId,
+      to,
     })
   }
 

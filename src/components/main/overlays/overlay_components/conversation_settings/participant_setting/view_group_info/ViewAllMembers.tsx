@@ -124,7 +124,11 @@ const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
                       size={AVATAR_BASE}
                     />
                     <div className='ml-5'>
-                      <p className='font-medium text-sm'>{fullName}</p>
+                      <p className='font-medium text-sm'>
+                        {currentUser && currentUser.id === participant.user.id
+                          ? 'Bạn'
+                          : fullName}
+                      </p>
                       <p className='text-sm'>
                         {currentUser?.id === currentChat.creator.id
                           ? phone

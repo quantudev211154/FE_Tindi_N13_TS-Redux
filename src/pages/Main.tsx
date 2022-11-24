@@ -55,11 +55,6 @@ const Main = () => {
     }`
 
     dispatch(loadConversations(currentUser?.id as number))
-
-    MySocket.initTindiSocket(currentUser?.id as number)
-    window.addEventListener('beforeunload', () => {
-      MySocket.killSocketSession(currentUser?.id as number)
-    })
   }, [currentUser])
 
   useEffect(() => {

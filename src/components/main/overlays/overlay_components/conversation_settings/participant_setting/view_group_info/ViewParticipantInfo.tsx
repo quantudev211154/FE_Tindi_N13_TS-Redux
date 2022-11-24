@@ -258,7 +258,7 @@ const ViewParticipantInfo = ({
         </div>
         {currentChat?.type === ConversationTypeEnum.GROUP ? (
           <div className='py-1 bg-white'>
-            {roleOfCurrentUser !== ParticipantRoleEnum.MEM &&
+            {roleOfCurrentUser === ParticipantRoleEnum.ADMIN &&
             participant?.role === ParticipantRoleEnum.MEM ? (
               <div
                 className='px-5 py-3 cursor-pointer hover:bg-gray-200'
@@ -334,7 +334,7 @@ const ViewParticipantInfo = ({
                 currentUser &&
                 getRoleOfCurrentUserInConversation(currentUser, currentChat) !==
                   ParticipantRoleEnum.MEM &&
-                participant.role === ParticipantRoleEnum.MEM ? (
+                participant.role !== ParticipantRoleEnum.ADMIN ? (
                   <div
                     className='px-5 py-3 cursor-pointer hover:bg-gray-200'
                     onClick={() => {

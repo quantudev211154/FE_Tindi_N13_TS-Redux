@@ -93,10 +93,12 @@ const Messages = ({ item }: Props) => {
       onContextMenu={onContextMenu}
     >
       <div
-        style={{
-          justifyContent: fromSelf ? 'flex-end' : 'flex-start',
-        }}
-        className='relative w-full px-5 md:w-2/3 mx-auto flex flex-row'
+        // style={{
+        //   justifyContent: fromSelf ? 'flex-end' : 'flex-start',
+        // }}
+        className={`relative w-full px-5 md:w-2/3 mx-auto flex flex-row ${
+          fromSelf ? 'justify-end' : 'justify-start'
+        }`}
       >
         <div className='flex flex-col justify-end mr-3 py-1'>
           {showAvatar &&

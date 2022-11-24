@@ -10,6 +10,7 @@ import {
   AUTH_LOGIN_THUNK,
   AUTH_REGISTER_THUNK,
 } from '../../constants/ReduxConstant'
+import { MySocket } from '../../services/TindiSocket'
 import http from '../../utilities/http/Http'
 import {
   CheckAuthPayload,
@@ -32,6 +33,8 @@ export const login = createAsyncThunk<
     formData.append('password', payload.password)
 
     const response = await http.post(API_LOGIN, formData)
+
+    MySocket.initTindiSocket(response.data.userId)
 
     return response.data
   } catch (error) {

@@ -27,7 +27,10 @@ import { dowloadAttachmentsListOfMessage } from '../../../../../../../utilities/
 import MessageContextMenuItem from './MessageContextMenuItem'
 import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
 import { getTeammateInSingleConversation } from '../../../../../../../utilities/conversation/ConversationUtils'
-import { ConversationType } from '../../../../../../../redux/types/ConversationTypes'
+import {
+  ConversationType,
+  ConversationTypeEnum,
+} from '../../../../../../../redux/types/ConversationTypes'
 
 const MessageContextMenu = () => {
   const { setHandlerResult } = messageContextmenuActions
@@ -72,14 +75,26 @@ const MessageContextMenu = () => {
     dispatch(revokeMessage(currentMessage))
     dispatch(revokeOneMessage(currentMessage.id as number))
 
-    MySocket.revokeMessage(
-      currentChat as ConversationType,
-      currentMessage as MessageType,
-      getTeammateInSingleConversation(
-        currentUser as UserType,
-        currentChat as ConversationType
-      ).user.id
-    )
+    if (currentChat) {
+      if (currentChat.type == ConversationTypeEnum.SINGLE) {
+        MySocket.revokeMessage(
+          currentChat as ConversationType,
+          currentMessage as MessageType,
+          [
+            getTeammateInSingleConversation(
+              currentUser as UserType,
+              currentChat as ConversationType
+            ).user,
+          ]
+        )
+      } else {
+        MySocket.revokeMessage(
+          currentChat as ConversationType,
+          currentMessage as MessageType,
+          currentChat.participantResponse.map((parti) => parti.user)
+        )
+      }
+    }
 
     showMessageHandlerResultToSnackbar(
       true,

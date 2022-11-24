@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { LOCAL_REFRESH_TOKEN_NAME } from '../../constants/AuthConstant'
 import { AUTH_SLICE_NAME } from '../../constants/ReduxConstant'
 import { RootState } from '../../redux_store'
+import { MySocket } from '../../services/TindiSocket'
 import { JWT } from '../../utilities/jwt/JWT'
 import { checkAuth, login } from '../thunks/AuthThunks'
 import { AuthSliceType } from '../types/AuthTypes'
@@ -20,6 +21,10 @@ const authSlice = createSlice({
   reducers: {
     reloadCurrentUser: (state, action) => {
       state.currentUser = action.payload as UserType
+
+      if (state.currentUser) {
+        MySocket.initTindiSocket(state.currentUser.id)
+      }
     },
     logout: (state) => {
       JWT.deleteToken()
