@@ -1,5 +1,4 @@
 import { useAppSelector } from '../redux_hooks'
-import { authState } from '../redux/slices/AuthSlice'
 import { useEffect } from 'react'
 import LeftCol from '../components/main/left/LeftCol'
 import RightCol from '../components/main/right/RightCol'
@@ -24,6 +23,7 @@ import { showMessageHandlerResultToSnackbar } from '../utilities/message_handler
 import { responsiveActions } from '../redux/slices/Responsive'
 import { ConversationType } from '../redux/types/ConversationTypes'
 import { ParticipantRoleEnum } from '../redux/types/ParticipantTypes'
+import { authState } from '../redux/slices/AuthSlice'
 
 const Main = () => {
   const { currentUser } = useAppSelector(authState)
@@ -57,7 +57,6 @@ const Main = () => {
     dispatch(loadConversations(currentUser?.id as number))
 
     MySocket.initTindiSocket(currentUser?.id as number)
-
     window.addEventListener('beforeunload', () => {
       MySocket.killSocketSession(currentUser?.id as number)
     })

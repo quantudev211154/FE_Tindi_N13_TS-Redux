@@ -32,49 +32,51 @@ const LoginForm = () => {
   let timeoutToHideAlert: number = -999
 
   const onFormSubmit = async (values: ILoginForm) => {
-    setIsProcessing(true)
+    try {
+      setIsProcessing(true)
 
-    const data: LoginPayloadType = {
-      phone: values.phone,
-      password: values.password,
-    }
+      const data: LoginPayloadType = {
+        phone: values.phone,
+        password: values.password,
+      }
 
-    const loginResult = await dispatch(login(data))
+      const loginResult = await dispatch(login(data))
 
-    if ((loginResult.payload as ErrorType).message.includes('403')) {
-      setIsProcessing(false)
-      setLoginErrorMsg((prev) => ({
-        ...prev,
-        isError: true,
-        errTitle: 'Lỗi rồi',
-        errMsg: 'Tên đăng nhập hoặc mật khẩu không đúng! Hãy thử lại!',
-      }))
-
-      timeoutToHideAlert = window.setTimeout(() => {
+      if ((loginResult.payload as ErrorType).message.includes('403')) {
+        setIsProcessing(false)
         setLoginErrorMsg((prev) => ({
           ...prev,
-          isError: false,
+          isError: true,
+          errTitle: 'Lỗi rồi',
+          errMsg: 'Tên đăng nhập hoặc mật khẩu không đúng! Hãy thử lại!',
         }))
-        clearTimeout(timeoutToHideAlert)
-      }, 8000)
-    } else {
-      setIsProcessing(false)
-      setLoginErrorMsg((prev) => ({
-        ...prev,
-        isError: true,
-        errTitle: 'Máy chủ của chúng tôi đang bị ốm',
-        errMsg:
-          'Có một chút sự cố xảy ra với máy chủ của chúng tôi. Nào ta cùng chơi một bài nhạc hay hay nào đó và quay lại sau ít phút nhé!',
-      }))
 
-      timeoutToHideAlert = window.setTimeout(() => {
+        timeoutToHideAlert = window.setTimeout(() => {
+          setLoginErrorMsg((prev) => ({
+            ...prev,
+            isError: false,
+          }))
+          clearTimeout(timeoutToHideAlert)
+        }, 8000)
+      } else {
+        setIsProcessing(false)
         setLoginErrorMsg((prev) => ({
           ...prev,
-          isError: false,
+          isError: true,
+          errTitle: 'Máy chủ của chúng tôi đang bị ốm',
+          errMsg:
+            'Có một chút sự cố xảy ra với máy chủ của chúng tôi. Nào ta cùng chơi một bài nhạc hay hay nào đó và quay lại sau ít phút nhé!',
         }))
-        clearTimeout(timeoutToHideAlert)
-      }, 8000)
-    }
+
+        timeoutToHideAlert = window.setTimeout(() => {
+          setLoginErrorMsg((prev) => ({
+            ...prev,
+            isError: false,
+          }))
+          clearTimeout(timeoutToHideAlert)
+        }, 8000)
+      }
+    } catch (e) {}
   }
 
   return (
