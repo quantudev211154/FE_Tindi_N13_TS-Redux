@@ -21,3 +21,9 @@ export type UserType = {
   avatar: string
   role?: UserRoleEnum
 }
+
+export type UpdateUserInfoPayloadType = {
+  userId: number
+  fullName: string
+  avatar: File | string
+}

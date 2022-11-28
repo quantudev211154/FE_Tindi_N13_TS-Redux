@@ -11,6 +11,7 @@ import {
   updateStatusOfParticipant,
 } from '../thunks/ConversationThunks'
 import { forwardOneMessage, saveMessage } from '../thunks/MessageThunks'
+import { updateUserProfile } from '../thunks/UserThunks'
 import {
   ConversationControlType,
   ConversationType,
@@ -346,6 +347,30 @@ const conversationsControlSlice = createSlice({
       state.conversationList = state.conversationList.filter(
         (conver) => conver.id !== action.payload
       )
+    })
+
+    builder.addCase(updateUserProfile.fulfilled, (state, action) => {
+      if (state.currentChat) {
+        let currentUser = state.currentChat.participantResponse.find(
+          (parti) => parti.user.id === action.payload.id
+        )
+
+        if (currentUser !== undefined) {
+          currentUser.user.fullName = action.payload.fullName
+          currentUser.user.avatar = action.payload.avatar
+        }
+      }
+
+      for (let i = 0; i < state.conversationList.length; ++i) {
+        let currentUser = state.conversationList[i].participantResponse.find(
+          (parti) => parti.user.id === action.payload.id
+        )
+
+        if (currentUser !== undefined) {
+          currentUser.user.fullName = action.payload.fullName
+          currentUser.user.avatar = action.payload.avatar
+        }
+      }
     })
   },
 })

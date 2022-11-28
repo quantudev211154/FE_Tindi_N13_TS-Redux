@@ -5,6 +5,7 @@ import { RootState } from '../../redux_store'
 import { MySocket } from '../../services/TindiSocket'
 import { JWT } from '../../utilities/jwt/JWT'
 import { checkAuth, login } from '../thunks/AuthThunks'
+import { updateUserProfile } from '../thunks/UserThunks'
 import { AuthSliceType } from '../types/AuthTypes'
 import { UserType } from '../types/UserTypes'
 
@@ -70,6 +71,13 @@ const authSlice = createSlice({
     builder.addCase(checkAuth.rejected, (state) => {
       state.isAuth = false
       state.isAuthLoading = true
+    })
+
+    builder.addCase(updateUserProfile.fulfilled, (state, action) => {
+      if (state.currentUser) {
+        state.currentUser.avatar = action.payload.avatar
+        state.currentUser.fullName = action.payload.fullName
+      }
     })
   },
 })

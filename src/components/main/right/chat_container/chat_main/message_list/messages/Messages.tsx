@@ -30,6 +30,7 @@ import {
   AVATAR_SMALL_IMG_SIZE,
 } from '../../../../../../../constants/UserAvatarConstant'
 import { conversationDetailState } from '../../../../../../../redux/slices/ConversationDetailSlice'
+import ReplyMessage from './ReplyMessage'
 
 type Props = {
   item: MessageType
@@ -40,18 +41,17 @@ const Messages = ({ item }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const { messageList } = useAppSelector(conversationDetailState)
   const ref = useRef<HTMLDivElement>(null)
-  const [fromSelf, setFromSelf] = useState(false)
   const dispatch = useAppDispatch()
   const { currentMessage } = useAppSelector(messageContextmenuState)
   const [showAvatar, setShowAvatar] = useState(true)
   const { setCurrentMessage } = messageContextmenuActions
-  const messageId = 'msgId#' + item.id
 
   useEffect(() => {
     dispatch(setCurrentMessage(undefined))
-    setFromSelf(item.sender.id === currentUser?.id ? true : false)
 
-    ref.current!.scrollIntoView({ behavior: 'smooth' })
+    if (ref.current) {
+      ref.current.scrollIntoView()
+    }
 
     window.onclick = () => {
       dispatch(setCurrentMessage(undefined))
@@ -86,18 +86,23 @@ const Messages = ({ item }: Props) => {
 
   return (
     <div
-      id={messageId}
+      id={`msg#${item.id}`}
       ref={ref}
-      style={{ display: item.delete ? 'none' : 'block' }}
-      className='transition-all w-full'
+      style={{
+        display:
+          currentUser &&
+          !!item.participantDeleted.find(
+            (parti) => parti.user.id === currentUser.id
+          )
+            ? 'none'
+            : 'block',
+      }}
+      className='msg=container transition-all w-full'
       onContextMenu={onContextMenu}
     >
       <div
-        // style={{
-        //   justifyContent: fromSelf ? 'flex-end' : 'flex-start',
-        // }}
-        className={`relative w-full px-5 md:w-2/3 mx-auto flex flex-row ${
-          fromSelf ? 'justify-end' : 'justify-start'
+        className={`container-content relative w-full px-5 md:w-3/4 mx-auto flex flex-row ${
+          item.sender.id === currentUser?.id ? 'justify-end' : 'justify-start'
         }`}
       >
         <div className='flex flex-col justify-end mr-3 py-1'>
@@ -116,20 +121,25 @@ const Messages = ({ item }: Props) => {
         </div>
         <div
           style={{
-            justifyContent: fromSelf ? 'flex-end' : 'flex-start',
+            justifyContent:
+              item.sender.id === currentUser?.id ? 'flex-end' : 'flex-start',
           }}
           className='relative w-3/4 flex flex-row py-1 '
         >
-          <ClipPathMsg message={item} fromSelf={fromSelf} />
+          <ClipPathMsg
+            message={item}
+            fromSelf={item.sender.id === currentUser?.id}
+          />
           <div
             style={{
-              backgroundColor: fromSelf ? '#eeffde' : 'white',
+              backgroundColor:
+                item.sender.id === currentUser?.id ? '#eeffde' : 'white',
               borderRadius:
                 item.message === ''
-                  ? fromSelf
+                  ? item.sender.id === currentUser?.id
                     ? '.85rem'
                     : '.85rem'
-                  : fromSelf
+                  : item.sender.id === currentUser?.id
                   ? '.85rem .85rem 0 .85rem'
                   : '.85rem .85rem .85rem 0',
             }}
@@ -181,22 +191,25 @@ const Messages = ({ item }: Props) => {
               </div>
             )}
             {item.message !== '' ? (
-              <p
-                style={{
-                  wordBreak: 'break-word',
-                  whiteSpace: 'pre-wrap',
-                  textAlign: 'initial',
-                  display: 'flow-root',
-                  unicodeBidi: 'plaintext',
-                  lineHeight: 1.3125,
-                  paddingBottom: item.revoke ? 0 : '.85rem',
-                  fontStyle: item.revoke ? 'italic' : 'normal',
-                  color: item.revoke ? 'rgb(100,116,139)' : 'black',
-                }}
-                className='relative text-[.95rem] p-2 mb-1'
-              >
-                {item.revoke ? 'Tin nhắn đã thu hồi' : item.message}
-              </p>
+              <div className='flex flex-col'>
+                <ReplyMessage replyMessage={item} />
+                <p
+                  style={{
+                    wordBreak: 'break-word',
+                    whiteSpace: 'pre-wrap',
+                    textAlign: 'initial',
+                    display: 'flow-root',
+                    unicodeBidi: 'plaintext',
+                    lineHeight: 1.3125,
+                    paddingBottom: item.delete ? 0 : '.85rem',
+                    fontStyle: item.delete ? 'italic' : 'normal',
+                    color: item.delete ? 'rgb(100,116,139)' : 'black',
+                  }}
+                  className='relative text-[.95rem] p-2 mb-1'
+                >
+                  {item.delete ? 'Tin nhắn đã thu hồi' : item.message}
+                </p>
+              </div>
             ) : (
               <></>
             )}
@@ -215,10 +228,10 @@ const Messages = ({ item }: Props) => {
               className='absolute bottom-0 right-0 flex justify-end items-center'
             >
               <span className='text-[.7rem] mr-1 text-slate-500'>
-                {item.revoke ? '' : parseDate(item.createdAt)}
+                {item.delete ? '' : parseDate(item.createdAt)}
               </span>
               <span className='text-[.7rem] mr-1 text-green-500'>
-                {!item.revoke ? (
+                {!item.delete ? (
                   item.status === MessageStatusEnum.SENT ? (
                     <DoneAll sx={{ width: '1.2rem', height: '1.2rem' }} />
                   ) : (

@@ -13,7 +13,10 @@ import {
   messageContextmenuActions,
   messageContextmenuState,
 } from '../../../../../../../redux/slices/MessageContextmenuSlice'
-import { revokeOneMessage } from '../../../../../../../redux/thunks/MessageThunks'
+import {
+  deleteMessageInServer,
+  revokeOneMessageInServer,
+} from '../../../../../../../redux/thunks/MessageThunks'
 import { MessageType } from '../../../../../../../redux/types/MessageTypes'
 import { UserType } from '../../../../../../../redux/types/UserTypes'
 import {
@@ -44,7 +47,8 @@ const MessageContextMenu = () => {
     isOverflowScreenWidth,
   } = useAppSelector(messageContextmenuState)
   const dispatch = useAppDispatch()
-  const { revokeMessage, deleteMessage } = conversationDetailActions
+  const { revokeMessage, deleteMessage, setReplyingMessage } =
+    conversationDetailActions
   const { toggleForwardMessageOverlay } = controlOverlaysActions
 
   if (currentMessage === undefined) return <></>
@@ -60,20 +64,39 @@ const MessageContextMenu = () => {
     )
   }
 
-  const deleteChosenMessage = () => {
-    dispatch(deleteMessage(currentMessage))
+  const replyMessage = () => {
+    if (currentMessage) dispatch(setReplyingMessage(currentMessage))
+  }
 
-    showMessageHandlerResultToSnackbar(
-      true,
-      'Đã xoá tin nhắn ở phía bạn',
-      dispatch,
-      setHandlerResult
-    )
+  const deleteChosenMessage = () => {
+    if (currentChat && currentUser) {
+      const currentParti = currentChat.participantResponse.find(
+        (parti) => parti.user.id === currentUser.id
+      )
+
+      if (!!currentParti && !!currentMessage) {
+        dispatch(deleteMessage([currentMessage, currentParti]))
+        dispatch(
+          deleteMessageInServer({
+            messageId: currentMessage.id as number,
+            participantId: currentParti.id,
+            createdAt: new Date().toISOString(),
+          })
+        )
+
+        showMessageHandlerResultToSnackbar(
+          true,
+          'Đã xoá tin nhắn ở phía bạn',
+          dispatch,
+          setHandlerResult
+        )
+      }
+    }
   }
 
   const revokeChosenMessage = () => {
     dispatch(revokeMessage(currentMessage))
-    dispatch(revokeOneMessage(currentMessage.id as number))
+    dispatch(revokeOneMessageInServer(currentMessage.id as number))
 
     if (currentChat) {
       if (currentChat.type == ConversationTypeEnum.SINGLE) {
@@ -149,7 +172,7 @@ const MessageContextMenu = () => {
           <MessageContextMenuItem
             icon={<ReplyOutlined sx={{ fill: '#706f6f' }} />}
             label='Trả lời'
-            handler={copyMessageTextToClipboard}
+            handler={replyMessage}
           />
           {currentMessage.message !== '' ? (
             <MessageContextMenuItem

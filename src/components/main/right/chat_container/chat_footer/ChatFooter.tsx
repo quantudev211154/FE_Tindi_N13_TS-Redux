@@ -1,4 +1,11 @@
-import { AttachFile, ImageOutlined, Mood, Send } from '@mui/icons-material'
+import {
+  AttachFile,
+  ClearOutlined,
+  ImageOutlined,
+  Mood,
+  ReplyOutlined,
+  Send,
+} from '@mui/icons-material'
 import { Button, TextareaAutosize, Tooltip } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../../../redux/slices/AuthSlice'
@@ -29,7 +36,10 @@ import {
 import { controlOverlaysActions } from '../../../../../redux/slices/ControlOverlaysSlice'
 import PreviewFiles from '../../../overlays/PreviewFiles'
 import { getTeammateInSingleConversation } from './../../../../../utilities/conversation/ConversationUtils'
-import { conversationDetailActions } from '../../../../../redux/slices/ConversationDetailSlice'
+import {
+  conversationDetailActions,
+  conversationDetailState,
+} from '../../../../../redux/slices/ConversationDetailSlice'
 
 const ChatFooter = () => {
   const { currentUser } = useAppSelector(authState)
@@ -46,6 +56,8 @@ const ChatFooter = () => {
   >(undefined)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
   const [status, setStatus] = useState(ParticipantStatusEnum.STABLE)
+  const { replyingMessage } = useAppSelector(conversationDetailState)
+  const { setReplyingMessage } = conversationDetailActions
 
   useEffect(() => {
     if (currentChat && currentUser) {
@@ -60,6 +72,12 @@ const ChatFooter = () => {
 
     textAreaRef.current && textAreaRef.current.focus()
   }, [currentChat])
+
+  useEffect(() => {
+    if (replyingMessage && textAreaRef.current) {
+      textAreaRef.current.focus()
+    }
+  }, [replyingMessage])
 
   const onClosePreviewFiles = () => {
     setFiles(null)
@@ -85,7 +103,6 @@ const ChatFooter = () => {
         conversation: currentChat as ConversationType,
         createdAt: new Date().toISOString(),
         delete: false,
-        revoke: false,
         message: caption !== undefined ? caption : msg,
         sender: currentUser as UserType,
         status: MessageStatusEnum.SENT,
@@ -97,6 +114,8 @@ const ChatFooter = () => {
         attachmentResponseList: null,
         socketFlag: new Date().getTime().toString(),
         isLoading: files ? true : undefined,
+        replyTo: replyingMessage,
+        participantDeleted: [],
       }
 
       const receiver: UserType[] = []
@@ -141,6 +160,8 @@ const ChatFooter = () => {
 
       setMsg('')
 
+      dispatch(setReplyingMessage(null))
+
       setFiles(null)
     }
   }
@@ -154,6 +175,8 @@ const ChatFooter = () => {
       setShowEmojiPicker(false)
 
       sendMsg()
+
+      dispatch(setReplyingMessage(null))
     }
   }
 
@@ -180,9 +203,62 @@ const ChatFooter = () => {
 
   return (
     <div className='w-full px-1 md:px-0 py-2 mx-auto flex-initial transition-all'>
-      <div className='w-full md:w-2/3 mx-auto relative'>
+      <div className='w-full md:w-2/3 mx-auto relative  bg-white rounded-lg'>
         {status === ParticipantStatusEnum.STABLE ? (
-          <form ref={formRef} onSubmit={onSendMsg} encType='multipart/formData'>
+          <form
+            ref={formRef}
+            onSubmit={onSendMsg}
+            encType='multipart/formData'
+            className='flex flex-col'
+          >
+            {currentUser && replyingMessage ? (
+              <div className='px-2 py-1 border-b-[1px] border-blue-300 w-full max-h-20 overflow-y-auto flex justify-between items-center'>
+                <div className='flex flex-1 justify-start items-center'>
+                  <ReplyOutlined
+                    sx={{ color: '#2078c9', width: 30, height: 30 }}
+                  />
+                  <a
+                    href={`#msg#${replyingMessage.id}`}
+                    className='pl-3 rounded-md flex-1 block transition-all hover:bg-gray-200'
+                  >
+                    <p className='font-medium text-blue-700 whitespace-nowrap overflow-hidden text-ellipsis break-all'>
+                      {replyingMessage.sender.id === currentUser.id
+                        ? 'Bạn'
+                        : replyingMessage.sender.fullName}
+                    </p>
+                    <p className='text-sm whitespace-nowrap overflow-hidden text-ellipsis break-all'>
+                      {replyingMessage.message}
+                    </p>
+                  </a>
+                </div>
+                <Button
+                  onClick={() => {
+                    dispatch(setReplyingMessage(null))
+
+                    if (textAreaRef.current) {
+                      textAreaRef.current.focus()
+                    }
+                  }}
+                  variant='contained'
+                  sx={{
+                    maxWidth: '2.5rem',
+                    maxHeight: '2.5rem',
+                    minWidth: '2.5rem',
+                    minHeight: '2.5rem',
+                    borderRadius: '50%',
+                    bgcolor: 'transparent',
+                    '&:hover': {
+                      bgcolor: '#eeeee4',
+                    },
+                  }}
+                  disableElevation
+                >
+                  <ClearOutlined sx={{ fill: 'gray', width: 26, height: 26 }} />
+                </Button>
+              </div>
+            ) : (
+              <></>
+            )}
             <div className='w-full flex flex-row justify-between items-center'>
               <div className='flex flex-row justify-between items-center w-full bg-white rounded-2xl px-2'>
                 <Tooltip title='Đính kèm emoji'>

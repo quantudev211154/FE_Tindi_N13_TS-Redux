@@ -9,6 +9,7 @@ import RightChat from './right_chat/RightChat'
 import { useAppDispatch } from './../../../../../../redux_hooks'
 import { ConversationType } from '../../../../../../redux/types/ConversationTypes'
 import { responsiveActions } from '../../../../../../redux/slices/Responsive'
+import { conversationDetailActions } from '../../../../../../redux/slices/ConversationDetailSlice'
 
 type Props = {
   chat: ConversationType
@@ -19,6 +20,7 @@ const Chat = ({ chat }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const { openMessageList } = responsiveActions
   const { changeCurrentChat } = conversationActions
+  const { setReplyingMessage } = conversationDetailActions
 
   return (
     <Button
@@ -37,6 +39,7 @@ const Chat = ({ chat }: Props) => {
       disableElevation
       className='bg-slate-200'
       onClick={() => {
+        dispatch(setReplyingMessage(null))
         dispatch(openMessageList(true))
         dispatch(changeCurrentChat(chat))
       }}

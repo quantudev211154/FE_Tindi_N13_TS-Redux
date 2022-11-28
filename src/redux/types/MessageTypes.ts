@@ -1,4 +1,5 @@
 import { ConversationType } from './ConversationTypes'
+import { ParticipantType } from './ParticipantTypes'
 import { UserType } from './UserTypes'
 
 export enum MessageTypeEnum {
@@ -38,11 +39,18 @@ export type MessageType = {
   message: string
   createdAt: string
   status: MessageStatusEnum
-  revoke: boolean
   delete: boolean
+  participantDeleted: ParticipantType[]
   attachmentResponseList: AttachmentType[] | null
+  replyTo: MessageType | null
   socketFlag?: string
   isLoading?: boolean
+}
+
+export type DeletedMessageType = {
+  messageId: number
+  participantId: number
+  createdAt: string
 }
 
 export type SaveMessagePayload = {

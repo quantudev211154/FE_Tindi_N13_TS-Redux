@@ -1,24 +1,30 @@
 import { CalendarTodayOutlined, Close } from '@mui/icons-material'
-import { Button, TextField } from '@mui/material'
+import { Button, CircularProgress, TextField } from '@mui/material'
+import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
-import { conversationDetailState } from '../../../../../redux/slices/ConversationDetailSlice'
+import { findMessageFromServer } from '../../../../../api/Message.api'
+import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
 import {
   currentChatNavigationState,
   toggleExpandedPanel,
 } from '../../../../../redux/slices/CurrentChatNavigationSlice'
-import { MessageType } from '../../../../../redux/types/MessageTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
-import { findMessage } from '../../../../../utilities/message_utils/MessageUtils'
 import FoundMessage from '../../../../core/FoundMessage'
 
 const SearchExpanded = () => {
+  const { currentChat } = useAppSelector(conversationsControlState)
   const { openExpandedPanel } = useAppSelector(currentChatNavigationState)
   const dispatch = useAppDispatch()
   const inputRef = useRef<HTMLInputElement>(null)
   const [keyword, setKeyword] = useState('')
-  const [foundMessages, setFoundMessages] = useState<MessageType[]>([])
-  const { messageList } = useAppSelector(conversationDetailState)
-  let findMessageTimer = -1
+  let findMessageTimer: number | undefined = undefined
+  const [allowToFetchApi, setAllowToFetchApi] = useState(false)
+
+  const { data, isLoading } = useQuery({
+    queryKey: [keyword],
+    queryFn: () => findMessageFromServer(currentChat, keyword),
+    enabled: !!currentChat && keyword !== '' && allowToFetchApi,
+  })
 
   useEffect(() => {
     let timer: number = -2
@@ -39,21 +45,23 @@ const SearchExpanded = () => {
   ) => {
     window.clearTimeout(findMessageTimer)
 
+    setAllowToFetchApi(false)
+
     const value = event.target.value
 
     setKeyword(value)
 
     findMessageTimer = window.setTimeout(() => {
-      setFoundMessages(findMessage(value, messageList))
+      setAllowToFetchApi(true)
     }, 500)
   }
 
   return (
     <div
       style={{ display: openExpandedPanel ? 'flex' : 'none' }}
-      className='w-full p-1 h-full bg-white transition-all flex flex-col justify-start items-center'
+      className='w-ful p-1 h-full bg-white transition-all flex flex-col justify-start items-center'
     >
-      <div className='w-full'>
+      <div className='w-full h-full flex flex-col'>
         <div className='w-full mx-auto flex flex-row justify-between items-center'>
           <Button
             onClick={() => {
@@ -122,11 +130,31 @@ const SearchExpanded = () => {
             />
           </Button>
         </div>
-        <div className='mt-1 w-full flex flex-col items-center justify-center'>
-          {foundMessages.length !== 0 &&
-            foundMessages.map((message) => (
-              <FoundMessage key={message.id} message={message} />
-            ))}
+        <div className='mt-1 w-full flex-1 flex flex-col items-center justify-center overflow-y-auto'>
+          <div className='w-full h-full'>
+            {isLoading && keyword !== '' ? (
+              <div className='flex justify-center items-center py-5 w-full'>
+                <CircularProgress color='info' />
+              </div>
+            ) : (
+              <></>
+            )}
+            {data && data.data.length !== 0 ? (
+              data.data.map((message) => (
+                <FoundMessage key={message.id} message={message} />
+              ))
+            ) : keyword !== '' ? (
+              <div className='w-full text-center'>
+                <span className='italic text-sm'>
+                  Không tìm được tin nhắn nào
+                </span>
+              </div>
+            ) : (
+              <div className='w-full text-center'>
+                <span className='text-sm'>Hãy nhập từ khoá cần tìm kiếm</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
