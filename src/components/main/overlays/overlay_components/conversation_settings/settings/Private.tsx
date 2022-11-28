@@ -1,7 +1,3 @@
-// type Props = {
-//   returnToMainSetting: Function
-// }
-
 const Private = () => {
   return <div>Private</div>
 }
