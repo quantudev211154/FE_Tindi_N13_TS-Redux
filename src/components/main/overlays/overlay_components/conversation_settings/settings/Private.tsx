@@ -1,8 +1,8 @@
-type Props = {
-  returnToMainSetting: Function
-}
+// type Props = {
+//   returnToMainSetting: Function
+// }
 
-const Private = ({ returnToMainSetting }: Props) => {
+const Private = () => {
   return <div>Private</div>
 }
 
