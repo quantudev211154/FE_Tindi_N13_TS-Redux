@@ -164,7 +164,9 @@ const Messages = ({ item }: Props) => {
               className='relative min-w-[20%]'
             >
               {item.delete ? (
-                <></>
+                <p className='relative text-[.95rem] p-2 mb-1'>
+                  Tin nhắn đã thu hồi
+                </p>
               ) : (
                 <div className='flex flex-col justify-start sm:min-w-[50%] md:min-w-[40%] '>
                   {item.isLoading ? (
@@ -197,7 +199,7 @@ const Messages = ({ item }: Props) => {
                         return (
                           <div
                             key={attachment.id}
-                            className={`flex justify-start items-center p-3 rounded-2xl bg-slate-500 ${
+                            className={`flex justify-start items-center p-3 rounded-2xl bg-slate-500 cursor-pointer ${
                               item.message === '' &&
                               item.attachmentResponseList?.length === 1
                                 ? 'pb-6'
