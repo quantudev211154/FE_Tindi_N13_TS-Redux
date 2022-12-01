@@ -19,7 +19,6 @@ import { ErrorType } from '../types/ErrorType'
 import {
   DeletedMessageType,
   ForwardMessagePayloadType,
-  LoadMessagesThunkReturnType,
   MessageType,
   SaveMessageFullfilled,
   SaveMessagePayload,
