@@ -11,10 +11,7 @@ import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../../../redux/slices/AuthSlice'
 import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
 import { saveMessage } from '../../../../../redux/thunks/MessageThunks'
-import {
-  ConversationType,
-  ConversationTypeEnum,
-} from '../../../../../redux/types/ConversationTypes'
+import { ConversationType } from '../../../../../redux/types/ConversationTypes'
 import {
   AttachFileTypeEnum,
   MessageStatusEnum,
@@ -22,10 +19,7 @@ import {
   MessageTypeEnum,
 } from '../../../../../redux/types/MessageTypes'
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react'
-import {
-  ParticipantStatusEnum,
-  ParticipantType,
-} from '../../../../../redux/types/ParticipantTypes'
+import { ParticipantStatusEnum } from '../../../../../redux/types/ParticipantTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
 import { MySocket } from '../../../../../services/TindiSocket'
@@ -112,7 +106,7 @@ const ChatFooter = () => {
   }
 
   const sendMsg = (caption?: string) => {
-    if (files || msg !== '') {
+    if (currentChat && (files || msg !== '')) {
       const message: MessageType = {
         id: new Date().getTime(),
         conversation: currentChat as ConversationType,
@@ -133,20 +127,9 @@ const ChatFooter = () => {
         participantDeleted: [],
       }
 
-      const receiver: UserType[] = []
-
-      if (currentChat?.type === ConversationTypeEnum.SINGLE) {
-        const targetUser: ParticipantType = getTeammateInSingleConversation(
-          currentUser as UserType,
-          currentChat as ConversationType
-        )
-
-        receiver.push(targetUser.user)
-      } else {
-        for (let iterator of currentChat?.participantResponse as ParticipantType[]) {
-          receiver.push(iterator.user)
-        }
-      }
+      const receiver: UserType[] = currentChat.participantResponse.map(
+        (parti) => parti.user
+      )
 
       MySocket.sendMessage({
         message,
