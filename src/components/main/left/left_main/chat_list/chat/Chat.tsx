@@ -22,7 +22,7 @@ const Chat = ({ chat }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const { openMessageList } = responsiveActions
   const { changeCurrentChat } = conversationActions
-  const { setReplyingMessage, setLoadingMessageList } =
+  const { setReplyingMessage, setLoadingMessageList, clearMessageList } =
     conversationDetailActions
 
   return (
@@ -45,6 +45,7 @@ const Chat = ({ chat }: Props) => {
         dispatch(setReplyingMessage(null))
         dispatch(openMessageList(true))
         if (chat.id !== currentChat?.id) {
+          dispatch(clearMessageList())
           dispatch(setLoadingMessageList())
           dispatch(changeCurrentChat(chat))
           dispatch(loadMessageOfConversation(chat.id))
