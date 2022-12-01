@@ -24,7 +24,7 @@ import {
   findNextMessage,
   getTypeOfAttachment,
 } from '../../../../../../../utilities/message_utils/MessageUtils'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, Stack } from '@mui/material'
 import { ConversationTypeEnum } from '../../../../../../../redux/types/ConversationTypes'
 import UserAvatar from '../../../../../../core/UserAvatar'
 import {
@@ -177,44 +177,49 @@ const Messages = ({ item }: Props) => {
                   ) : (
                     <></>
                   )}
-                  {item.attachmentResponseList?.map((attachment) => {
-                    if (
-                      getTypeOfAttachment(attachment) ===
-                      AttachFileTypeEnum.IMAGE
-                    )
-                      return (
-                        <img
-                          key={attachment.id}
-                          src={attachment.fileUrl}
-                          className='rounded-2xl object-contain cursor-pointer'
-                          onClick={() => {
-                            dispatch(setCurrentFileUrl(attachment))
-                          }}
-                        />
+                  <Stack direction={'column'} gap={0.5}>
+                    {item.attachmentResponseList?.map((attachment) => {
+                      if (
+                        getTypeOfAttachment(attachment) ===
+                        AttachFileTypeEnum.IMAGE
                       )
-                    else {
-                      return (
-                        <div
-                          key={attachment.id}
-                          className={`flex justify-start items-center p-3 rounded-2xl bg-slate-500 ${
-                            item.message === '' ? 'pb-7' : 'pb-3'
-                          }`}
-                          onClick={() => {
-                            dispatch(setCurrentFileUrl(attachment))
-                          }}
-                        >
-                          <span className='text-white'>
-                            <InsertDriveFileOutlined
-                              sx={{ width: '2rem', height: '2rem' }}
-                            />
-                          </span>
-                          <span className='ml-3 text-gray-100 whitespace-pre-wrap overflow-hidden text-ellipsis break-all'>
-                            {attachment.thumbnail}
-                          </span>
-                        </div>
-                      )
-                    }
-                  })}
+                        return (
+                          <img
+                            key={attachment.id}
+                            src={attachment.fileUrl}
+                            className='rounded-2xl object-contain cursor-pointer'
+                            onClick={() => {
+                              dispatch(setCurrentFileUrl(attachment))
+                            }}
+                          />
+                        )
+                      else {
+                        return (
+                          <div
+                            key={attachment.id}
+                            className={`flex justify-start items-center p-3 rounded-2xl bg-slate-500 ${
+                              item.message === '' &&
+                              item.attachmentResponseList?.length === 1
+                                ? 'pb-6'
+                                : 'pb-3'
+                            }`}
+                            onClick={() => {
+                              dispatch(setCurrentFileUrl(attachment))
+                            }}
+                          >
+                            <span className='text-white'>
+                              <InsertDriveFileOutlined
+                                sx={{ width: '2rem', height: '2rem' }}
+                              />
+                            </span>
+                            <span className='ml-3 text-gray-100 whitespace-pre-wrap overflow-hidden text-ellipsis break-all'>
+                              {attachment.thumbnail}
+                            </span>
+                          </div>
+                        )
+                      }
+                    })}
+                  </Stack>
                 </div>
               )}
               {item.message !== '' ? (

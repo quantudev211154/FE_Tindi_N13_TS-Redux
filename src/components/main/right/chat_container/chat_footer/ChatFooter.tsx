@@ -96,16 +96,18 @@ const ChatFooter = () => {
   ) => {
     const files = event.target.files
 
-    if (files && canUploadFiles(files)) {
-      setFiles(files)
-      dispatch(togglePreviewFilesInMessage())
-    } else {
-      showMessageHandlerResultToSnackbar(
-        false,
-        'Quá dung lượng cho phép. Tối đa là 25MB.',
-        dispatch,
-        setHandlerResult
-      )
+    if (files && files.length > 0) {
+      if (canUploadFiles(files)) {
+        setFiles(files)
+        dispatch(togglePreviewFilesInMessage())
+      } else {
+        showMessageHandlerResultToSnackbar(
+          false,
+          'Quá dung lượng cho phép. Tối đa là 25MB.',
+          dispatch,
+          setHandlerResult
+        )
+      }
     }
   }
 

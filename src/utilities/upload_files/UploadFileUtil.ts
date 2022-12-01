@@ -24,6 +24,10 @@ export const acceptFileType = (): string => {
   return fileTypes.join(', ')
 }
 
+const convertFileSizeToMB = (orginalSize: number): number => {
+  return orginalSize / (1024 * 1024)
+}
+
 export const canUploadFiles = (
   uploadFiles: FileList,
   maxSize: number = 25
@@ -31,9 +35,9 @@ export const canUploadFiles = (
   let totalSize = 0
 
   for (let i = 0; i < uploadFiles.length; ++i) {
-    if (uploadFiles[i].size > maxSize) return false
+    if (convertFileSizeToMB(uploadFiles[i].size) > maxSize) return false
 
-    totalSize += uploadFiles[i].size / (1024 * 1024)
+    totalSize += convertFileSizeToMB(uploadFiles[i].size)
 
     if (totalSize > maxSize) return false
   }
