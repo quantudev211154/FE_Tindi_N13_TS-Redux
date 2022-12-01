@@ -4,7 +4,6 @@ import {
   currentChatNavigationState,
   toggleExpandedPanel,
 } from '../../../../redux/slices/CurrentChatNavigationSlice'
-import { loadMessageOfConversation } from '../../../../redux/thunks/MessageThunks'
 import { useAppDispatch, useAppSelector } from '../../../../redux_hooks'
 import ForwardMessage from '../../overlays/ForwardMessage'
 import AddContactBar from './add_contact_bar/AddContactBar'
@@ -20,12 +19,11 @@ const ChatContainer = () => {
 
   useEffect(() => {
     dispatch(toggleExpandedPanel(false))
-    dispatch(loadMessageOfConversation(currentChat?.id as number))
   }, [currentChat])
 
   return (
-    <div className='relative w-full h-full z-40 flex overflow-hidden justify-between transition-all'>
-      <div className='h-full flex flex-col transition-all flex-1'>
+    <div className='relative flex-1 w-full h-full z-40 flex overflow-hidden justify-between transition-all'>
+      <div className='w-full h-full flex flex-col transition-all flex-1'>
         <ChatHeader />
         <AddContactBar />
         <ChatMain />

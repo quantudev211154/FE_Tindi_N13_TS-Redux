@@ -1,4 +1,4 @@
-import { Close } from '@mui/icons-material'
+import { Close, InsertDriveFileOutlined } from '@mui/icons-material'
 import { Button, Modal, TextField } from '@mui/material'
 import { ReactNode, useEffect, useState } from 'react'
 import { controlOverlaysState } from '../../../redux/slices/ControlOverlaysSlice'
@@ -30,7 +30,26 @@ const PreviewFiles = ({
         for (const iterator of files) {
           setFileList((prev) => [
             ...prev,
-            <img src={URL.createObjectURL(iterator)} className='mb-1' />,
+            <img
+              src={URL.createObjectURL(iterator)}
+              className='mb-1 rounded-2xl'
+            />,
+          ])
+        }
+      } else {
+        for (const iterator of files) {
+          setFileList((prev) => [
+            ...prev,
+            <div className='flex justify-start items-center p-3 mb-1 rounded-2xl bg-slate-500'>
+              <span className='text-white'>
+                <InsertDriveFileOutlined
+                  sx={{ width: '2rem', height: '2rem' }}
+                />
+              </span>
+              <span className='ml-3 text-gray-100 text-sm whitespace-pre-wrap overflow-hidden text-ellipsis break-all'>
+                {iterator.name}
+              </span>
+            </div>,
           ])
         }
       }
@@ -50,7 +69,6 @@ const PreviewFiles = ({
 
   const onCloseOverlay = () => {
     setFileList([])
-    // setCaption('')
     onClosePreviewOverlay()
   }
 
@@ -120,8 +138,8 @@ const PreviewFiles = ({
             Gửi đi
           </Button>
         </div>
-        <div className='w-full max-h-96 overflow-y-scroll bg-slate-500'>
-          {files && filesType === AttachFileTypeEnum.IMAGE ? (
+        <div className='p-1 w-full rounded-md max-h-96 overflow-y-scroll bg-gray-300'>
+          {files ? (
             fileList.map((element, index) => (
               <div key={index} className='relative'>
                 <div className='absolute left-1 top-1 rounded-full w-5 h-5 bg-blue-600 flex justify-center items-center'>

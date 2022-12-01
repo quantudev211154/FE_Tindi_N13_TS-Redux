@@ -8,6 +8,7 @@ import {
 } from '../../../../../redux/types/ConversationTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch } from '../../../../../redux_hooks'
+import { parseDateByDayMonthYear } from '../../../../../utilities/date_utils/ParseDate'
 import GroupAvatar, { GroupAvatarSizeEnum } from '../../../../core/GroupAvatar'
 import UserAvatar from '../../../../core/UserAvatar'
 
@@ -79,9 +80,14 @@ const ViewGroupHeader = ({
               ? currentChat?.title
               : teammateInSingleConversation?.fullName}
           </p>
-          <p>
+          <p className='text-slate-700 mt-1'>
             {currentChat && currentChat.type === ConversationTypeEnum.GROUP
               ? currentChat?.participantResponse.length + ' thành viên'
+              : ''}
+          </p>
+          <p className='text-slate-700 text-sm mt-1'>
+            {currentChat
+              ? `Ngày tạo: ${parseDateByDayMonthYear(currentChat.createdAt)}`
               : ''}
           </p>
         </div>

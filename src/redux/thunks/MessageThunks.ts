@@ -14,11 +14,12 @@ import {
   CONVERSATION_DETAIL_REVOKE_MESSAGE,
   CONVERSATION_DETAIL_SAVE_MESSAGE,
 } from '../../constants/ReduxConstant'
-import http from '../../utilities/http/Http'
+import http, { HttpClass } from '../../utilities/http/Http'
 import { ErrorType } from '../types/ErrorType'
 import {
   DeletedMessageType,
   ForwardMessagePayloadType,
+  LoadMessagesThunkReturnType,
   MessageType,
   SaveMessageFullfilled,
   SaveMessagePayload,
@@ -31,7 +32,9 @@ export const loadMessageOfConversation = createAsyncThunk<
   { rejectValue: ErrorType }
 >(CONVERSATION_DETAIL_LOAD_MESSAGES, async (payload, thunkApi) => {
   try {
-    const response = await http.get(API_LOAD_MSG_OF_CONVER + payload)
+    const response = await http.get(API_LOAD_MSG_OF_CONVER + payload, {
+      signal: HttpClass.getSignal(),
+    })
 
     return response.data
   } catch (error) {

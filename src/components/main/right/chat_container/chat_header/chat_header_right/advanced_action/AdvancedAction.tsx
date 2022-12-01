@@ -1,6 +1,5 @@
 import {
   DirectionsRunOutlined,
-  CleaningServicesOutlined,
   DeleteOutline,
   InfoOutlined,
   MoreVert,
@@ -61,13 +60,14 @@ const AdvancedAction = () => {
 
   const deleteChat = () => {
     if (currentChat) {
+      dispatch(deleteConversationThunk(currentChat.id))
+
       const currentUsers = currentChat.participantResponse.map(
         (parti) => parti.user
       )
       MySocket.deleteConversation(currentUsers, currentChat)
 
       dispatch(deleteConversation(currentChat))
-      dispatch(deleteConversationThunk(currentChat.id))
       dispatch(openMessageList(false))
     }
   }
@@ -152,17 +152,6 @@ const AdvancedAction = () => {
               <span className='text-sm'>Quản lý nhóm</span>
             </MenuItem>
           </div>
-        ) : (
-          <div className='hidden'></div>
-        )}
-        {currentUser &&
-        currentChat &&
-        getRoleOfParticipant(currentUser, currentChat.participantResponse) ===
-          ParticipantRoleEnum.ADMIN ? (
-          <MenuItem onClick={handleCloseGroupSetting}>
-            <CleaningServicesOutlined sx={{ color: 'gray', mr: 2 }} />
-            <span className='text-sm'>Xoá tất cả tin nhắn</span>
-          </MenuItem>
         ) : (
           <div className='hidden'></div>
         )}

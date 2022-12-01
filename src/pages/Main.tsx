@@ -101,7 +101,6 @@ const Main = () => {
       (data: any) => {
         if (currentChat && currentChat.id === data.conversation.id) {
           dispatch(openMessageList(false))
-          console.log(123)
         }
         dispatch(deleteConversation(data.conversation))
         dispatch(deleteConversationThunk(data.conversation.id))
@@ -133,6 +132,34 @@ const Main = () => {
         dispatch(
           updateStatusForParticipant([data.conversation, data.to, data.status])
         )
+      }
+    )
+
+    MySocket.getTindiSocket()?.on(
+      SocketEventEnum.UPDATE_AFTER_REMOVE_MEMBER,
+      (data: any) => {
+        if (currentUser?.id === data.participant.user.id) {
+          dispatch(deleteConversation(data.conversation))
+          showMessageHandlerResultToSnackbar(
+            false,
+            `Bạn vừa bị quản trị viên của nhóm ${data.conversation.title} xoá khỏi nhóm`,
+            dispatch,
+            setHandlerResult
+          )
+        } else {
+          dispatch(
+            removeParticipantFromGroup([data.conversation, data.participant])
+          )
+
+          if (currentChat?.id === data.conversation.id) {
+            showMessageHandlerResultToSnackbar(
+              false,
+              `Thành viên ${data.participant.user.fullName} vừa bị quản trị viên xoá khỏi nhóm`,
+              dispatch,
+              setHandlerResult
+            )
+          }
+        }
       }
     )
 

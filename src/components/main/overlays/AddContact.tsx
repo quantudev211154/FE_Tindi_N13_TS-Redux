@@ -89,7 +89,7 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
         <div className='flex-initial mb-5'>
           <p className='text-lg font-semibold'>Thêm liên hệ mới</p>
         </div>
-        <div className='flex-auto overflow-y-scroll'>
+        <div className='flex-1 overflow-y-scroll'>
           <Formik
             initialValues={initialValues}
             onSubmit={() => {}}
@@ -147,7 +147,7 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
                       )
                     }}
                   >
-                    <div className='flex justify-start items-center flex-auto'>
+                    <div className='flex justify-start items-center flex-1'>
                       <UserAvatar
                         avatar={result.avatar}
                         name={result.fullName}

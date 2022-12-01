@@ -72,3 +72,19 @@ export const findMessage = (
 
   return found
 }
+
+export const findNextMessage = (
+  currentMessage: MessageType,
+  messageList: MessageType[]
+): MessageType | undefined => {
+  return messageList.find(
+    (message) => message.id > currentMessage.id && !message.delete
+  )
+}
+
+export const findPreviousMessage = (
+  currentMessage: MessageType,
+  messageList: MessageType[]
+): MessageType | undefined => {
+  return messageList.at(messageList.indexOf(currentMessage) - 1)
+}

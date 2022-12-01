@@ -52,7 +52,6 @@ type Props = {
   setSelectedParticipant: React.Dispatch<
     React.SetStateAction<ParticipantType | undefined>
   >
-  setShowViewAllMember: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ViewParticipantInfo = ({
@@ -83,8 +82,8 @@ const ViewParticipantInfo = ({
   }, [currentUser])
 
   const removeParti = () => {
-    if (currentUser && selectedRemoveMember !== undefined) {
-      const participantOfCurrentUser = currentChat?.participantResponse.find(
+    if (currentUser && selectedRemoveMember !== undefined && currentChat) {
+      const participantOfCurrentUser = currentChat.participantResponse.find(
         (parti) => parti.user.id === currentUser.id
       )
 
@@ -93,6 +92,12 @@ const ViewParticipantInfo = ({
           adminId: participantOfCurrentUser.id,
           participantId: selectedRemoveMember.id,
         }
+
+        MySocket.removeOneMemberOutOfGroup(
+          currentChat,
+          selectedRemoveMember,
+          currentChat.participantResponse.map((parti) => parti.user)
+        )
 
         setSelectedParticipant(undefined)
         dispatch(removeParticipant(payload))

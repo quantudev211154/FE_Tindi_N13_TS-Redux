@@ -2,7 +2,8 @@ import axios, { AxiosInstance } from 'axios'
 import { HOST } from '../../constants/APIConstant'
 
 class Http {
-  instance: AxiosInstance
+  private instance: AxiosInstance
+  private abortController: AbortController
 
   constructor() {
     this.instance = axios.create({
@@ -13,9 +14,23 @@ class Http {
         Accept: 'application/json',
       },
     })
+
+    this.abortController = new AbortController()
+  }
+
+  getInstance = () => {
+    return this.instance
+  }
+
+  getSignal = () => this.abortController.signal
+
+  abortRequest = () => {
+    this.abortController.abort()
   }
 }
 
-const http = new Http().instance
+export const HttpClass = new Http()
+
+const http = HttpClass.getInstance()
 
 export default http

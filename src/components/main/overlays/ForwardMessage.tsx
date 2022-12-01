@@ -125,7 +125,7 @@ const ForwardMessage = () => {
             onChange={onFindConverTextFieldChange}
           />
         </div>
-        <div className='flex-auto max-h-56 overflow-y-scroll'>
+        <div className='flex-1 max-h-56 overflow-y-scroll'>
           {(foundResult === undefined || foundResult.length === 0
             ? conversationList
             : foundResult

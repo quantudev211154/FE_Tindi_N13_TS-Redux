@@ -17,14 +17,15 @@ import {
 import { findContactOnChangeField } from '../../../../../../../utilities/contacts/ContactUtils'
 import { isContactExistingInCurrentChatParticipant } from '../../../../../../../utilities/conversation/ConversationUtils'
 import { showMessageHandlerResultToSnackbar } from '../../../../../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
+import { CurrentViewGroupOverlayEnum } from '../../../../ViewGroupInfoOverlay'
 import ContactToAdd from '../../../new_group/ContactToAdd'
 import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
 
 type Props = {
-  setShowAddMemberToGroup: React.Dispatch<React.SetStateAction<boolean>>
+  changeOverlay: Function
 }
 
-const AddMemberToGroup = ({ setShowAddMemberToGroup }: Props) => {
+const AddMemberToGroup = ({ changeOverlay }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const { contacts } = useAppSelector(contactState)
   const [newMembers, setNewMembers] = useState<ContactType[]>([])
@@ -90,7 +91,8 @@ const AddMemberToGroup = ({ setShowAddMemberToGroup }: Props) => {
         phones,
       }
       dispatch(addMultiParticipantToConversation(payload))
-      setShowAddMemberToGroup(false)
+      changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
+
       showMessageHandlerResultToSnackbar(
         true,
         'Đã thêm thành công ' + phones.length + ' thành viên mới vào nhóm',
@@ -156,7 +158,7 @@ const AddMemberToGroup = ({ setShowAddMemberToGroup }: Props) => {
         <Button
           disableElevation
           onClick={() => {
-            setShowAddMemberToGroup(false)
+            changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
           }}
           variant='contained'
           sx={{

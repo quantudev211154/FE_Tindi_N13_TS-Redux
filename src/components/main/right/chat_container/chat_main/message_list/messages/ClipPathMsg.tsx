@@ -3,13 +3,15 @@ import { MessageType } from '../../../../../../../redux/types/MessageTypes'
 type Props = {
   fromSelf: boolean
   message: MessageType
+  clipPathRef: React.RefObject<HTMLDivElement>
 }
 
-const ClipPathMsg = ({ fromSelf, message }: Props) => {
+const ClipPathMsg = ({ fromSelf, message, clipPathRef }: Props) => {
   if (message.message === '') return <></>
 
   return (
     <div
+      ref={clipPathRef}
       style={fromSelf ? { right: '-0.562rem' } : { left: '-0.562rem' }}
       className='absolute height-[1.125rem] bottom-[0.0225rem] sm:bottom-[0.0625rem] -right-[0.562rem]'
     >

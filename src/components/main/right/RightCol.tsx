@@ -40,7 +40,7 @@ const RightCol = () => {
   return (
     <div
       ref={ref}
-      className='absolute top-0 md:left-0 md:w-auto md:relative flex-1 h-full bg-gray-300 z-50 transition-all duration-500'
+      className='absolute top-0 md:left-0 md:w-auto md:relative flex-1 h-full bg-gray-300 z-50 transition-all duration-500 overflow-hidden'
     >
       {!currentChat?.id ? <Welcome /> : <ChatContainer />}
     </div>

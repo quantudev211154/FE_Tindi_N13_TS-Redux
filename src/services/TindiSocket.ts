@@ -98,6 +98,18 @@ class TindiSocket {
     })
   }
 
+  removeOneMemberOutOfGroup = (
+    conversation: ConversationType,
+    participant: ParticipantType,
+    to: UserType[]
+  ) => {
+    this.socket?.emit(SocketEventEnum.REMOVE_MEMBER_OUT_OF_GROUP, {
+      conversation,
+      participant,
+      to,
+    })
+  }
+
   createNewConversation = (to: UserType[], newConver: ConversationType) => {
     this.socket?.emit(SocketEventEnum.CREATE_CONVER, {
       to,

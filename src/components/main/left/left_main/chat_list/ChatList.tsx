@@ -37,7 +37,7 @@ const ChatList = () => {
     )
 
   return (
-    <Stack direction='column' maxWidth='true' gap={1}>
+    <Stack direction='column' maxWidth='true'>
       {conversationList.length == 0 ? (
         <p className='text-center text-lg mt-10'>
           Bạn chưa có cuộc trò chuyện trò nào!

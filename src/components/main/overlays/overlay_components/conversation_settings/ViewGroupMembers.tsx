@@ -13,20 +13,16 @@ import { UserType } from '../../../../../redux/types/UserTypes'
 import { useEffect, useState } from 'react'
 import { ConversationTypeEnum } from '../../../../../redux/types/ConversationTypes'
 import { sortParticipantsByRole } from '../../../../../utilities/conversation/ConversationUtils'
+import { CurrentViewGroupOverlayEnum } from '../../ViewGroupInfoOverlay'
 
 type Props = {
-  setShowAddMemberToGroup: React.Dispatch<React.SetStateAction<boolean>>
+  changeOverlay: Function
   setSelectedParticipant: React.Dispatch<
     React.SetStateAction<ParticipantType | undefined>
   >
-  setShowViewAllMember: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ViewGroupMembers = ({
-  setShowAddMemberToGroup,
-  setSelectedParticipant,
-  setShowViewAllMember,
-}: Props) => {
+const ViewGroupMembers = ({ changeOverlay, setSelectedParticipant }: Props) => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const [chatParticipants, setChatParticipants] = useState<ParticipantType[]>(
@@ -47,7 +43,7 @@ const ViewGroupMembers = ({
         <div
           className='px-5 flex-1 flex items-center cursor-pointer hover:bg-gray-200 py-3 rounded-lg'
           onClick={() => {
-            setShowViewAllMember(true)
+            changeOverlay(CurrentViewGroupOverlayEnum.VIEW_ALL_MEMBERS)
           }}
         >
           <PeopleOutline sx={{ width: '2rem', height: '2rem' }} />
@@ -67,7 +63,7 @@ const ViewGroupMembers = ({
                   minHeight: '2.5rem',
                 }}
                 onClick={() => {
-                  setShowAddMemberToGroup(true)
+                  changeOverlay(CurrentViewGroupOverlayEnum.ADD_MEMBER_TO_GROUP)
                 }}
               >
                 <PersonAddOutlined />

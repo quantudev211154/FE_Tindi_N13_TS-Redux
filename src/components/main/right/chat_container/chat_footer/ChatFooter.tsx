@@ -32,6 +32,7 @@ import { MySocket } from '../../../../../services/TindiSocket'
 import {
   acceptFileType,
   acceptImageType,
+  canUploadFiles,
 } from '../../../../../utilities/upload_files/UploadFileUtil'
 import { controlOverlaysActions } from '../../../../../redux/slices/ControlOverlaysSlice'
 import PreviewFiles from '../../../overlays/PreviewFiles'
@@ -40,6 +41,8 @@ import {
   conversationDetailActions,
   conversationDetailState,
 } from '../../../../../redux/slices/ConversationDetailSlice'
+import { showMessageHandlerResultToSnackbar } from '../../../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
+import { messageContextmenuActions } from '../../../../../redux/slices/MessageContextmenuSlice'
 
 const ChatFooter = () => {
   const { currentUser } = useAppSelector(authState)
@@ -56,8 +59,11 @@ const ChatFooter = () => {
   >(undefined)
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
   const [status, setStatus] = useState(ParticipantStatusEnum.STABLE)
-  const { replyingMessage } = useAppSelector(conversationDetailState)
+  const { replyingMessage, isLoadingMessageList } = useAppSelector(
+    conversationDetailState
+  )
   const { setReplyingMessage } = conversationDetailActions
+  const { setHandlerResult } = messageContextmenuActions
 
   useEffect(() => {
     if (currentChat && currentUser) {
@@ -90,9 +96,16 @@ const ChatFooter = () => {
   ) => {
     const files = event.target.files
 
-    if (files) {
+    if (files && canUploadFiles(files)) {
       setFiles(files)
       dispatch(togglePreviewFilesInMessage())
+    } else {
+      showMessageHandlerResultToSnackbar(
+        false,
+        'Quá dung lượng cho phép. Tối đa là 25MB.',
+        dispatch,
+        setHandlerResult
+      )
     }
   }
 
@@ -145,6 +158,10 @@ const ChatFooter = () => {
       formData.append('senderId', message.sender.id.toString())
       formData.append('messageType', message.type.toString())
       formData.append('message', message.message)
+
+      if (replyingMessage) {
+        formData.append('replyTo', replyingMessage.id as string)
+      }
 
       if (files) {
         for (const iterator of files) formData.append('file', iterator)
@@ -202,34 +219,34 @@ const ChatFooter = () => {
   }
 
   return (
-    <div className='w-full px-1 md:px-0 py-2 mx-auto flex-initial transition-all'>
-      <div className='w-full md:w-2/3 mx-auto relative  bg-white rounded-lg'>
+    <div className='w-full px-1 md:px-0 py-2 flex-initial transition-all flex justify-center items-center'>
+      <div className='w-full md:w-2/3 relative bg-white rounded-lg'>
         {status === ParticipantStatusEnum.STABLE ? (
           <form
             ref={formRef}
             onSubmit={onSendMsg}
             encType='multipart/formData'
-            className='flex flex-col'
+            className='flex flex-col w-full'
           >
             {currentUser && replyingMessage ? (
-              <div className='px-2 py-1 border-b-[1px] border-blue-300 w-full max-h-20 overflow-y-auto flex justify-between items-center'>
-                <div className='flex flex-1 justify-start items-center'>
+              <div className='px-2 py-1 border-b-[1px] border-blue-300 w-full flex justify-between items-center'>
+                <div className='w-full flex justify-start items-center '>
                   <ReplyOutlined
                     sx={{ color: '#2078c9', width: 30, height: 30 }}
                   />
-                  <a
-                    href={`#msg#${replyingMessage.id}`}
-                    className='pl-3 rounded-md flex-1 block transition-all hover:bg-gray-200'
-                  >
-                    <p className='font-medium text-blue-700 whitespace-nowrap overflow-hidden text-ellipsis break-all'>
-                      {replyingMessage.sender.id === currentUser.id
-                        ? 'Bạn'
-                        : replyingMessage.sender.fullName}
-                    </p>
-                    <p className='text-sm whitespace-nowrap overflow-hidden text-ellipsis break-all'>
-                      {replyingMessage.message}
-                    </p>
-                  </a>
+                  <div className='w-full whitespace-pre-wrap overflow-hidden text-ellipsis break-all'>
+                    <a
+                      href={`#msg#${replyingMessage.id}`}
+                      className='pl-3 pr-1 rounded-md max-w-full max-h-20  overflow-y-auto flex flex-col w-full transition-all hover:bg-gray-200 '
+                    >
+                      <p className='font-medium text-blue-700'>
+                        {replyingMessage.sender.id === currentUser.id
+                          ? 'Bạn'
+                          : replyingMessage.sender.fullName}
+                      </p>
+                      <p className='text-sm'>{replyingMessage.message}</p>
+                    </a>
+                  </div>
                 </div>
                 <Button
                   onClick={() => {
@@ -260,7 +277,7 @@ const ChatFooter = () => {
               <></>
             )}
             <div className='w-full flex flex-row justify-between items-center'>
-              <div className='flex flex-row justify-between items-center w-full bg-white rounded-2xl px-2'>
+              <div className='h-full flex flex-row justify-between items-center w-full bg-white rounded-2xl px-2'>
                 <Tooltip title='Đính kèm emoji'>
                   <Button
                     id='showEmojiPicker'
@@ -321,7 +338,7 @@ const ChatFooter = () => {
                     )
                   }}
                   autoFocus
-                  maxRows={4}
+                  maxRows={isLoadingMessageList ? 1 : 4}
                   value={msg}
                   onKeyDown={onInputKeyPress}
                   placeholder='Viết tin nhắn nào...'
@@ -387,11 +404,13 @@ const ChatFooter = () => {
                       }}
                       disableElevation
                       onClick={() => {
+                        setAttachFileType(AttachFileTypeEnum.FILE)
                         setShowEmojiPicker(false)
                       }}
                     >
                       <AttachFile />
                       <input
+                        onChange={onAttachMessageChange}
                         type='file'
                         multiple
                         hidden

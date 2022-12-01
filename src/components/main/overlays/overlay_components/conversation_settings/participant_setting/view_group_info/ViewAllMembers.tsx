@@ -1,6 +1,6 @@
 import { ArrowBack, ClearOutlined } from '@mui/icons-material'
 import { Button } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AVATAR_BASE } from '../../../../../../../constants/UserAvatarConstant'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../../../../../redux/slices/ControlOverlaysSlice'
@@ -15,14 +15,15 @@ import {
 } from '../../../../../../../redux_hooks'
 import { sortParticipantsByRole } from '../../../../../../../utilities/conversation/ConversationUtils'
 import UserAvatar from '../../../../../../core/UserAvatar'
+import { CurrentViewGroupOverlayEnum } from '../../../../ViewGroupInfoOverlay'
 import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
 import ViewParticipantInfo from './ViewParticipantInfo'
 
 type Props = {
-  setShowViewAllMember: React.Dispatch<React.SetStateAction<boolean>>
+  changeOverlay: Function
 }
 
-const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
+const ViewAllMembers = ({ changeOverlay }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const { currentUser } = useAppSelector(authState)
   const dispatch = useAppDispatch()
@@ -33,11 +34,16 @@ const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
   const [chatParticipants, setChatParticipants] = useState<ParticipantType[]>(
     []
   )
+  let timer: number | undefined = -1
 
   useEffect(() => {
     if (currentChat) {
-      setChatParticipants(sortParticipantsByRole(currentChat))
+      timer = window.setTimeout(() => {
+        setChatParticipants(sortParticipantsByRole(currentChat))
+      }, 200)
     }
+
+    return () => window.clearTimeout(timer)
   }, [currentChat])
 
   return (
@@ -52,7 +58,7 @@ const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
           <div>
             <Button
               onClick={() => {
-                setShowViewAllMember(false)
+                changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
               }}
               variant='contained'
               sx={{
@@ -76,7 +82,7 @@ const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
           </div>
           <Button
             onClick={() => {
-              setShowViewAllMember(false)
+              changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
               dispatch(toggleViewGroupInfoOverlay())
             }}
             variant='contained'
@@ -156,7 +162,6 @@ const ViewAllMembers = ({ setShowViewAllMember }: Props) => {
       </div>
       <div style={{ display: selectedParticipant ? 'block' : 'none' }}>
         <ViewParticipantInfo
-          setShowViewAllMember={setShowViewAllMember}
           participant={selectedParticipant}
           setSelectedParticipant={setSelectedParticipant}
         />

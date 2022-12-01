@@ -33,3 +33,4 @@ export const API_SAVE_MSG = 'messages'
 export const API_DOWLOAD_FILE = 'messages/attachments/'
 export const API_FORWARD_MSG = 'messages/forward/' //tmp
 export const API_FIND_MESSAGE = 'messages/find/'
+export const API_LOAD_ATTACHMENTS = 'messages/attachments/'

@@ -1,4 +1,4 @@
-import { CalendarTodayOutlined, Close } from '@mui/icons-material'
+import { Close } from '@mui/icons-material'
 import { Button, CircularProgress, TextField } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
@@ -102,33 +102,6 @@ const SearchExpanded = () => {
             sx={{ flex: '1 1 0%' }}
             placeholder='Tìm tin nhắn'
           />
-          <Button
-            type='submit'
-            variant='contained'
-            sx={{
-              maxWidth: '2.5rem',
-              maxHeight: '2.5rem',
-              minWidth: '2.5rem',
-              minHeight: '2.5rem',
-              borderRadius: '50%',
-              ml: 1,
-              bgcolor: 'white',
-              '&:hover': {
-                bgcolor: '#eeeee4',
-                '& svg': {
-                  fill: 'black',
-                },
-              },
-            }}
-            disableElevation
-          >
-            <CalendarTodayOutlined
-              sx={{
-                fill: 'gray',
-                cursor: 'pointer',
-              }}
-            />
-          </Button>
         </div>
         <div className='mt-1 w-full flex-1 flex flex-col items-center justify-center overflow-y-auto'>
           <div className='w-full h-full'>

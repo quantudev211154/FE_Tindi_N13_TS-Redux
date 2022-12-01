@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import CurrentChatUtil from '../../class/CurrentChatClass'
 import { RootState } from '../../redux_store'
 import { loadMessageOfConversation, saveMessage } from '../thunks/MessageThunks'
 import { ConversationDetailTypes } from '../types/ConversationDetailTypes'
@@ -10,12 +11,23 @@ const initialState: ConversationDetailTypes = {
   isLoadingMessageList: false,
   messageList: [],
   replyingMessage: null,
+  currentScrollHeight: 0,
 }
 
 const conversationDetailSlice = createSlice({
   name: CONVERSATION_DETAIL_NAME,
   initialState,
   reducers: {
+    setCurrentScrollHeight: (state, action: PayloadAction<number>) => {
+      state.currentScrollHeight = action.payload
+    },
+    testInfinite: (state) => {
+      let t = state.messageList
+      state.messageList.unshift(...t)
+    },
+    setLoadingMessageList: (state) => {
+      state.isLoadingMessageList = true
+    },
     addNewMessageToCurrentChat: (state, action: PayloadAction<MessageType>) => {
       const existingMsg =
         state.messageList &&
@@ -68,7 +80,18 @@ const conversationDetailSlice = createSlice({
     })
 
     builder.addCase(loadMessageOfConversation.fulfilled, (state, action) => {
-      state.messageList = action.payload
+      const currentChat = CurrentChatUtil.getCurrenChat()
+
+      if (
+        !!currentChat &&
+        currentChat.id === action.payload[0].conversation.id
+      ) {
+        state.messageList = action.payload
+        state.isLoadingMessageList = false
+      }
+    })
+
+    builder.addCase(loadMessageOfConversation.rejected, (state) => {
       state.isLoadingMessageList = false
     })
 

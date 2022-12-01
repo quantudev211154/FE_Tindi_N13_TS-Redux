@@ -48,3 +48,5 @@ export const SOCKET_SLICE_NAME = 'socket'
 export const MESSAGE_CONTEXT_MENU_NAME = 'msgContextMenu'
 
 export const RESPONSIVE = 'RESPONSIVE'
+
+export const FILE_VIEWER_SLICE_NAME = 'FILE_VIEWER_SLICE'

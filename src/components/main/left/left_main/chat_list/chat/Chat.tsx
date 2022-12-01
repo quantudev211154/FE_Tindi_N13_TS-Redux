@@ -10,6 +10,8 @@ import { useAppDispatch } from './../../../../../../redux_hooks'
 import { ConversationType } from '../../../../../../redux/types/ConversationTypes'
 import { responsiveActions } from '../../../../../../redux/slices/Responsive'
 import { conversationDetailActions } from '../../../../../../redux/slices/ConversationDetailSlice'
+import { loadMessageOfConversation } from '../../../../../../redux/thunks/MessageThunks'
+import CurrentChatUtil from '../../../../../../class/CurrentChatClass'
 
 type Props = {
   chat: ConversationType
@@ -20,7 +22,8 @@ const Chat = ({ chat }: Props) => {
   const { currentChat } = useAppSelector(conversationsControlState)
   const { openMessageList } = responsiveActions
   const { changeCurrentChat } = conversationActions
-  const { setReplyingMessage } = conversationDetailActions
+  const { setReplyingMessage, setLoadingMessageList } =
+    conversationDetailActions
 
   return (
     <Button
@@ -41,7 +44,12 @@ const Chat = ({ chat }: Props) => {
       onClick={() => {
         dispatch(setReplyingMessage(null))
         dispatch(openMessageList(true))
-        dispatch(changeCurrentChat(chat))
+        if (chat.id !== currentChat?.id) {
+          dispatch(setLoadingMessageList())
+          dispatch(changeCurrentChat(chat))
+          dispatch(loadMessageOfConversation(chat.id))
+          CurrentChatUtil.setCurrentChat(chat)
+        }
       }}
     >
       <LeftChat chat={chat} />

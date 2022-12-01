@@ -53,6 +53,11 @@ export type DeletedMessageType = {
   createdAt: string
 }
 
+export type LoadMessagesThunkReturnType = {
+  converId: number
+  data: MessageType[]
+}
+
 export type SaveMessagePayload = {
   formData: FormData
   socketFlag: string

@@ -104,9 +104,6 @@ const ManageGroup = () => {
                   <Button
                     component='label'
                     disableElevation
-                    onClick={() => {
-                      console.log(123)
-                    }}
                     variant='contained'
                     sx={{
                       position: 'relative',

@@ -1,9 +1,4 @@
-import {
-  AccountCircle,
-  ClearOutlined,
-  Password,
-  Shield,
-} from '@mui/icons-material'
+import { AccountCircle, ClearOutlined, Password } from '@mui/icons-material'
 import { Button } from '@mui/material'
 import { useState } from 'react'
 import { authState } from '../../../redux/slices/AuthSlice'
@@ -105,19 +100,6 @@ const Settings = () => {
                 <Password sx={{ width: 25, height: 25 }} />
               </label>
               <span className='ml-5'>Đổi mật khẩu</span>
-            </div>
-            <div
-              onClick={() => {
-                setCurrentDetailSettingOverlay(
-                  SwitchedSettingOverlayType.PRIVATE
-                )
-              }}
-              className='flex justify-start items-center px-5 py-3 cursor-pointer hover:bg-gray-200'
-            >
-              <label className='p-1 bg-[#33d48e] rounded-md text-white'>
-                <Shield sx={{ width: 25, height: 25 }} />
-              </label>
-              <span className='ml-5'>Riêng tư</span>
             </div>
           </div>
         </div>

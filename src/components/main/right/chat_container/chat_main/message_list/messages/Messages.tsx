@@ -3,7 +3,7 @@ import {
   DoneOutlined,
   InsertDriveFileOutlined,
 } from '@mui/icons-material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import {
   AttachFileTypeEnum,
@@ -16,12 +16,14 @@ import {
 } from '../../../../../../../redux_hooks'
 import ClipPathMsg from './ClipPathMsg'
 import { conversationsControlState } from './../../../../../../../redux/slices/ConversationsControlSlice'
-import { parseDate } from '../../../../../../../utilities/parseJavaDateToJSDate/ParseDate'
 import {
   messageContextmenuActions,
   messageContextmenuState,
 } from '../../../../../../../redux/slices/MessageContextmenuSlice'
-import { getTypeOfAttachment } from '../../../../../../../utilities/message_utils/MessageUtils'
+import {
+  findNextMessage,
+  getTypeOfAttachment,
+} from '../../../../../../../utilities/message_utils/MessageUtils'
 import { CircularProgress } from '@mui/material'
 import { ConversationTypeEnum } from '../../../../../../../redux/types/ConversationTypes'
 import UserAvatar from '../../../../../../core/UserAvatar'
@@ -31,6 +33,9 @@ import {
 } from '../../../../../../../constants/UserAvatarConstant'
 import { conversationDetailState } from '../../../../../../../redux/slices/ConversationDetailSlice'
 import ReplyMessage from './ReplyMessage'
+import { parseDateByHourAndMinutes } from '../../../../../../../utilities/date_utils/ParseDate'
+import DateDivider from './DateDivider'
+import { fileViewerActions } from '../../../../../../../redux/slices/FileViewerSlice'
 
 type Props = {
   item: MessageType
@@ -40,17 +45,32 @@ const Messages = ({ item }: Props) => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const { messageList } = useAppSelector(conversationDetailState)
-  const ref = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const dispatch = useAppDispatch()
   const { currentMessage } = useAppSelector(messageContextmenuState)
-  const [showAvatar, setShowAvatar] = useState(true)
   const { setCurrentMessage } = messageContextmenuActions
+  const avatarRef = useRef<HTMLDivElement>(null)
+  const clipPathRef = useRef<HTMLDivElement>(null)
+  const { setCurrentAttachment: setCurrentFileUrl } = fileViewerActions
+
+  const updateOpacityOfAvatar = () => {
+    if (
+      avatarRef.current &&
+      findNextMessage(item, messageList)?.sender.id === item.sender.id
+    ) {
+      avatarRef.current.style.visibility = 'hidden'
+
+      if (item.sender.id !== currentUser?.id && clipPathRef.current) {
+        clipPathRef.current.style.visibility = 'hidden'
+      }
+    }
+  }
 
   useEffect(() => {
     dispatch(setCurrentMessage(undefined))
 
-    if (ref.current) {
-      ref.current.scrollIntoView()
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView()
     }
 
     window.onclick = () => {
@@ -59,20 +79,14 @@ const Messages = ({ item }: Props) => {
   }, [item])
 
   useEffect(() => {
-    const nextMessage = messageList.find(
-      (message) => message.id > item.id && message.delete == false
-    )
-
-    if (nextMessage !== undefined && nextMessage.sender.id === item.sender.id) {
-      setShowAvatar(false)
-    } else setShowAvatar(true)
+    updateOpacityOfAvatar()
   }, [messageList])
 
   useEffect(() => {
     if (currentMessage?.id === item.id) {
-      ref.current!.classList.add('bg-slate-400')
+      containerRef.current!.classList.add('bg-slate-400')
     } else {
-      ref.current!.classList.remove('bg-slate-400')
+      containerRef.current!.classList.remove('bg-slate-400')
     }
   }, [currentMessage])
 
@@ -87,7 +101,7 @@ const Messages = ({ item }: Props) => {
   return (
     <div
       id={`msg#${item.id}`}
-      ref={ref}
+      ref={containerRef}
       style={{
         display:
           currentUser &&
@@ -97,24 +111,26 @@ const Messages = ({ item }: Props) => {
             ? 'none'
             : 'block',
       }}
-      className='msg=container transition-all w-full'
+      className='msg-container transition-all'
       onContextMenu={onContextMenu}
     >
+      <DateDivider item={item} />
       <div
-        className={`container-content relative w-full px-5 md:w-3/4 mx-auto flex flex-row ${
+        className={`container-content relative w-full md:w-3/4 sm:px-3 px-5 md:px-0 md:mx-auto flex flex-row ${
           item.sender.id === currentUser?.id ? 'justify-end' : 'justify-start'
         }`}
       >
         <div className='flex flex-col justify-end mr-3 py-1'>
-          {showAvatar &&
-          currentChat &&
+          {currentChat &&
           currentChat.type === ConversationTypeEnum.GROUP &&
           item.sender.id !== currentUser?.id ? (
-            <UserAvatar
-              name={item.sender.fullName}
-              avatar={item.sender.avatar}
-              size={AVATAR_SMALL}
-            />
+            <div ref={avatarRef}>
+              <UserAvatar
+                name={item.sender.fullName}
+                avatar={item.sender.avatar}
+                size={AVATAR_SMALL}
+              />
+            </div>
           ) : (
             <div style={{ width: AVATAR_SMALL_IMG_SIZE }}></div>
           )}
@@ -129,6 +145,7 @@ const Messages = ({ item }: Props) => {
           <ClipPathMsg
             message={item}
             fromSelf={item.sender.id === currentUser?.id}
+            clipPathRef={clipPathRef}
           />
           <div
             style={{
@@ -167,22 +184,30 @@ const Messages = ({ item }: Props) => {
                       <img
                         key={attachment.id}
                         src={attachment.fileUrl}
-                        className='rounded-2xl object-contain'
+                        className='rounded-2xl object-contain cursor-pointer'
+                        onClick={() => {
+                          dispatch(setCurrentFileUrl(attachment))
+                        }}
                       />
                     )
                   else {
                     return (
                       <div
                         key={attachment.id}
-                        className='flex justify-start items-center p-3 rounded-2xl bg-slate-500'
+                        className={`flex justify-start items-center p-3 rounded-2xl bg-slate-500 ${
+                          item.message === '' ? 'pb-7' : 'pb-3'
+                        }`}
+                        onClick={() => {
+                          dispatch(setCurrentFileUrl(attachment))
+                        }}
                       >
                         <span className='text-white'>
                           <InsertDriveFileOutlined
                             sx={{ width: '2rem', height: '2rem' }}
                           />
                         </span>
-                        <span className='ml-3 text-gray-100'>
-                          {attachment.fileName}
+                        <span className='ml-3 text-gray-100 whitespace-pre-wrap overflow-hidden text-ellipsis break-all'>
+                          {attachment.thumbnail}
                         </span>
                       </div>
                     )
@@ -191,7 +216,7 @@ const Messages = ({ item }: Props) => {
               </div>
             )}
             {item.message !== '' ? (
-              <div className='flex flex-col'>
+              <div className='flex flex-col w-full'>
                 <ReplyMessage replyMessage={item} />
                 <p
                   style={{
@@ -228,7 +253,7 @@ const Messages = ({ item }: Props) => {
               className='absolute bottom-0 right-0 flex justify-end items-center'
             >
               <span className='text-[.7rem] mr-1 text-slate-500'>
-                {item.delete ? '' : parseDate(item.createdAt)}
+                {item.delete ? '' : parseDateByHourAndMinutes(item.createdAt)}
               </span>
               <span className='text-[.7rem] mr-1 text-green-500'>
                 {!item.delete ? (

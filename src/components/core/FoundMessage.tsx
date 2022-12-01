@@ -2,7 +2,7 @@ import { AVATAR_SMALL } from '../../constants/UserAvatarConstant'
 import { authState } from '../../redux/slices/AuthSlice'
 import { MessageType } from '../../redux/types/MessageTypes'
 import { useAppSelector } from '../../redux_hooks'
-import { parseDate } from '../../utilities/parseJavaDateToJSDate/ParseDate'
+import { parseDateByHourAndMinutes } from '../../utilities/date_utils/ParseDate'
 import UserAvatar from './UserAvatar'
 
 type Props = {
@@ -28,10 +28,12 @@ const FoundMessage = ({ message }: Props) => {
                 : message.sender.fullName}
             </span>
             <span className='text-slate-800 text-sm'>
-              {parseDate(message.createdAt)}
+              {parseDateByHourAndMinutes(message.createdAt)}
             </span>
           </div>
-          <span>{message.message}</span>
+          <span className=' whitespace-pre-wrap overflow-hidden text-ellipsis break-all'>
+            {message.message}
+          </span>
         </div>
       </div>
     </a>

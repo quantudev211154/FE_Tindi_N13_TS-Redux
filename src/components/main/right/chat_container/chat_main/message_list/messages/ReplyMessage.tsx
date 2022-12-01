@@ -18,10 +18,10 @@ const ReplyMessage = ({ replyMessage }: Props) => {
   return (
     <>
       {currentUser && replyMessage.replyTo ? (
-        <div className='px-2 pt-1'>
+        <div className='px-2 pt-1 w-full'>
           <a
             href={`#msg#${replyMessage.replyTo.id}`}
-            className='flex justify-start items-center pl-2 py-1 pr-1 transition-all hover:bg-gray-300 border-l-2 border-blue-700'
+            className='flex w-full justify-start items-center pl-2 py-1 pr-1 transition-all hover:bg-gray-300 border-l-2 border-blue-700 '
           >
             {replyMessage.replyTo &&
             replyMessage.replyTo.attachmentResponseList &&
@@ -43,13 +43,13 @@ const ReplyMessage = ({ replyMessage }: Props) => {
             ) : (
               <></>
             )}
-            <div className='flex flex-col'>
-              <p className='font-medium text-sm text-blue-700 whitespace-nowrap overflow-hidden text-ellipsis break-all'>
+            <div className='flex flex-col w-full'>
+              <span className='font-medium text-sm text-blue-700 '>
                 {replyMessage.replyTo.sender.id === currentUser.id
                   ? 'Bạn'
                   : replyMessage.replyTo.sender.fullName}
-              </p>
-              <p className='text-sm whitespace-nowrap overflow-hidden text-ellipsis break-all'>
+              </span>
+              <p className='w-full text-sm whitespace-pre-wrap overflow-hidden text-ellipsis break-all'>
                 {replyMessage.replyTo.message}
               </p>
             </div>

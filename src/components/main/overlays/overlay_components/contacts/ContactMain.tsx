@@ -37,7 +37,7 @@ const ContactMain = ({ contact }: Props) => {
       key={contact.id}
       className='cursor-pointer p-3 flex justify-between items-center rounded-xl transition-all hover:bg-[#bcd1e3]'
     >
-      <div className='flex-auto flex justify-start items-center'>
+      <div className='flex-1 flex justify-start items-center'>
         <UserAvatar
           name={contact.fullName}
           avatar={contact.avatar as string}
