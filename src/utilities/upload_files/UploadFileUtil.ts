@@ -31,14 +31,12 @@ export const canUploadFiles = (
   let totalSize = 0
 
   for (let i = 0; i < uploadFiles.length; ++i) {
-    // if (uploadFiles[i].size > maxSize) return false
+    if (uploadFiles[i].size > maxSize) return false
 
     totalSize += uploadFiles[i].size / (1024 * 1024)
 
-    // if (totalSize > maxSize) return false
+    if (totalSize > maxSize) return false
   }
-
-  console.log(totalSize)
 
   return totalSize <= maxSize ? true : false
 }

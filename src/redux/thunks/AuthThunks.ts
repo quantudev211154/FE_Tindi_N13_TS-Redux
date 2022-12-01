@@ -53,9 +53,7 @@ export const register = createAsyncThunk(
   async (payload: RegisterPayloadType) => {
     try {
       await http.post(API_REGISTER, payload)
-    } catch (error) {
-      console.log(error)
-    }
+    } catch (error) {}
   }
 )
 

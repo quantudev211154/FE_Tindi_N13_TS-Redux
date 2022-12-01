@@ -73,9 +73,8 @@ class MyFirebase {
         this.confirmationResult = confirmationResult
         if (resolve) resolve()
       })
-      .catch((err) => {
+      .catch(() => {
         if (reject) reject()
-        else console.log(err)
       })
   }
 
@@ -89,9 +88,8 @@ class MyFirebase {
       .then(() => {
         resolve()
       })
-      .catch((err: any) => {
+      .catch(() => {
         if (reject) reject()
-        else console.log(err)
       })
   }
 
@@ -115,9 +113,7 @@ class MyFirebase {
         xhr.open('GET', url)
         xhr.send()
       })
-      .catch((error) => {
-        console.log(error)
-      })
+      .catch(() => {})
   }
 }
 

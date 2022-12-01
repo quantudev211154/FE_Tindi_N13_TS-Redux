@@ -55,7 +55,6 @@ const authSlice = createSlice({
     })
 
     builder.addCase(login.rejected, (state, action) => {
-      console.log(action.payload?.message)
       state.isAuth = false
       state.currentUser = null
       state.isAuthLoading = false

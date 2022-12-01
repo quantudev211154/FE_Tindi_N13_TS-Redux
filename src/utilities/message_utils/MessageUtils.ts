@@ -18,7 +18,6 @@ export const getTypeOfAttachment = (
 const downloadAndCompressToZipFolder = async (
   attachmentList: AttachmentType[]
 ) => {
-  console.log(attachmentList)
   let zip = new JSZip()
 
   for (let iterator of attachmentList) {

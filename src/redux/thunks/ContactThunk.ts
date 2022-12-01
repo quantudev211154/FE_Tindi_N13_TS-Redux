@@ -43,7 +43,6 @@ export const addNewContact = createAsyncThunk<
   try {
     const response = await http.post(API_ADD_NEW_CONTACT, payload)
 
-    console.log(response.data)
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
