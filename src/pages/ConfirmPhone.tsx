@@ -45,14 +45,19 @@ const ConfirmPhone = () => {
     FirebaseService.generateRecaptchatVerifier('recaptchatPopup')
   }, [])
 
-  const onConfirmPhoneSuccess = () => {
+  const onConfirmPhoneSuccess = async () => {
+    await dispatch(
+      register(
+        RegistrationPendingAccount.getPendingRegisterAccount() as RegisterPayloadType
+      )
+    )
     setOTPFieldDisabled(true)
     setCollapseProps({
       ...collapseProps,
       in: true,
       status: true,
       title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
-      msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3s nữa.',
+      msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3 giây nữa.',
     })
 
     const preLoginAccount =
@@ -72,17 +77,11 @@ const ConfirmPhone = () => {
         title: 'Bạn đã đăng ký thành công tài khoản Tindi.',
         msg: `Bạn sẽ được chuyển sang màn hình chính sau ${
           dfTimeToRedirect - 1
-        }s nữa.`,
+        } giây nữa.`,
       })
 
       --dfTimeToRedirect
     }, 1000)
-
-    dispatch(
-      register(
-        RegistrationPendingAccount.getPendingRegisterAccount() as RegisterPayloadType
-      )
-    )
 
     timeoutToRedirect = window.setTimeout(() => {
       window.clearTimeout(timeoutToRedirect)

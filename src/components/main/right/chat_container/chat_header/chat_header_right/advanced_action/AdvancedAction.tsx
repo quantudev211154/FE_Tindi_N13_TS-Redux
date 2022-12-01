@@ -6,24 +6,36 @@ import {
   TuneOutlined,
   AccountCircleOutlined,
   DeleteForeverOutlined,
+  BlockOutlined,
+  ThumbUpAltOutlined,
 } from '@mui/icons-material'
 import { Button, Menu, MenuItem, Tooltip } from '@mui/material'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { authState } from '../../../../../../../redux/slices/AuthSlice'
 import { controlOverlaysActions } from '../../../../../../../redux/slices/ControlOverlaysSlice'
+import { conversationDetailActions } from '../../../../../../../redux/slices/ConversationDetailSlice'
+import { messageContextmenuActions } from '../../../../../../../redux/slices/MessageContextmenuSlice'
 import { responsiveActions } from '../../../../../../../redux/slices/Responsive'
 import {
   deleteConversation as deleteConversationThunk,
   outGroupConversation,
+  updateStatusOfParticipant,
 } from '../../../../../../../redux/thunks/ConversationThunks'
 import { ConversationTypeEnum } from '../../../../../../../redux/types/ConversationTypes'
-import { ParticipantRoleEnum } from '../../../../../../../redux/types/ParticipantTypes'
+import {
+  ParticipantRoleEnum,
+  ParticipantStatusEnum,
+} from '../../../../../../../redux/types/ParticipantTypes'
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../redux_hooks'
 import { MySocket } from '../../../../../../../services/TindiSocket'
-import { getRoleOfParticipant } from '../../../../../../../utilities/conversation/ConversationUtils'
+import {
+  getRoleOfParticipant,
+  getTeammateInSingleConversation,
+} from '../../../../../../../utilities/conversation/ConversationUtils'
+import { showMessageHandlerResultToSnackbar } from '../../../../../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
 import ConfirmDangerAction from '../../../../../overlays/ConfirmDangerAction'
 import GrantPermissionBeforeOutGroup from '../../../../../overlays/GrantPermissionBeforeOutGroup'
 import ManageGroup from '../../../../../overlays/ManageGroup'
@@ -47,6 +59,8 @@ const AdvancedAction = () => {
   const { deleteConversation } = conversationActions
   const { openMessageList } = responsiveActions
   const [openGrantPermission, setOpenGrantPermission] = useState(false)
+  const { setHandlerResult } = messageContextmenuActions
+  const { clearMessageList } = conversationDetailActions
 
   const handleOpenGroupSetting = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -58,7 +72,7 @@ const AdvancedAction = () => {
     setAnchorEl(null)
   }
 
-  const deleteChat = () => {
+  const deleteChat = useCallback(() => {
     if (currentChat) {
       dispatch(deleteConversationThunk(currentChat.id))
 
@@ -69,8 +83,9 @@ const AdvancedAction = () => {
 
       dispatch(deleteConversation(currentChat))
       dispatch(openMessageList(false))
+      dispatch(clearMessageList())
     }
-  }
+  }, [])
 
   const outGroupResolve = () => {
     if (currentChat && currentChat.type === ConversationTypeEnum.GROUP) {
@@ -85,6 +100,53 @@ const AdvancedAction = () => {
             currentChat,
             participant,
             currentChat.participantResponse.map((parti) => parti.user)
+          )
+        }
+      }
+    }
+  }
+
+  const updateStatusForUserInSingleConver = () => {
+    if (currentUser && currentChat) {
+      const participant = getTeammateInSingleConversation(
+        currentUser,
+        currentChat
+      )
+
+      if (!!participant) {
+        const admin = currentChat.participantResponse.find(
+          (parti) => parti.user.id === currentUser.id
+        )
+
+        if (!!admin) {
+          const status =
+            participant.status === ParticipantStatusEnum.MUTED
+              ? ParticipantStatusEnum.STABLE
+              : ParticipantStatusEnum.MUTED
+
+          MySocket.changeStatusForParticipant(
+            participant.user,
+            currentChat,
+            status
+          )
+
+          showMessageHandlerResultToSnackbar(
+            participant.status === ParticipantStatusEnum.MUTED ? true : false,
+            `Đã ${
+              participant.status === ParticipantStatusEnum.MUTED
+                ? 'bỏ chặn'
+                : 'chặn'
+            } người dùng ${participant.user.fullName}`,
+            dispatch,
+            setHandlerResult
+          )
+
+          dispatch(
+            updateStatusOfParticipant({
+              adminId: admin.id,
+              participantId: participant.id,
+              status,
+            })
           )
         }
       }
@@ -114,28 +176,62 @@ const AdvancedAction = () => {
         </Button>
       </Tooltip>
       <Menu anchorEl={anchorEl} open={open} onClose={handleCloseGroupSetting}>
-        {currentChat && currentChat.type === ConversationTypeEnum.SINGLE ? (
+        {currentUser &&
+        currentChat &&
+        currentChat.type === ConversationTypeEnum.SINGLE ? (
+          <div>
+            <MenuItem
+              onClick={() => {
+                dispatch(toggleViewGroupInfoOverlay())
+                handleCloseGroupSetting()
+              }}
+            >
+              <AccountCircleOutlined sx={{ color: 'gray', mr: 2 }} />
+              <span className='text-sm'>Chi tiết cuộc trò chuyện</span>
+            </MenuItem>
+            {getTeammateInSingleConversation(currentUser, currentChat)
+              .status === ParticipantStatusEnum.STABLE ? (
+              <MenuItem
+                onClick={() => {
+                  updateStatusForUserInSingleConver()
+                  handleCloseGroupSetting()
+                }}
+              >
+                <BlockOutlined sx={{ color: '#cf0632', mr: 2 }} />
+                <span className='text-sm text-[#cf0632]'>
+                  Chặn người dùng này
+                </span>
+              </MenuItem>
+            ) : (
+              <MenuItem
+                onClick={() => {
+                  updateStatusForUserInSingleConver()
+                  handleCloseGroupSetting()
+                }}
+              >
+                <ThumbUpAltOutlined sx={{ color: '#1d4ed8', mr: 2 }} />
+                <span className='text-sm text-[#1d4ed8]'>
+                  Bỏ chặn người dùng này
+                </span>
+              </MenuItem>
+            )}
+          </div>
+        ) : (
+          <div className='hidden'></div>
+        )}
+        {currentChat && currentChat.type === ConversationTypeEnum.GROUP ? (
           <MenuItem
             onClick={() => {
               dispatch(toggleViewGroupInfoOverlay())
               handleCloseGroupSetting()
             }}
           >
-            <AccountCircleOutlined sx={{ color: 'gray', mr: 2 }} />
-            <span className='text-sm'>Xem hồ sơ</span>
+            <InfoOutlined sx={{ color: 'gray', mr: 2 }} />
+            <span className='text-sm'>Xem thông tin nhóm</span>
           </MenuItem>
         ) : (
           <div className='hidden'></div>
         )}
-        <MenuItem
-          onClick={() => {
-            dispatch(toggleViewGroupInfoOverlay())
-            handleCloseGroupSetting()
-          }}
-        >
-          <InfoOutlined sx={{ color: 'gray', mr: 2 }} />
-          <span className='text-sm'>Xem thông tin nhóm</span>
-        </MenuItem>
         {currentUser &&
         currentChat &&
         currentChat.type === ConversationTypeEnum.GROUP &&

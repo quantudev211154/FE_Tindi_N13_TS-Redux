@@ -78,6 +78,7 @@ const NewGroup = () => {
               <div className='w-full flex justify-between items-center'>
                 <div className='flex-1'>
                   <TextField
+                    error={errors.groupName ? true : false}
                     inputRef={inputRef}
                     fullWidth
                     name='groupName'

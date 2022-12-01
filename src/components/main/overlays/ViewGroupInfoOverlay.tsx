@@ -108,10 +108,15 @@ const ViewGroupInfoOverlay = () => {
               ) : (
                 <></>
               )}
-              <ViewGroupMembers
-                changeOverlay={changeOverlay}
-                setSelectedParticipant={setSelectedPaticipant}
-              />
+              {currentChat &&
+              currentChat.type === ConversationTypeEnum.GROUP ? (
+                <ViewGroupMembers
+                  changeOverlay={changeOverlay}
+                  setSelectedParticipant={setSelectedPaticipant}
+                />
+              ) : (
+                <></>
+              )}
             </Stack>
           </div>
         ) : (

@@ -96,6 +96,7 @@ const RegisterForm = () => {
               <div className='flex flex-col justify-start items-center'>
                 <Stack direction='column' sx={{ width: '100%' }}>
                   <TextField
+                    error={errors.name ? true : false}
                     name='name'
                     type='text'
                     autoComplete='off'
@@ -107,6 +108,7 @@ const RegisterForm = () => {
                   />
                   <FormErrorDisplay msg={errors.name} />
                   <TextField
+                    error={errors.phone ? true : false}
                     name='phone'
                     type='text'
                     autoComplete='off'
@@ -125,6 +127,7 @@ const RegisterForm = () => {
                     sx={{ transform: 'translate(0, -1rem)' }}
                   />
                   <TextField
+                    error={errors.password ? true : false}
                     name='password'
                     type={'password'}
                     label='Mật khẩu'
@@ -135,6 +138,7 @@ const RegisterForm = () => {
                   />
                   <FormErrorDisplay msg={errors.password} />
                   <TextField
+                    error={errors.rePassword ? true : false}
                     name='rePassword'
                     type={'password'}
                     autoComplete='off'

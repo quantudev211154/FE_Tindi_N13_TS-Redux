@@ -15,6 +15,8 @@ const ChatMain = () => {
 
   useEffect(() => {
     if (scrollRef.current && btnScrolldownRef.current) {
+      btnScrolldownRef.current.style.opacity = '0'
+
       scrollRef.current.onscroll = () => {
         if (scrollRef.current && btnScrolldownRef.current) {
           const scrolledHeight =

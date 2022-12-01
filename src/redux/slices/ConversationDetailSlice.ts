@@ -25,6 +25,10 @@ const conversationDetailSlice = createSlice({
       let t = state.messageList
       state.messageList.unshift(...t)
     },
+    clearMessageList: (state) => {
+      state.messageList = []
+      state.replyingMessage = null
+    },
     setLoadingMessageList: (state) => {
       state.isLoadingMessageList = true
     },
@@ -80,6 +84,12 @@ const conversationDetailSlice = createSlice({
     })
 
     builder.addCase(loadMessageOfConversation.fulfilled, (state, action) => {
+      if (action.payload.length === 0) {
+        state.messageList = []
+        state.isLoadingMessageList = false
+        return
+      }
+
       const currentChat = CurrentChatUtil.getCurrenChat()
 
       if (
@@ -87,8 +97,8 @@ const conversationDetailSlice = createSlice({
         currentChat.id === action.payload[0].conversation.id
       ) {
         state.messageList = action.payload
-        state.isLoadingMessageList = false
       }
+      state.isLoadingMessageList = false
     })
 
     builder.addCase(loadMessageOfConversation.rejected, (state) => {

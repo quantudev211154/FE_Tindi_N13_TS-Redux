@@ -143,6 +143,7 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
             <form onSubmit={handleSubmit}>
               <Stack direction='column' sx={{ width: '100%' }}>
                 <TextField
+                  error={errors.code ? true : false}
                   disabled={isOTPFieldDisabled}
                   name='code'
                   type='text'

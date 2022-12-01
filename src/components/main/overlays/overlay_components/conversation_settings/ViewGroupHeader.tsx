@@ -27,7 +27,11 @@ const ViewGroupHeader = ({
   return (
     <div className='w-full rounded-2xl px-5 py-3 bg-white flex flex-col justify-start items-center'>
       <div className='w-full flex justify-between items-center pb-3'>
-        <p className='font-medium text-xl'>Thông tin nhóm</p>
+        <p className='font-medium text-xl'>{`Thông tin ${
+          currentChat?.type === ConversationTypeEnum.GROUP
+            ? 'nhóm'
+            : 'cuộc trò chuyện'
+        }`}</p>
         <Button
           onClick={() => {
             dispatch(toggleViewGroupInfoOverlay())
@@ -87,7 +91,11 @@ const ViewGroupHeader = ({
           </p>
           <p className='text-slate-700 text-sm mt-1'>
             {currentChat
-              ? `Ngày tạo: ${parseDateByDayMonthYear(currentChat.createdAt)}`
+              ? `Ngày ${
+                  currentChat.type === ConversationTypeEnum.GROUP
+                    ? 'tạo'
+                    : 'bắt đầu'
+                }: ${parseDateByDayMonthYear(currentChat.createdAt)}`
               : ''}
           </p>
         </div>

@@ -72,7 +72,11 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
 
         const data = response.data as UserType
 
-        setResult(data)
+        if (data.phone === currentUser?.phone) {
+          setResult(null)
+        } else {
+          setResult(data)
+        }
 
         setIsExistingContact(checkExistingContact(data.phone))
       } catch (error) {

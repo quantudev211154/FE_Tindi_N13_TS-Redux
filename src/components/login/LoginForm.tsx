@@ -98,6 +98,7 @@ const LoginForm = () => {
               <Stack direction='column' sx={{ width: '100%' }}>
                 <Stack>
                   <TextField
+                    error={errors.phone ? true : false}
                     name='phone'
                     type='text'
                     label='Số điện thoại'
@@ -110,6 +111,7 @@ const LoginForm = () => {
                 </Stack>
                 <Stack>
                   <TextField
+                    error={errors.password ? true : false}
                     name='password'
                     type='password'
                     label='Mật khẩu'
