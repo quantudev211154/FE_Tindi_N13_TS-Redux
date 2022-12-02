@@ -11,7 +11,10 @@ import { useEffect, useRef, useState } from 'react'
 import { authState } from '../../../../../redux/slices/AuthSlice'
 import { conversationsControlState } from '../../../../../redux/slices/ConversationsControlSlice'
 import { saveMessage } from '../../../../../redux/thunks/MessageThunks'
-import { ConversationType } from '../../../../../redux/types/ConversationTypes'
+import {
+  ConversationType,
+  ConversationTypeEnum,
+} from '../../../../../redux/types/ConversationTypes'
 import {
   AttachFileTypeEnum,
   MessageStatusEnum,
@@ -437,7 +440,11 @@ const ChatFooter = () => {
         ) : (
           <div className='w-full py-3 rounded-lg bg-gray-200 text-center pointer-events-none'>
             <span className='italic text-sm text-center'>
-              Bạn không được phép nhắn tin trong nhóm này
+              Bạn không được phép nhắn tin trong{' '}
+              {currentChat && currentChat.type === ConversationTypeEnum.GROUP
+                ? 'nhóm'
+                : 'cuộc trò chuyện'}{' '}
+              này
             </span>
           </div>
         )}

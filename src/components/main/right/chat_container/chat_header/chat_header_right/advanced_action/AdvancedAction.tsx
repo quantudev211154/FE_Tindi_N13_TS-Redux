@@ -53,9 +53,13 @@ const AdvancedAction = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const open = Boolean(anchorEl)
   const { currentChat } = useAppSelector(conversationsControlState)
-  const [openDeleteChatOverlay, setOpenConfirmDeleteChatOverlay] =
+  const [openConfirmDeleteChatOverlay, setOpenConfirmDeleteChatOverlay] =
     useState(false)
   const [openOutGroupOverlay, setOpenOutGroupOverlay] = useState(false)
+  const [
+    openConfirmDeleteGroupIfOnlyOneParti,
+    setConfirmDeleteGroupIfOnlyOneParti,
+  ] = useState(false)
   const { deleteConversation } = conversationActions
   const { openMessageList } = responsiveActions
   const [openGrantPermission, setOpenGrantPermission] = useState(false)
@@ -81,9 +85,9 @@ const AdvancedAction = () => {
       )
       MySocket.deleteConversation(currentUsers, currentChat)
 
+      dispatch(clearMessageList())
       dispatch(deleteConversation(currentChat))
       dispatch(openMessageList(false))
-      dispatch(clearMessageList())
     }
   }, [])
 
@@ -260,13 +264,18 @@ const AdvancedAction = () => {
                     (parti) => parti.user.id === currentUser.id
                   )
 
-                  if (existingParti !== undefined) {
-                    if (existingParti?.role === ParticipantRoleEnum.ADMIN) {
-                      setOpenGrantPermission(true)
+                  if (!!existingParti) {
+                    if (currentChat.participantResponse.length === 1) {
+                      setConfirmDeleteGroupIfOnlyOneParti(true)
                       handleCloseGroupSetting()
                     } else {
-                      setOpenOutGroupOverlay(true)
-                      handleCloseGroupSetting()
+                      if (existingParti?.role === ParticipantRoleEnum.ADMIN) {
+                        setOpenGrantPermission(true)
+                        handleCloseGroupSetting()
+                      } else {
+                        setOpenOutGroupOverlay(true)
+                        handleCloseGroupSetting()
+                      }
                     }
                   }
                 }
@@ -317,7 +326,25 @@ const AdvancedAction = () => {
       </div>
       <div className='confirmOverlay'>
         <ConfirmDangerAction
-          open={openDeleteChatOverlay}
+          open={openConfirmDeleteGroupIfOnlyOneParti}
+          title={
+            currentChat && currentChat.type === ConversationTypeEnum.GROUP
+              ? 'Chỉ còn mình bạn trong nhóm. Bạn rời đi thì nhóm cũng sẽ bị xoá. Bạn chắc chứ?'
+              : 'Nếu bạn rời đi thì cuộc trò chuyện cũng sẽ bị xoá. Bạn chắc chứ?'
+          }
+          message={'Hãy quyết định kĩ vì thao tác này không thể thu hồi!'}
+          reject={() => {
+            setConfirmDeleteGroupIfOnlyOneParti(false)
+          }}
+          resolve={deleteChat}
+          resolveBtnLabel={
+            currentChat?.type === ConversationTypeEnum.GROUP
+              ? 'Xoá nhóm'
+              : 'Xoá'
+          }
+        />
+        <ConfirmDangerAction
+          open={openConfirmDeleteChatOverlay}
           title={
             currentChat && currentChat.type === ConversationTypeEnum.GROUP
               ? 'Bạn chắc chắn muốn giải tán nhóm chứ?'

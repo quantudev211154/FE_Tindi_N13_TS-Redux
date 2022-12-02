@@ -16,6 +16,7 @@ import {
   ConversationControlType,
   ConversationType,
 } from '../types/ConversationTypes'
+import { MessageType } from '../types/MessageTypes'
 import {
   ParticipantRoleEnum,
   ParticipantStatusEnum,
@@ -42,6 +43,22 @@ const conversationsControlSlice = createSlice({
     },
     changeCurrentChat: (state, action: PayloadAction<ConversationType>) => {
       state.currentChat = action.payload
+    },
+    updateLatestMessage: (state, action: PayloadAction<MessageType>) => {
+      let existingConver = state.conversationList.find(
+        (conver) => conver.id === action.payload.conversation.id
+      )
+
+      if (!!existingConver) {
+        if (!action.payload.delete)
+          existingConver.messageLatest = action.payload
+        else {
+          if (existingConver.messageLatest?.id === action.payload.id) {
+            existingConver.messageLatest.delete = true
+            existingConver.messageLatest.message = 'Đã thu hồi'
+          }
+        }
+      }
     },
     resetConversationSlice: (state) => {
       state.currentChat = null

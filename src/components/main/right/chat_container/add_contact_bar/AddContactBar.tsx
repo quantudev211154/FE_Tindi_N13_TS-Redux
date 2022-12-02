@@ -16,8 +16,15 @@ import { UserType } from '../../../../../redux/types/UserTypes'
 import { useAppDispatch, useAppSelector } from '../../../../../redux_hooks'
 import { createNewContact } from '../../../../../utilities/contacts/ContactUtils'
 import { getTeammateInSingleConversation } from '../../../../../utilities/conversation/ConversationUtils'
-import { ParticipantType } from '../../../../../redux/types/ParticipantTypes'
+import {
+  ParticipantStatusEnum,
+  ParticipantType,
+} from '../../../../../redux/types/ParticipantTypes'
 import http from '../../../../../utilities/http/Http'
+import { MySocket } from '../../../../../services/TindiSocket'
+import { showMessageHandlerResultToSnackbar } from '../../../../../utilities/message_handler_snackbar/ShowMessageHandlerResultToSnackbar'
+import { updateStatusOfParticipant } from '../../../../../redux/thunks/ConversationThunks'
+import { messageContextmenuActions } from '../../../../../redux/slices/MessageContextmenuSlice'
 
 const AddContactBar = () => {
   const { currentUser } = useAppSelector(authState)
@@ -28,15 +35,32 @@ const AddContactBar = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [targetPaticipant, setTargetPaticipant] =
     useState<ParticipantType | null>(null)
+  const { setHandlerResult } = messageContextmenuActions
+  const [teammate, setTeammate] = useState<ParticipantType | null>(null)
+
+  useEffect(() => {
+    if (currentUser && currentChat) {
+      setTeammate(getTeammateInSingleConversation(currentUser, currentChat))
+    }
+  }, [currentChat, currentUser])
 
   useEffect(() => {
     if (currentChat && currentChat.type !== ConversationTypeEnum.GROUP) {
-      const findContactPair = async () => {
-        const targetPaticipant = getTeammateInSingleConversation(
-          currentUser as UserType,
-          currentChat as ConversationType
-        )
+      const targetPaticipant = getTeammateInSingleConversation(
+        currentUser as UserType,
+        currentChat as ConversationType
+      )
 
+      const existingContact = contacts?.find(
+        (contact) => contact.phone === targetPaticipant.user.phone
+      )
+
+      if (!!existingContact) {
+        ref.current!.style.display = 'none'
+        return
+      }
+
+      const findContactPair = async () => {
         setTargetPaticipant(targetPaticipant)
 
         const formData = new FormData()
@@ -56,10 +80,57 @@ const AddContactBar = () => {
     } else {
       ref.current!.style.display = 'none'
     }
-  }, [currentChat, contacts])
+  }, [currentChat])
 
   const closeAddContactBar = () => {
     ref.current!.style.display = 'none'
+  }
+
+  const updateStatusForUser = () => {
+    if (currentUser && currentChat) {
+      const participant = getTeammateInSingleConversation(
+        currentUser,
+        currentChat
+      )
+
+      if (!!participant) {
+        const admin = currentChat.participantResponse.find(
+          (parti) => parti.user.id === currentUser.id
+        )
+
+        if (!!admin) {
+          const status =
+            participant.status === ParticipantStatusEnum.MUTED
+              ? ParticipantStatusEnum.STABLE
+              : ParticipantStatusEnum.MUTED
+
+          MySocket.changeStatusForParticipant(
+            participant.user,
+            currentChat,
+            status
+          )
+
+          showMessageHandlerResultToSnackbar(
+            participant.status === ParticipantStatusEnum.MUTED ? true : false,
+            `Đã ${
+              participant.status === ParticipantStatusEnum.MUTED
+                ? 'bỏ chặn'
+                : 'chặn'
+            } người dùng ${participant.user.fullName}`,
+            dispatch,
+            setHandlerResult
+          )
+
+          dispatch(
+            updateStatusOfParticipant({
+              adminId: admin.id,
+              participantId: participant.id,
+              status,
+            })
+          )
+        }
+      }
+    }
   }
 
   return (
@@ -96,17 +167,30 @@ const AddContactBar = () => {
         fullWidth={true}
         sx={{
           bgcolor: 'white',
-          color: '#e82344',
+          color:
+            teammate && teammate.status === ParticipantStatusEnum.MUTED
+              ? '#1670c4'
+              : '#e82344',
           fontWeight: 'bold',
           '&:hover': {
-            bgcolor: '#e82a49',
+            bgcolor:
+              teammate && teammate.status === ParticipantStatusEnum.MUTED
+                ? '#e6f0fa'
+                : '#e82a49',
             color: 'white',
           },
         }}
         disableElevation
-        onClick={closeAddContactBar}
+        onClick={() => {
+          updateStatusForUser()
+          closeAddContactBar()
+        }}
       >
-        <span>Chặn</span>
+        {teammate && teammate.status === ParticipantStatusEnum.MUTED ? (
+          <span>Bỏ chặn</span>
+        ) : (
+          <span>Chặn</span>
+        )}
       </Button>
       <Button
         variant='contained'

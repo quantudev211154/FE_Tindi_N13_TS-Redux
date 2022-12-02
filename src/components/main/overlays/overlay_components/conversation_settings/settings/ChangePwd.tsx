@@ -115,6 +115,7 @@ const ChangePwd = ({ returnToMainSetting }: Props) => {
                 <Stack direction='column' sx={{ width: '100%' }} spacing={2}>
                   <Stack>
                     <TextField
+                      error={errors.oldPwd || oldPwdError !== '' ? true : false}
                       variant='outlined'
                       name='oldPwd'
                       type='password'
@@ -140,6 +141,7 @@ const ChangePwd = ({ returnToMainSetting }: Props) => {
                   </Stack>
                   <Stack>
                     <TextField
+                      error={errors.newPwd ? true : false}
                       name='newPwd'
                       type='password'
                       label='Mật khẩu mới'

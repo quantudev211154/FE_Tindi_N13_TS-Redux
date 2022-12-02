@@ -24,6 +24,7 @@ import { responsiveActions } from '../redux/slices/Responsive'
 import { ConversationType } from '../redux/types/ConversationTypes'
 import { ParticipantRoleEnum } from '../redux/types/ParticipantTypes'
 import { authState } from '../redux/slices/AuthSlice'
+import { getTeammateInSingleConversation } from '../utilities/conversation/ConversationUtils'
 
 const Main = () => {
   const { currentUser } = useAppSelector(authState)
@@ -40,6 +41,7 @@ const Main = () => {
     addMoreMembersToConversation,
     changeRoleOfParticipant,
     changeConversationInfo,
+    updateLatestMessage,
   } = conversationActions
   const { setCurrentCoordinate } = messageContextmenuActions
   const {
@@ -71,12 +73,14 @@ const Main = () => {
 
     MySocket.getTindiSocket()?.on(SocketEventEnum.REVOKE_MSG, (data: any) => {
       dispatch(revokeMessage(data.message))
+      dispatch(updateLatestMessage(data.message))
     })
 
     MySocket.getTindiSocket()?.on(
       SocketEventEnum.UPDATE_MSG,
       (data: SendMessageWithSocketPayload) => {
         dispatch(updateMessageBySocketFlag(data.message))
+        dispatch(updateLatestMessage(data.message))
       }
     )
 
@@ -116,12 +120,26 @@ const Main = () => {
           currentUser &&
           deleteConverAdmin.user.id !== currentUser.id
         ) {
-          showMessageHandlerResultToSnackbar(
-            false,
-            `Nhóm ${data.conversation.title} vừa bị quản trị viên giải tán`,
-            dispatch,
-            setHandlerResult
-          )
+          if (data.conversation.participantResponse.length > 2) {
+            showMessageHandlerResultToSnackbar(
+              false,
+              `Nhóm ${data.conversation.title} vừa bị quản trị viên giải tán`,
+              dispatch,
+              setHandlerResult
+            )
+          } else {
+            const teammate = getTeammateInSingleConversation(
+              currentUser,
+              data.conversation
+            )
+
+            showMessageHandlerResultToSnackbar(
+              false,
+              `Cuộc trò chuyện giữa bạn và ${teammate.user.fullName} vừa bị đối phương kết thúc.`,
+              dispatch,
+              setHandlerResult
+            )
+          }
         }
       }
     )

@@ -164,9 +164,20 @@ const Messages = ({ item }: Props) => {
               className='relative min-w-[20%]'
             >
               {item.delete ? (
-                <p className='relative text-[.95rem] p-2 mb-1'>
-                  Tin nhắn đã thu hồi
-                </p>
+                item.message === '' ? (
+                  <p
+                    style={{
+                      paddingBottom: item.delete ? 0 : '.85rem',
+                      fontStyle: item.delete ? 'italic' : 'normal',
+                      color: item.delete ? 'rgb(100,116,139)' : 'black',
+                    }}
+                    className='italic relative text-[.95rem] p-2 mb-1'
+                  >
+                    Tin nhắn đã thu hồi
+                  </p>
+                ) : (
+                  <></>
+                )
               ) : (
                 <div className='flex flex-col justify-start sm:min-w-[50%] md:min-w-[40%] '>
                   {item.isLoading ? (

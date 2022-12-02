@@ -95,14 +95,19 @@ const MessageContextMenu = () => {
   }
 
   const revokeChosenMessage = () => {
-    dispatch(revokeMessage(currentMessage))
-    dispatch(revokeOneMessageInServer(currentMessage.id as number))
+    const tmp = {
+      ...currentMessage,
+      delete: true,
+    }
+
+    dispatch(revokeMessage(tmp))
+    dispatch(revokeOneMessageInServer(tmp.id as number))
 
     if (currentChat) {
       if (currentChat.type == ConversationTypeEnum.SINGLE) {
         MySocket.revokeMessage(
           currentChat as ConversationType,
-          currentMessage as MessageType,
+          tmp as MessageType,
           [
             getTeammateInSingleConversation(
               currentUser as UserType,
@@ -113,7 +118,7 @@ const MessageContextMenu = () => {
       } else {
         MySocket.revokeMessage(
           currentChat as ConversationType,
-          currentMessage as MessageType,
+          tmp as MessageType,
           currentChat.participantResponse.map((parti) => parti.user)
         )
       }

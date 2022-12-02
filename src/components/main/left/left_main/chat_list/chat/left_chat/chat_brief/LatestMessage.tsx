@@ -13,14 +13,29 @@ const LatestMessage = ({ chat }: Props) => {
   const { currentUser } = useAppSelector(authState)
   const { currentChat } = useAppSelector(conversationsControlState)
   const [senderName, setSenderName] = useState('')
+  const [msgLatest, setMsgLatest] = useState('')
 
   useEffect(() => {
-    if (chat.messageLatest?.sender) {
+    if (chat.messageLatest) {
       const latestMsg = chat.messageLatest
 
       if (latestMsg.sender.id !== currentUser?.id)
         setSenderName(latestMsg.sender.fullName + ':')
       else setSenderName('Bạn:')
+
+      if (latestMsg.delete) {
+        setMsgLatest('Tin nhắn đã thu hồi')
+      } else {
+        if (latestMsg.type === MessageTypeEnum.TEXT) {
+          setMsgLatest(latestMsg.message)
+        } else if (latestMsg.type === MessageTypeEnum.IMAGE) {
+          setMsgLatest('Ảnh')
+        } else {
+          setMsgLatest('File')
+        }
+      }
+    } else {
+      setMsgLatest('')
     }
   }, [])
 
@@ -45,15 +60,11 @@ const LatestMessage = ({ chat }: Props) => {
         style={
           currentChat?.id === chat.id ? { color: 'white' } : { color: 'gray' }
         }
-        className='text-slate-600'
+        className={`text-slate-600 ${
+          chat.messageLatest?.delete ? 'italic' : ''
+        }`}
       >
-        {chat.messageLatest
-          ? chat.messageLatest.type === MessageTypeEnum.TEXT
-            ? chat.messageLatest.message
-            : chat.messageLatest.type === MessageTypeEnum.IMAGE
-            ? 'Ảnh'
-            : 'File'
-          : ''}
+        {msgLatest}
       </span>
     </div>
   )

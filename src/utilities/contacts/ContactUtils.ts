@@ -40,7 +40,10 @@ export const findContactOnChangeField = (
 
   if (contactsList) {
     for (let contact of contactsList) {
-      if (contact.fullName.includes(contactKeyword)) {
+      if (
+        contact.fullName.includes(contactKeyword) ||
+        contact.phone.includes(contactKeyword)
+      ) {
         const existingContact = foundContacts.find(
           (iterator) => iterator.id === contact.id
         )

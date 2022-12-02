@@ -39,8 +39,11 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
   let intervalToDetermineRemainingTime = -1
   let timeoutToRedirect = -1
 
-  const onConfirmPhoneSuccess = () => {
+  const onConfirmPhoneSuccess = async () => {
     setOTPFieldDisabled(true)
+
+    await dispatch(forgotPassword(phone))
+
     setCollapseProps({
       ...collapseProps,
       in: true,
@@ -49,8 +52,6 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
         'Đã xác nhận người dùng. Mật khẩu tạm chính là số điện thoại của bạn!',
       msg: 'Bạn sẽ được chuyển sang màn hình chính sau 3s nữa. Nhớ đổi mật khẩu thật nhanh nhé!',
     })
-
-    dispatch(forgotPassword(phone))
 
     intervalToDetermineRemainingTime = window.setInterval(() => {
       setCollapseProps({
