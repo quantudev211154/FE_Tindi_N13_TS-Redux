@@ -102,6 +102,14 @@ const AddMemberToGroup = ({ changeOverlay }: Props) => {
     }
   }
 
+  const onBackToViewGroupOverlay = () => {
+    changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
+  }
+
+  const onAddNewMembersToGroup = () => {
+    addNewMembers()
+  }
+
   return (
     <div className='w-full bg-white rounded-2xl'>
       <div className='flex justify-start items-center px-5 py-3'>
@@ -157,9 +165,7 @@ const AddMemberToGroup = ({ changeOverlay }: Props) => {
       <div className='w-full flex justify-end items-center px-5 py-3'>
         <Button
           disableElevation
-          onClick={() => {
-            changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
-          }}
+          onClick={onBackToViewGroupOverlay}
           variant='contained'
           sx={{
             textTransform: 'none',
@@ -172,9 +178,7 @@ const AddMemberToGroup = ({ changeOverlay }: Props) => {
         </Button>
         <Button
           disabled={newMembers.length > 0 ? false : true}
-          onClick={() => {
-            addNewMembers()
-          }}
+          onClick={onAddNewMembersToGroup}
           disableElevation
           variant='contained'
           sx={{

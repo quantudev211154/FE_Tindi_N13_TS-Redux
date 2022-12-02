@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { authState } from '../../../../../redux/slices/AuthSlice'
 import { contactState } from '../../../../../redux/slices/ContactSlice'
 import { controlOverlaysActions } from '../../../../../redux/slices/ControlOverlaysSlice'
+import { conversationDetailActions } from '../../../../../redux/slices/ConversationDetailSlice'
 import { responsiveActions } from '../../../../../redux/slices/Responsive'
 import { ContactType } from '../../../../../redux/types/ContactTypes'
 import { UserType } from '../../../../../redux/types/UserTypes'
@@ -24,6 +25,7 @@ const AddMembersToGroup = ({ groupName, backToNewGroupOverlay }: Props) => {
   )
   const [addedMembers, setAddedMembers] = useState<ContactType[]>([])
   const { toggleNewGroupOverlay } = controlOverlaysActions
+  const { clearMessageList } = conversationDetailActions
   const { currentUser } = useAppSelector(authState)
   const dispatch = useAppDispatch()
   const { openMessageList } = responsiveActions
@@ -134,7 +136,8 @@ const AddMembersToGroup = ({ groupName, backToNewGroupOverlay }: Props) => {
                 toggleNewGroupOverlay,
                 groupName,
                 currentUser as UserType,
-                addedMembers
+                addedMembers,
+                clearMessageList
               )
 
               timer = window.setTimeout(() => {

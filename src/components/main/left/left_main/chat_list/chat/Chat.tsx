@@ -25,6 +25,18 @@ const Chat = ({ chat }: Props) => {
   const { setReplyingMessage, setLoadingMessageList, clearMessageList } =
     conversationDetailActions
 
+  const onClickConversation = () => {
+    dispatch(setReplyingMessage(null))
+    dispatch(openMessageList(true))
+    if (chat.id !== currentChat?.id) {
+      dispatch(clearMessageList())
+      dispatch(setLoadingMessageList())
+      dispatch(changeCurrentChat(chat))
+      dispatch(loadMessageOfConversation(chat.id))
+      CurrentChatUtil.setCurrentChat(chat)
+    }
+  }
+
   return (
     <Button
       variant='contained'
@@ -41,17 +53,7 @@ const Chat = ({ chat }: Props) => {
       }}
       disableElevation
       className='bg-slate-200'
-      onClick={() => {
-        dispatch(setReplyingMessage(null))
-        dispatch(openMessageList(true))
-        if (chat.id !== currentChat?.id) {
-          dispatch(clearMessageList())
-          dispatch(setLoadingMessageList())
-          dispatch(changeCurrentChat(chat))
-          dispatch(loadMessageOfConversation(chat.id))
-          CurrentChatUtil.setCurrentChat(chat)
-        }
-      }}
+      onClick={onClickConversation}
     >
       <LeftChat chat={chat} />
       <RightChat chat={chat} />

@@ -82,6 +82,19 @@ const ManageGroup = () => {
     }
   }
 
+  const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+
+    if (files) {
+      setGroupAvatar(files[0])
+    }
+  }
+
+  const onSaveModifiers = () => {
+    dispatch(toggleManageGroupOverlay())
+    updateAvatarAndGroupname()
+  }
+
   return (
     <Modal
       open={openManageGroupOverlay}
@@ -159,13 +172,7 @@ const ManageGroup = () => {
                       type='file'
                       hidden
                       accept={acceptImageType()}
-                      onChange={(event) => {
-                        const files = event.target.files
-
-                        if (files) {
-                          setGroupAvatar(files[0])
-                        }
-                      }}
+                      onChange={onFileInputChange}
                     />
                   </Button>
                 </Tooltip>
@@ -221,10 +228,7 @@ const ManageGroup = () => {
                 Đóng
               </Button>
               <Button
-                onClick={() => {
-                  dispatch(toggleManageGroupOverlay())
-                  updateAvatarAndGroupname()
-                }}
+                onClick={onSaveModifiers}
                 disableElevation
                 variant='contained'
                 sx={{

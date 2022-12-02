@@ -326,7 +326,7 @@ const ChatFooter = () => {
                     )
                   }}
                   autoFocus
-                  maxRows={isLoadingMessageList ? 1 : 4}
+                  maxRows={isLoadingMessageList || msg === '' ? 1 : 4}
                   value={msg}
                   onKeyDown={onInputKeyPress}
                   placeholder='Viết tin nhắn nào...'

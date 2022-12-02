@@ -81,14 +81,13 @@ const ViewGroupInfoOverlay = () => {
     setCurrentOverlay(overlay)
   }
 
+  const onCloseModal = () => {
+    setSelectedPaticipant(undefined)
+    dispatch(toggleGroupSettingOverlay())
+  }
+
   return (
-    <Modal
-      open={openViewGroupInfoOverlay}
-      onClose={() => {
-        setSelectedPaticipant(undefined)
-        dispatch(toggleGroupSettingOverlay())
-      }}
-    >
+    <Modal open={openViewGroupInfoOverlay} onClose={onCloseModal}>
       <div
         className='w-5/6 max-h-[90vh] overflow-y-auto md:w-1/3 bg-gray-200 rounded-2xl relative top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-hidden
       '

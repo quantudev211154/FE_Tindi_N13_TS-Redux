@@ -33,17 +33,21 @@ const conversationDetailSlice = createSlice({
       state.isLoadingMessageList = true
     },
     addNewMessageToCurrentChat: (state, action: PayloadAction<MessageType>) => {
-      const existingMsg =
-        state.messageList &&
-        state.messageList.find(
-          (msg) => msg.socketFlag === action.payload.socketFlag
-        )
+      if (
+        CurrentChatUtil.getCurrenChat()?.id === action.payload.conversation.id
+      ) {
+        const existingMsg =
+          state.messageList &&
+          state.messageList.find(
+            (msg) => msg.socketFlag === action.payload.socketFlag
+          )
 
-      if (existingMsg === undefined)
-        state.messageList = state.messageList && [
-          ...state.messageList,
-          action.payload,
-        ]
+        if (existingMsg === undefined)
+          state.messageList = state.messageList && [
+            ...state.messageList,
+            action.payload,
+          ]
+      }
     },
     setReplyingMessage: (state, action: PayloadAction<MessageType | null>) => {
       state.replyingMessage = action.payload

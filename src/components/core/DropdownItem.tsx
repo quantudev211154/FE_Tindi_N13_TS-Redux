@@ -21,6 +21,10 @@ const DropdownItem = ({
 }: Props) => {
   const dispatch = useAppDispatch()
 
+  const onCloseModal = () => {
+    dispatch(handleClick())
+  }
+
   return (
     <>
       <Button
@@ -40,9 +44,7 @@ const DropdownItem = ({
           },
         }}
         disableElevation
-        onClick={() => {
-          dispatch(handleClick())
-        }}
+        onClick={onCloseModal}
       >
         <label
           style={{ backgroundColor: bgIcon }}
@@ -52,12 +54,7 @@ const DropdownItem = ({
         </label>
         <span className='ml-5'>{label}</span>
       </Button>
-      <Modal
-        open={followState}
-        onClose={() => {
-          dispatch(handleClick())
-        }}
-      >
+      <Modal open={followState} onClose={onCloseModal}>
         <div className='w-5/6 max-h-[90vh] overflow-y-auto md:w-1/3 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg'>
           {backdropContent}
         </div>

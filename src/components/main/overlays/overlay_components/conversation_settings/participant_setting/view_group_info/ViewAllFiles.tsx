@@ -16,13 +16,15 @@ const ViewAllFiles = ({ changeOverlay, files }: Props) => {
   const dispatch = useAppDispatch()
   const { setCurrentAttachment } = fileViewerActions
 
+  const onBackToViewGroupOverlay = () => {
+    changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
+  }
+
   return (
     <div className='w-full bg-white'>
       <div className='flex justify-start items-center px-5 py-3'>
         <Button
-          onClick={() => {
-            changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
-          }}
+          onClick={onBackToViewGroupOverlay}
           variant='contained'
           sx={{
             maxWidth: '2.5rem',

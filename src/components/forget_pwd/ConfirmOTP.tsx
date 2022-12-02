@@ -117,6 +117,20 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
     }
   }
 
+  const onResendOTPCode = () => {
+    setIsProcessing(true)
+    FirebaseService.sendFirebaseAuthOTP(phone)
+
+    const t = window.setTimeout(() => {
+      setIsProcessing(false)
+      window.clearTimeout(t)
+    }, 3000)
+  }
+
+  const onCloseConfirmOTPScreen = () => {
+    openOTPField(false)
+  }
+
   return (
     <>
       <div>
@@ -164,15 +178,7 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
                   loadingPosition='start'
                   startIcon={<Security />}
                   variant='contained'
-                  onClick={() => {
-                    setIsProcessing(true)
-                    FirebaseService.sendFirebaseAuthOTP(phone)
-
-                    const t = window.setTimeout(() => {
-                      setIsProcessing(false)
-                      window.clearTimeout(t)
-                    }, 3000)
-                  }}
+                  onClick={onResendOTPCode}
                   sx={{
                     textTransform: 'none',
                     padding: '13px',
@@ -193,9 +199,7 @@ const ConfirmOTP = ({ phone, openOTPField }: Props) => {
           )}
         </Formik>
         <div
-          onClick={() => {
-            openOTPField(false)
-          }}
+          onClick={onCloseConfirmOTPScreen}
           className='cursor-pointer mt-10 transition-all flex items-center justify-center border border-dashed border-white px-3 py-2 hover:border-blue-700'
         >
           <ArrowBack sx={{ fill: 'rgb(30,64,175)' }} />

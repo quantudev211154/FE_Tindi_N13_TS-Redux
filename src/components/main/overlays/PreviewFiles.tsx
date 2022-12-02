@@ -83,6 +83,11 @@ const PreviewFiles = ({
     }
   }
 
+  const onClickSendButton = () => {
+    onSendMsg()
+    onCloseOverlay()
+  }
+
   return (
     <Modal
       open={openPreviewFilesInMessage}
@@ -130,10 +135,7 @@ const PreviewFiles = ({
                 bgcolor: '#1561b3',
               },
             }}
-            onClick={() => {
-              onSendMsg()
-              onCloseOverlay()
-            }}
+            onClick={onClickSendButton}
           >
             Gửi đi
           </Button>
@@ -151,7 +153,6 @@ const PreviewFiles = ({
           ) : (
             <></>
           )}
-          {/* {filesType === AttachFileEnum.FILE ? : <></>} */}
         </div>
         <div className='mt-3'>
           <TextField

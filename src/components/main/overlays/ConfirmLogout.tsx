@@ -12,6 +12,13 @@ const ConfirmLogout = () => {
   const { logout } = authActions
   const dispatch = useAppDispatch()
 
+  const onLogout = () => {
+    dispatch(toggleConfirmLogoutOverlay())
+    MySocket.killSocketSession(currentUser?.id as number)
+    dispatch(resetConversationSlice())
+    dispatch(logout())
+  }
+
   return (
     <div className='rounded-lg p-10 z-[500] text-center'>
       <p className='text-2xl font-semibold'>Cần xác nhận lại</p>
@@ -29,12 +36,7 @@ const ConfirmLogout = () => {
               bgcolor: '#d11137',
             },
           }}
-          onClick={() => {
-            dispatch(toggleConfirmLogoutOverlay())
-            MySocket.killSocketSession(currentUser?.id as number)
-            dispatch(resetConversationSlice())
-            dispatch(logout())
-          }}
+          onClick={onLogout}
         >
           Đăng xuất
         </Button>

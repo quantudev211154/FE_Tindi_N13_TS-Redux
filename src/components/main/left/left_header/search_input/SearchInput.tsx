@@ -7,13 +7,17 @@ const SearchInput = () => {
   const { setFindConverKeyword } = conversationActions
   const dispatch = useAppDispatch()
 
+  const onFindConverTextFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    dispatch(setFindConverKeyword(e.target.value))
+  }
+
   return (
     <div className='w-full'>
       <Stack maxWidth='100%'>
         <InputBase
-          onChange={(e) => {
-            dispatch(setFindConverKeyword(e.target.value))
-          }}
+          onChange={onFindConverTextFieldChange}
           type='search'
           startAdornment={
             <InputAdornment position='start'>

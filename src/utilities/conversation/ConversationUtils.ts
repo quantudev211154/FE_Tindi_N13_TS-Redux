@@ -48,6 +48,7 @@ export const createNewGroup = async (
   groupName: string,
   currentUser: UserType,
   membersOfGroup: ContactType[],
+  clearMessageList: ActionCreatorWithoutPayload<string>,
   groupAvatar?: string
 ) => {
   try {
@@ -64,6 +65,7 @@ export const createNewGroup = async (
     dispatch(addNewConversation(payload))
   } catch (error) {}
 
+  dispatch(clearMessageList())
   dispatch(toggleNewGroupOverlay())
 }
 

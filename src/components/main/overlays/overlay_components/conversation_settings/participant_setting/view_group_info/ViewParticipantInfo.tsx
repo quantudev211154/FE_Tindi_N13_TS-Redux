@@ -194,15 +194,32 @@ const ViewParticipantInfo = ({
     }
   }
 
+  const onBackToViewGroupOverlay = () => {
+    setSelectedParticipant(undefined)
+  }
+
+  const onCloseViewPaticipantInfo = () => {
+    setSelectedParticipant(undefined)
+    dispatch(toggleViewGroupInfoOverlay())
+  }
+
+  const onBanOrUnbanMember = () => {
+    updateStatusForParticipant()
+    setSelectedParticipant(undefined)
+  }
+
+  const onRemoveMember = () => {
+    setSelectedRemoveMember(participant)
+    confirmRemoveParticipant()
+  }
+
   return (
     <div className='w-full'>
       <Stack direction={'column'} spacing={1} sx={{ width: '100%' }}>
         <div className='flex justify-between items-center px-5 py-5 bg-white'>
           <div className='flex justify-start items-center'>
             <Button
-              onClick={() => {
-                setSelectedParticipant(undefined)
-              }}
+              onClick={onBackToViewGroupOverlay}
               variant='contained'
               sx={{
                 maxWidth: '2.5rem',
@@ -225,10 +242,7 @@ const ViewParticipantInfo = ({
           </div>
           <div>
             <Button
-              onClick={() => {
-                setSelectedParticipant(undefined)
-                dispatch(toggleViewGroupInfoOverlay())
-              }}
+              onClick={onCloseViewPaticipantInfo}
               variant='contained'
               sx={{
                 maxWidth: '2.5rem',
@@ -308,10 +322,7 @@ const ViewParticipantInfo = ({
                 ) : (
                   <div
                     className='px-5 py-3 cursor-pointer hover:bg-gray-200'
-                    onClick={() => {
-                      updateStatusForParticipant()
-                      setSelectedParticipant(undefined)
-                    }}
+                    onClick={onBanOrUnbanMember}
                   >
                     {participant?.status === ParticipantStatusEnum.STABLE ? (
                       <>
@@ -342,10 +353,7 @@ const ViewParticipantInfo = ({
                 participant.role !== ParticipantRoleEnum.ADMIN ? (
                   <div
                     className='px-5 py-3 cursor-pointer hover:bg-gray-200'
-                    onClick={() => {
-                      setSelectedRemoveMember(participant)
-                      confirmRemoveParticipant()
-                    }}
+                    onClick={onRemoveMember}
                   >
                     <PersonOffOutlined
                       sx={{ color: '#cf0632', width: 26, height: 26 }}

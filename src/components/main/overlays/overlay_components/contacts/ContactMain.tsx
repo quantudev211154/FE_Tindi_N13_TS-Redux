@@ -22,18 +22,20 @@ const ContactMain = ({ contact }: Props) => {
   const { toggleContactOverlay } = controlOverlaysActions
   const dispatch = useAppDispatch()
 
+  const onCreateNewConversation = () => {
+    createNewSingleConversation(
+      currentUser as UserType,
+      contact,
+      conversationList,
+      dispatch,
+      changeCurrentChat,
+      toggleContactOverlay
+    )
+  }
+
   return (
     <div
-      onClick={() => {
-        createNewSingleConversation(
-          currentUser as UserType,
-          contact,
-          conversationList,
-          dispatch,
-          changeCurrentChat,
-          toggleContactOverlay
-        )
-      }}
+      onClick={onCreateNewConversation}
       key={contact.id}
       className='cursor-pointer p-3 flex justify-between items-center rounded-xl transition-all hover:bg-[#bcd1e3]'
     >

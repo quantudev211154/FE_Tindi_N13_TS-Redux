@@ -14,13 +14,15 @@ type Props = {
 const ViewAdmin = ({ admin, setCloseViewAdmin }: Props) => {
   const { currentUser } = useAppSelector(authState)
 
+  const onCloseViewAdmin = () => {
+    setCloseViewAdmin()
+  }
+
   return (
     <div className='w-full flex flex-col bg-white'>
       <div className='px-5 py-3 w-full flex justify-start items-center'>
         <Button
-          onClick={() => {
-            setCloseViewAdmin()
-          }}
+          onClick={onCloseViewAdmin}
           variant='contained'
           sx={{
             maxWidth: '2.5rem',

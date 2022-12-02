@@ -87,6 +87,18 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
     }
   }
 
+  const onAddNewContact = (values: INewContactType) => {
+    createNewContact(
+      currentUser as UserType,
+      result as UserType,
+      addNewContactInLocal,
+      dispatch
+    )
+
+    setResult(null)
+    values.phone = ''
+  }
+
   return (
     <div ref={addContactRef} className='add-contact hidden p-5'>
       <div className='w-full flex flex-col'>
@@ -171,15 +183,7 @@ const AddContact = ({ addContactRef, hideAddContactModal }: Props) => {
                           <Button
                             disableElevation
                             onClick={() => {
-                              createNewContact(
-                                currentUser as UserType,
-                                result as UserType,
-                                addNewContactInLocal,
-                                dispatch
-                              )
-
-                              setResult(null)
-                              values.phone = ''
+                              onAddNewContact(values)
                             }}
                             variant='contained'
                             sx={{

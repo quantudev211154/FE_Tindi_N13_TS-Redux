@@ -46,6 +46,15 @@ const ViewAllMembers = ({ changeOverlay }: Props) => {
     return () => window.clearTimeout(timer)
   }, [currentChat])
 
+  const onBackToViewGroupOverlay = () => {
+    changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
+  }
+
+  const onCloseViewAllMembers = () => {
+    changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
+    dispatch(toggleViewGroupInfoOverlay())
+  }
+
   return (
     <div className='w-full rounded-2xl bg-white'>
       <div
@@ -57,9 +66,7 @@ const ViewAllMembers = ({ changeOverlay }: Props) => {
         <div className='flex justify-between items-center px-5 py-3'>
           <div>
             <Button
-              onClick={() => {
-                changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
-              }}
+              onClick={onBackToViewGroupOverlay}
               variant='contained'
               sx={{
                 maxWidth: '2.5rem',
@@ -81,10 +88,7 @@ const ViewAllMembers = ({ changeOverlay }: Props) => {
             </span>
           </div>
           <Button
-            onClick={() => {
-              changeOverlay(CurrentViewGroupOverlayEnum.DEFAULT)
-              dispatch(toggleViewGroupInfoOverlay())
-            }}
+            onClick={onCloseViewAllMembers}
             variant='contained'
             sx={{
               maxWidth: '2.5rem',

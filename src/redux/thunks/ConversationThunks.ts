@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
+import CurrentChatUtil from '../../class/CurrentChatClass'
 import {
   API_ADD_CONVER,
   API_ADD_MEMBERS_TO_CONVERSATION,
@@ -73,6 +74,7 @@ export const addNewConversation = createAsyncThunk<
 
     const newConver = response.data as ConversationType
 
+    CurrentChatUtil.setCurrentChat(newConver)
     const currentUsers = newConver.participantResponse.map(
       (parti) => parti.user
     )

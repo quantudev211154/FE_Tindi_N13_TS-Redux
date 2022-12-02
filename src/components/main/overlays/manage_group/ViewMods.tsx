@@ -14,13 +14,15 @@ type Props = {
 const ViewMods = ({ mods, setCloseViewMods }: Props) => {
   const { currentUser } = useAppSelector(authState)
 
+  const onCloseViewMods = () => {
+    setCloseViewMods()
+  }
+
   return (
     <div className='w-full flex flex-col bg-white'>
       <div className='px-5 py-3 w-full flex justify-start items-center'>
         <Button
-          onClick={() => {
-            setCloseViewMods()
-          }}
+          onClick={onCloseViewMods}
           variant='contained'
           sx={{
             maxWidth: '2.5rem',
