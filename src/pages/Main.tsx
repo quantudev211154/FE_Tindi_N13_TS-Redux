@@ -68,6 +68,7 @@ const Main = () => {
       SocketEventEnum.RECEIVE_MSG,
       (data: SendMessageWithSocketPayload) => {
         dispatch(addNewMessageToCurrentChat(data.message))
+        dispatch(updateLatestMessage(data.message))
       }
     )
 

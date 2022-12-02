@@ -37,7 +37,7 @@ const LatestMessage = ({ chat }: Props) => {
     } else {
       setMsgLatest('')
     }
-  }, [])
+  }, [chat])
 
   return (
     <div

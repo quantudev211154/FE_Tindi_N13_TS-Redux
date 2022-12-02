@@ -1,7 +1,8 @@
-export const HOST =
-  !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-    ? 'http://localhost:8089/api/'
-    : 'https://tindy-app-service-production.up.railway.app/api/'
+// export const HOST =
+//   !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+//     ? 'http://localhost:8089/api/'
+//     : 'https://tindy-app-service-production.up.railway.app/api/'
+export const HOST = 'https://tindy-app-service-production.up.railway.app/api/'
 export const API_LOGIN = 'auth/login'
 export const API_REGISTER = 'auth/register'
 export const API_GET_REFRESH_TOKEN = 'auth/refresh_token'
